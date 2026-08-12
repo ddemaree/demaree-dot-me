@@ -2,23 +2,38 @@
   "name": "dd-astro-2026",
   "type": "module",
   "version": "0.0.1",
+  "packageManager": "pnpm@11.21.0",
   "engines": {
     "node": ">=22.12.0"
   },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "check": "astro check",
     "preview": "astro preview",
+    "import:wordpress": "node scripts/import-wordpress.mjs",
     "astro": "astro"
   },
   "dependencies": {
     "@astrojs/markdoc": "^2.0.6",
+    "@astrojs/react": "^6.0.2",
     "@astrojs/vercel": "^11.0.5",
+    "@keystatic/astro": "^5.2.0",
+    "@keystatic/core": "^0.6.4",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "sharp": "^0.35.3",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/turndown": "^5.0.6",
+    "turndown": "^7.2.4",
+    "typescript": "^6.0.3"
   }
 }

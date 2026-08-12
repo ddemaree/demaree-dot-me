@@ -1,0 +1,17 @@
+---
+import { Image } from 'astro:assets';
+import memoji from '../assets/images/site/memoji.png';
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <Image class="footer-memoji" src={memoji} alt="" width={96} />
+    <p><strong><a href="https://demaree.me/about/">David Demaree</a></strong> is a fabulous gentleman known for wonderful things.</p>
+    <ul class="social-links" aria-label="Social links">
+      <li><a class="social-link social-link--x" href="https://x.com/ddemaree" aria-label="X"><img src="/images/site/social-x.svg" alt="" /></a></li>
+      <li><a class="social-link social-link--bluesky" href="https://bsky.app/profile/demar.ee" aria-label="Bluesky"><img src="/images/site/social-bluesky.svg" alt="" /></a></li>
+      <li><a class="social-link social-link--linkedin" href="https://linkedin.com/in/ddemaree" aria-label="LinkedIn"><img src="/images/site/social-linkedin.svg" alt="" /></a></li>
+      <li><a class="social-link social-link--mail" href="mailto:david@demaree.me" aria-label="Mail"><img src="/images/site/social-mail.svg" alt="" /></a></li>
+    </ul>
+  </div>
+</footer>

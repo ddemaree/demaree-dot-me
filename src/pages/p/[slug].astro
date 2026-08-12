@@ -1,0 +1,98 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import sidebarImage from '../../assets/images/site/bits-and-letters.png';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
+  );
+
+  return posts.map((post, index) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      newerPost: index > 0 ? posts[index - 1] : undefined,
+      olderPost: index < posts.length - 1 ? posts[index + 1] : undefined,
+    },
+  }));
+}
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  newerPost?: CollectionEntry<'posts'>;
+  olderPost?: CollectionEntry<'posts'>;
+}
+
+const { post, newerPost, olderPost } = Astro.props;
+const { Content } = await render(post);
+const publishedAt = new Intl.DateTimeFormat('en-US', {
+  dateStyle: 'long',
+  timeZone: 'America/New_York',
+}).format(post.data.publishedAt);
+const publishedAtFor = (date: Date) =>
+  new Intl.DateTimeFormat('en-US', {
+    dateStyle: 'long',
+    timeZone: 'America/New_York',
+  }).format(date);
+---
+
+<BaseLayout title={`${post.data.title} — David Demaree`} description={post.data.description}>
+  <main id="main" class="single-post">
+    <article>
+      <header class="entry-header">
+        <nav class="entry-breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a><span aria-hidden="true">/</span><a href="/blog/">Blog</a>
+        </nav>
+        <h1>{post.data.title}</h1>
+        <time datetime={post.data.publishedAt.toISOString()}>{publishedAt}</time>
+      </header>
+
+      <div class="entry-layout">
+        <div class="entry-main">
+          <div class="prose flow">
+            <Content />
+          </div>
+
+          {post.data.tags.length > 0 && (
+            <footer class="article-taxonomies">
+              <span>Tagged</span>
+              <ul aria-label="Tags">
+                {post.data.tags.map((tag) => <li>{tag}</li>)}
+              </ul>
+            </footer>
+          )}
+        </div>
+
+        <aside class="entry-sidebar" aria-label="Post sidebar">
+          {[0, 1].map(() => (
+            <a class="sidebar-promo" href="https://www.bitsandletters.com/">
+              <Image src={sidebarImage} alt="Bits & Letters" width={220} />
+              <span><strong>Websites and apps made with clarity and craft.</strong> Bits&amp;Letters is a little consultancy for all your biggest digital problems.</span>
+            </a>
+          ))}
+        </aside>
+      </div>
+
+      {(olderPost || newerPost) && (
+        <nav class="post-navigation" aria-label="More posts">
+          {olderPost && (
+            <a href={`/p/${olderPost.id}/`}>
+              <span class="post-navigation__label">← Previous post</span>
+              <strong>{olderPost.data.title}</strong>
+              <time>{publishedAtFor(olderPost.data.publishedAt)}</time>
+            </a>
+          )}
+          {newerPost && (
+            <a class="post-navigation__next" href={`/p/${newerPost.id}/`}>
+              <span class="post-navigation__label">Next post →</span>
+              <strong>{newerPost.data.title}</strong>
+              <time>{publishedAtFor(newerPost.data.publishedAt)}</time>
+            </a>
+          )}
+        </nav>
+      )}
+    </article>
+  </main>
+</BaseLayout>

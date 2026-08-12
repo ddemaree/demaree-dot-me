@@ -1,0 +1,74 @@
+---
+title: "Hey Siri, Call Google"
+description: "WWDC ’26 biggest winners were Google, Liquid Glass haters, iPhone 11 owners, and foldable-iPhone speculation enjoyers."
+publishedAt: "2026-06-11T11:04"
+updatedAt: "2026-06-11T11:05"
+draft: false
+tags: []
+featuredImage: "@assets/images/posts/hey-siri-call-google/featuredImage.webp"
+featuredImageAlt: "photo of Golden Gate Bridge"
+wordpressId: 6828
+sourceUrl: "https://demaree.me/p/hey-siri-call-google/"
+---
+
+[Monday’s WWDC 2026 keynote](https://www.apple.com/newsroom/2026/06/apple-unveils-next-generation-of-apple-intelligence-siri-ai-and-more/) — Tim Cook’s final Apple event as CEO, with incoming CEO John Ternus presumably debuting at the iPhone launch this fall — was nearly all about Apple Intelligence. I joked on Bluesky that the only difference between this year’s keynote and the infamous 2024 edition, where Apple announced a slew of AI features that were nowhere near ready and [never shipped](https://daringfireball.net/2025/03/apple_is_delaying_the_more_personalized_siri_apple_intelligence_features), is that this time, Apple either had live demos to show or had gotten a lot better at faking things.
+
+I think it’s the former, FWIW. Unlike 2024, when Apple was trying to build its own foundation models and infrastructure from scratch in less than a year, they’ve [partnered with Google](https://www.cnbc.com/2026/01/12/apple-google-ai-siri-gemini.html) for both the core models (based on Gemini, but customized and rebranded for Apple) and the underlying cloud compute. The “private cloud compute” is still relatively unproven (because no one else has tried it), but Apple’s [original papers and statements](https://security.apple.com/blog/private-cloud-compute/) about it hold up, and we know that the underlying AI tech works because the Gemini app works.
+
+The biggest open questions are around local, on-device models, since locally hosted models like Google’s open-source [Gemma family](https://ai.google.dev/gemma) (likely the basis of the local Siri models) are magical but nowhere near as powerful as enormous cloud-based ones like Gemini 3, GPT-5, or Claude 5.
+
+This matters because a lot of Apple’s demos showed the AI performing near-flawlessly with lots of disparate experiences and data. If the OS is asking the local (or, for that matter, cloud) models lots of quick, targeted questions, this might be how it goes in real life. If they’re trying to one-shot things, Siri AI might call your boss when you want directions to the liquor store.
+
+This is basically all I have to say about Apple Intelligence and Siri AI from a technical standpoint. There’s probably a lot of interesting detail in the deeper WWDC session content, and I think the real story may turn out to be how Apple exposes these capabilities to developers, rather than how Siri is now a friendlier, more pervasive Microsoft Copilot.
+
+What Apple showed is an iOS experience with all rough edges and friction removed thanks to magical AI — cool if true, but also nothing *new*. Third-party devs, armed with on-device AI and Apple SDKs, are well-positioned to make something new.
+
+## Google was WWDC’s biggest winner
+
+Obviously, because Apple is using Google’s closed-source AI models *and* [hosting at least some of the “private cloud compute” on GCP](https://security.apple.com/blog/expanding-pcc/), this is potentially as big a revenue generator for Google as the long-running deal to make Google Search the default in Safari. It’s not accurate to say “Siri AI runs on Gemini,” but for Google’s purposes it may as well be the same thing.
+
+But to whatever extent Apple Intelligence will rely on local, on-device models, Apple’s announcements are also good for Google in that they’re bad for OpenAI and Anthropic. Two reasons:
+
+### OpenAI and Anthropic’s businesses depend on cloud-hosted models
+
+To oversimplify, 100% of Anthropic’s revenue comes from individuals and businesses sending prompts and data to a Claude API endpoint (either from a first-party app/harness or via a third party like Lovable), for which Anthropic charges a subscription fee or for token usage. The more useful AI stuff can be done without cloud compute, the less demand there is for the big labs’ APIs.
+
+The insane trillion-dollar valuations for these companies, plus [SpaceX’s IPO prospectus](https://fortune.com/2026/05/20/spacex-ipo-filing-s1-total-addressable-market-make-life-multiplanetary/) claiming “the largest actionable total addressable market in human history” — a $28.5 trillion figure roughly the size of the entire US economy, most of it attributed to AI — assume that some huge percentage of all global information will flow through their systems, allowing them to charge rent on almost all human activity. Even in a world where AI APIs would remain the dominant way we work with models, that would be a crazy-pants idea and not a sound investment thesis. AI is not likely to get good at cleaning toilets, and a human janitor is certainly cheaper than what Anthropic would charge per token.
+
+If even a third of the potential AI use cases were handled locally on our devices, that could drastically change the future market these labs/startups will compete in. And while they could still be gigantic companies, it would make more sense to value them like any other platform or infra company, not like whole economies.
+
+### Google is the only halfway successful, diversified AI company
+
+Google doesn’t need AI to be a trillion-dollar company. For Google, there’s more risk in OpenAI and Anthropic disrupting their search business than upside in mastering AI. That said, Google Search’s near-universal distribution means that — absent ChatGPT becoming the new way everyone around the world gets questions answered — Google’s AI search is likely to run the table for the foreseeable future. (Even though at present you can’t start a query with a verb.)
+
+Google also has other businesses (though none as big as Search/Ads), and unlike the two big AI labs, they own 100% of their data center footprint. Because Google was investing in AI long before the current bubble, it has the industry’s most cost-effective AI compute, based on custom silicon rather than the same NVIDIA cards everyone else is competing for.
+
+Google’s Gemini models and services are solidly in third place behind OpenAI and Anthropic, but that’s a big improvement from where Google started, and unlike the big two labs, Google’s models are the only ones from a company with an enormous legal team and a deep allergy to litigation risk. Not to say you can trust any LLM to be IP-safe, but Gemini is far less likely to have hidden risks.
+
+## Apple is selling privacy, not frontier AI
+
+As they did two years ago, Apple is orienting their AI strategy around integration and privacy — they aren’t trying to deliver a new foundation model or push the bounds of how we work with devices. In fact, Apple’s examples are all vanilla: stuff we do all the time with our phones, but with more accuracy and less friction thanks to AI.
+
+This is true even of the [standalone Siri AI app](https://www.apple.com/newsroom/2026/06/apple-introduces-siri-ai-a-profoundly-more-capable-and-personal-assistant/) — it’s the ChatGPT workflow loop, but integrated with your personal data and made more private.
+
+The privacy angle is especially timely given Anthropic’s [release of Fable 5](https://www.anthropic.com/news/claude-fable-5-mythos-5) the same week, which [mandates 30-day retention of chats](https://techcrunch.com/2026/06/09/anthropic-released-claude-fable-5-its-most-powerful-model-publicly-days-after-warning-ai-is-getting-too-dangerous/) for safety purposes — even for enterprise customers who run Claude models via gateways precisely to ensure no data is leaked. The enterprise/Fable of it all is a whole other topic, but it has re-upped one of the burning questions about cloud AI: what are the implications of sharing company data or our most personal thoughts with servers managed by a startup?
+
+Apple’s whole AI pitch is oriented around being able to do the same stuff as Claude or ChatGPT (or, for that matter, vanilla Gemini), but with a strong privacy guarantee. Of course, their demos also promise fast responses with high accuracy and no hallucinations — we’ll see if it’s possible to get all of that at the same time whenever Siri AI ships to customers.
+
+## One (or five) more things
+
+During my live-skeeting of the keynote, I joked about [a few winners in Apple’s OS 27 releases](https://bsky.app/profile/demar.ee/post/3mns6rbgrss2r) besides Google, which I’ll recap here as a way of sharing a few impressions *not* related to AI.
+
+**Liquid Glass haters:** I did not expect Apple to walk back Liquid Glass much, or if they did, I expected they’d do so more quietly. Instead, they spent 5–10 valuable keynote minutes outlining “new” UI changes — especially for macOS — that revert the most annoying and unnecessary Liquid Glass traits, especially super-rounded corners and the gap between window borders and sidebars. Nature is healing.
+
+**People with 5+ year old iPhones:** Partly because iOS 27 is a “Snow Leopard”-style polish release outside of the AI stuff, and system requirements for AI were already set in ’24, there’s no change in hardware support from last year — if you’re still rocking an iPhone 11 Pro from 2019, it gets iOS 27.
+
+This isn’t the case for all platforms, sadly. watchOS 27 is only coming to Series 10–11 watches (2024+) and their Ultra/SE equivalents; macOS 27 is the first release to be Apple Silicon-only.
+
+Great news for the dozen or so Vision Pro owners: everyone gets visionOS 27! Yay?
+
+**One more thing (for real):** Craig and the team stuffed every non-AI nook and cranny of the keynote with small updates, including a rapid-fire rundown of new Xcode tools for app developers. As part of that segment, they previewed the new [Device Hub tool](https://developer.apple.com/videos/play/wwdc2026/260/), which unifies simulators and live-device monitoring for a single place to preview and debug apps.
+
+And, in the short video demo of Device Hub, there was a blink-and-you’d-miss-it example of someone previewing an iPhone app… then dragging the viewport into a *square shape* to show the UI reflow responsively.
+
+This could be intended to show an iPhone app resizing for use on iPadOS or macOS… but that square shape was more or less [what you’d expect a foldable iPhone to look like](https://www.macrumors.com/2026/06/08/ios-27-hints-at-foldable-iphone-with-app-resizability-push/). 🤔

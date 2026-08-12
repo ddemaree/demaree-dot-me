@@ -1,17 +1,26 @@
 ---
-
+import { Image } from 'astro:assets';
+import portrait from '../assets/images/site/dd-dithered.png';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="David Demaree — A good man, and thorough." description="David Demaree is a web designer, engineer, and systems thinker.">
+  <main id="main" class="home-page">
+    <h1>Home Page</h1>
+
+    <section class="home-intro" aria-labelledby="home-intro-heading">
+      <Image
+        class="home-portrait"
+        src={portrait}
+        alt="Pixelated portrait of David Demaree wearing sunglasses, in a stylized blue and pink halftone effect"
+        width={400}
+        height={400}
+        loading="eager"
+      />
+      <div class="home-intro__copy">
+        <h2 id="home-intro-heading">Hi, I’m <strong>David Demaree</strong>, a web designer, engineer, and systems thinker.</h2>
+        <a class="button" href="https://demaree.me/about/">More about me</a>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

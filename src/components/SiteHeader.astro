@@ -1,0 +1,29 @@
+---
+const path = Astro.url.pathname;
+const isBlog = path === '/blog/' || path.startsWith('/p/');
+---
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="/" aria-label="David Demaree">
+      <img src="/images/site/dd-mark.svg" alt="" width="502" height="386" />
+    </a>
+
+    <nav class="desktop-navigation" aria-label="Main menu">
+      <a href="https://demaree.me/about/">About David</a>
+      <a href="https://demaree.me/topics/tech-thoughts/">Tech Thoughts</a>
+      <a class:list={{ current: isBlog }} href="/blog/">All posts</a>
+    </nav>
+
+    <details class="mobile-navigation">
+      <summary aria-label="Open navigation">
+        <img src="/images/site/bars-staggered.svg" alt="" width="56" height="48" />
+      </summary>
+      <nav aria-label="Mobile menu">
+        <a href="https://demaree.me/about/">About David</a>
+        <a href="https://demaree.me/topics/tech-thoughts/">Tech Thoughts</a>
+        <a class:list={{ current: isBlog }} href="/blog/">All posts</a>
+      </nav>
+    </details>
+  </div>
+</header>
