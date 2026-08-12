@@ -10,6 +10,7 @@ by local Markdoc content.
 - Markdoc and Astro content collections for posts
 - Keystatic with local file storage for editing posts
 - Tailwind CSS 4 through its Vite plugin, plus the site's global CSS
+- Licensed web fonts served from a Cloudflare R2 custom domain
 - React integration for future interactive components
 - Astro's image and local-font pipelines
 - Vercel adapter for deployment
@@ -64,13 +65,13 @@ There is currently no separate test or lint command. Run both `pnpm check` and
 ## Project structure
 
 ```text
-├── astro.config.mjs          # Integrations, Vercel adapter, and local fonts
+├── astro.config.mjs          # Integrations and Vercel adapter
 ├── keystatic.config.ts       # Local post-editor schema
 ├── scripts/
 │   └── import-wordpress.mjs # One-off importer for selected legacy posts
 ├── public/                   # Files copied to the site unchanged
 └── src/
-    ├── assets/               # Images and fonts processed by Astro
+    ├── assets/               # Images processed by Astro
     ├── components/           # Shared site header and footer
     ├── content/posts/        # Markdoc post documents
     ├── content.config.ts     # Astro content collection schema

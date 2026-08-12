@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-die-grotesk-vf);
-  --font-mono: var(--font-berkeley-mono-vf);
+  --font-sans: "Die Grotesk", "Helvetica Neue", sans-serif;
+  --font-mono: "Berkeley Mono", ui-monospace, monospace;
 }
 
 @font-face {
   font-family: "Die Grotesk";
-  src: url("../assets/fonts/die-grotesk-vf-roman.woff2") format("woff2");
+  src: url("https://fonts.demaree.me/demaree-dot-me/die-grotesk-vf-roman.woff2") format("woff2");
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
@@ -15,7 +15,7 @@
 
 @font-face {
   font-family: "Die Grotesk";
-  src: url("../assets/fonts/die-grotesk-vf-italic.woff2") format("woff2");
+  src: url("https://fonts.demaree.me/demaree-dot-me/die-grotesk-vf-italic.woff2") format("woff2");
   font-style: italic;
   font-weight: 100 900;
   font-display: swap;
@@ -23,7 +23,7 @@
 
 @font-face {
   font-family: "Gorton Perfected";
-  src: url("../assets/fonts/GortonPerfectedVF.woff2") format("woff2");
+  src: url("https://fonts.demaree.me/demaree-dot-me/GortonPerfectedVF.woff2") format("woff2");
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
@@ -31,7 +31,7 @@
 
 @font-face {
   font-family: "Berkeley Mono";
-  src: url("../assets/fonts/Berkeley Mono Variable.woff2") format("woff2");
+  src: url("https://fonts.demaree.me/demaree-dot-me/Berkeley%20Mono%20Variable.woff2") format("woff2");
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
