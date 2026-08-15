@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Die Grotesk", "Helvetica Neue", sans-serif;
+  --font-mono: "Berkeley Mono", ui-monospace, monospace;
+  --font-display: "Gorton Perfected", var(--font-sans);
+}

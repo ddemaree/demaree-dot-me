@@ -1,41 +1,5 @@
-@import "tailwindcss";
-
-@theme {
-  --font-sans: "Die Grotesk", "Helvetica Neue", sans-serif;
-  --font-mono: "Berkeley Mono", ui-monospace, monospace;
-}
-
-@font-face {
-  font-family: "Die Grotesk";
-  src: url("https://fonts.demaree.me/demaree-dot-me/die-grotesk-vf-roman.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Die Grotesk";
-  src: url("https://fonts.demaree.me/demaree-dot-me/die-grotesk-vf-italic.woff2") format("woff2");
-  font-style: italic;
-  font-weight: 100 900;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Gorton Perfected";
-  src: url("https://fonts.demaree.me/demaree-dot-me/GortonPerfectedVF.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Berkeley Mono";
-  src: url("https://fonts.demaree.me/demaree-dot-me/Berkeley%20Mono%20Variable.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-}
+@import './theme.css';
+@import './fonts.css';
 
 :root {
   --surface: #ffffff;
@@ -50,12 +14,8 @@
   --stone-600: #57534e;
   --stone-700: #44403c;
   --stone-800: #292524;
-  --font-sans-site: "Die Grotesk", "Helvetica Neue", sans-serif;
-  --font-display: "Gorton Perfected", var(--font-sans-site);
-  --font-mono-site: "Berkeley Mono", ui-monospace, monospace;
   color: #000;
   background: var(--subsurface);
-  font-family: var(--font-sans-site);
   font-synthesis: none;
 }
 
@@ -94,91 +54,7 @@ img {
   height: auto;
 }
 
-.skip-link {
-  position: fixed;
-  top: 0.5rem;
-  left: 0.5rem;
-  z-index: 20;
-  transform: translateY(-200%);
-  padding: 0.5rem 0.75rem;
-  background: white;
-}
 
-.skip-link:focus {
-  transform: none;
-}
-
-.site-header {
-  position: relative;
-  z-index: 5;
-  height: 4.0625rem;
-  padding-inline: 1.5rem;
-  border-top: 0.5rem solid var(--subsurface);
-  border-bottom: 1px solid #d4d4d8;
-  background: var(--header);
-}
-
-.site-header__inner {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  height: 3.5rem;
-}
-
-.brand {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  width: 4.5rem;
-  height: 4.5rem;
-  align-items: center;
-  justify-content: center;
-  background: var(--red);
-  transition: background-color 160ms ease;
-}
-
-.brand:hover {
-  background: #b91c1c;
-}
-
-.brand img {
-  width: 75.5%;
-  filter: invert(1);
-  transition: transform 160ms ease;
-}
-
-.brand:hover img {
-  transform: scale(1.08);
-}
-
-.desktop-navigation {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  height: 3.5rem;
-  margin-left: auto;
-}
-
-.desktop-navigation a,
-.mobile-navigation a {
-  padding: 0.25rem 0.5rem;
-  color: #52525b;
-  font-family: var(--font-mono-site);
-  font-size: 0.875rem;
-  font-weight: 650;
-  text-transform: uppercase;
-}
-
-.desktop-navigation a.current,
-.mobile-navigation a.current {
-  background: white;
-  color: #241c25;
-}
-
-.mobile-navigation {
-  display: none;
-  margin-left: auto;
-}
 
 .site-footer {
   padding: 2.5rem 1.5rem;
@@ -257,49 +133,6 @@ img {
   background: #f5f5f4;
 }
 
-/* Home */
-.home-page {
-  padding: 3rem 1.5rem 1.5rem;
-  background: white;
-}
-
-.home-page > h1 {
-  margin: 0 0 1.75rem;
-  font-size: 2rem;
-  font-weight: 720;
-  line-height: 1;
-}
-
-.home-intro {
-  display: flex;
-  width: min(100%, 40rem);
-  flex-direction: column;
-  align-items: center;
-  margin-inline: auto;
-}
-
-.home-portrait {
-  width: min(25rem, calc(100vw - 5rem));
-  aspect-ratio: 1;
-  object-fit: cover;
-}
-
-.home-intro__copy {
-  width: 100%;
-  margin-top: 1.125rem;
-}
-
-.home-intro h2 {
-  margin: 0;
-  font-size: 2rem;
-  font-weight: 390;
-  line-height: 1.2;
-}
-
-.home-intro h2 strong {
-  font-weight: 720;
-}
-
 .button {
   display: inline-flex;
   align-items: center;
@@ -340,7 +173,7 @@ img {
 
 .index-eyebrow,
 .index-entry__meta {
-  font-family: var(--font-mono-site);
+  @apply font-mono;
   font-size: 0.75rem;
   font-weight: 650;
   letter-spacing: 0.07em;
@@ -440,7 +273,7 @@ img {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 0.875rem;
-  font-family: var(--font-mono-site);
+  @apply font-mono;
   font-size: 0.75rem;
   letter-spacing: 0.0625rem;
   line-height: 0.875rem;
@@ -454,7 +287,7 @@ img {
 .entry-header h1 {
   max-width: 16ch;
   margin: 0 0 0.75rem;
-  font-family: var(--font-display);
+  @apply font-display;
   font-size: 2.375rem;
   font-weight: 500;
   letter-spacing: -0.02em;
@@ -464,7 +297,7 @@ img {
 
 .entry-header time {
   display: block;
-  font-family: var(--font-display);
+  @apply font-display;
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1rem;
@@ -512,7 +345,7 @@ img {
   width: 100%;
   max-width: 36rem;
   color: var(--stone-800);
-  font-family: var(--font-sans-site);
+  @apply font-sans;
   font-size: 1rem;
   line-height: 1.56;
 }
@@ -547,7 +380,7 @@ img {
 }
 
 .prose :is(code, kbd, samp, pre) {
-  font-family: var(--font-mono-site);
+  @apply font-mono;
 }
 
 .prose code:not(pre code) {
@@ -665,7 +498,7 @@ img {
 }
 
 .post-navigation strong {
-  font-family: var(--font-display);
+  @apply font-display;
   font-size: 1.35rem;
   font-weight: 500;
   line-height: 1.05;
@@ -762,13 +595,6 @@ img {
   .mobile-navigation a {
     display: block;
     padding: 0.5rem;
-  }
-
-  .home-intro__copy {
-    align-self: flex-start;
-    width: 20rem;
-    max-width: calc(100% - 3rem);
-    margin-left: 1.5rem;
   }
 
   .site-footer p {

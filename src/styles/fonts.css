@@ -1,0 +1,47 @@
+@font-face {
+  font-family: "Die Grotesk";
+  src: url("https://fonts.demaree.me/demaree-dot-me/die-grotesk-vf-roman.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Die Grotesk";
+  src: url("https://fonts.demaree.me/demaree-dot-me/die-grotesk-vf-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Gorton Perfected";
+  src: url("https://fonts.demaree.me/demaree-dot-me/GortonPerfectedVF.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Berkeley Mono";
+  src: url("https://fonts.demaree.me/demaree-dot-me/Berkeley%20Mono%20Variable.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'gt-maru-vf';
+  src: url("https://fonts.demaree.me/demaree-dot-me/GT-Maru-VF.woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'gt-maru-mono-vf';
+  src: url("https://fonts.demaree.me/demaree-dot-me/GT-Maru-Mono-VF.woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}

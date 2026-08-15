@@ -1,15 +1,16 @@
 ---
 const path = Astro.url.pathname;
-const isBlog = path === '/blog/' || path.startsWith('/p/');
+const isBlog = path === "/blog/" || path.startsWith("/p/");
 ---
 
+<a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="site-header__inner">
     <a class="brand" href="/" aria-label="David Demaree">
       <img src="/images/site/dd-mark.svg" alt="" width="502" height="386" />
     </a>
 
-    <nav class="desktop-navigation" aria-label="Main menu">
+    <nav class="hidden" aria-label="Main menu">
       <a href="https://demaree.me/about/">About David</a>
       <a href="https://demaree.me/topics/tech-thoughts/">Tech Thoughts</a>
       <a class:list={{ current: isBlog }} href="/blog/">All posts</a>
@@ -17,7 +18,12 @@ const isBlog = path === '/blog/' || path.startsWith('/p/');
 
     <details class="mobile-navigation">
       <summary aria-label="Open navigation">
-        <img src="/images/site/bars-staggered.svg" alt="" width="56" height="48" />
+        <img
+          src="/images/site/bars-staggered.svg"
+          alt=""
+          width="56"
+          height="48"
+        />
       </summary>
       <nav aria-label="Mobile menu">
         <a href="https://demaree.me/about/">About David</a>
@@ -27,3 +33,97 @@ const isBlog = path === '/blog/' || path.startsWith('/p/');
     </details>
   </div>
 </header>
+
+<style is:global>
+  @reference '@/styles/theme.css';
+
+  :root {
+    --header-height: 4.0625rem;
+  }
+
+  .skip-link {
+    position: fixed;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 20;
+    transform: translateY(-200%);
+    padding: 0.5rem 0.75rem;
+    background: white;
+  }
+
+  .skip-link:focus {
+    transform: none;
+  }
+
+  .site-header {
+    position: relative;
+    z-index: 5;
+    height: var(--header-height);
+    padding-inline: 1.5rem;
+    border-top: 0.5rem solid var(--subsurface);
+    border-bottom: 1px solid #d4d4d8;
+    background: var(--header);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    height: 3.5rem;
+  }
+
+  .brand {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    width: 4.5rem;
+    height: 4.5rem;
+    align-items: center;
+    justify-content: center;
+    background: var(--red);
+    transition: background-color 160ms ease;
+  }
+
+  .brand:hover {
+    background: #b91c1c;
+  }
+
+  .brand img {
+    width: 75.5%;
+    filter: invert(1);
+    transition: transform 160ms ease;
+  }
+
+  .brand:hover img {
+    transform: scale(1.08);
+  }
+
+  .desktop-navigation {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 3.5rem;
+    margin-left: auto;
+  }
+
+  .desktop-navigation a,
+  .mobile-navigation a {
+    padding: 0.25rem 0.5rem;
+    color: #52525b;
+    @apply font-mono;
+    font-size: 0.875rem;
+    font-weight: 650;
+    text-transform: uppercase;
+  }
+
+  .desktop-navigation a.current,
+  .mobile-navigation a.current {
+    background: white;
+    color: #241c25;
+  }
+
+  .mobile-navigation {
+    display: none;
+    margin-left: auto;
+  }
+</style>
