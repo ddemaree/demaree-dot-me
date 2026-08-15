@@ -56,7 +56,7 @@ is no remote Keystatic storage or authentication configured.
 | `pnpm check` | Run Astro and TypeScript diagnostics |
 | `pnpm build` | Create the production build in `dist/` and Vercel output in `.vercel/output/` |
 | `pnpm preview` | Preview the production build locally |
-| `pnpm import:wordpress` | Import the three posts selected in `scripts/import-wordpress.mjs` |
+| `pnpm import:wordpress` | Import published WordPress posts that are not already in `src/content/posts` |
 | `pnpm astro --help` | Show Astro CLI help |
 
 There is currently no separate test or lint command. Run both `pnpm check` and
@@ -95,11 +95,16 @@ Posts live in `src/content/posts` as `.mdoc` files. Their schema is defined in
 `src/content.config.ts` and mirrored in `keystatic.config.ts`. Drafts are
 excluded from both the blog index and generated post routes.
 
-Each post requires a title, description, publication date, and featured image.
-Post images belong under `src/assets/images/posts/<slug>/` and are referenced
-through the `@assets/*` TypeScript alias.
+Each post requires a title, description, and publication date. Featured images
+are optional because most WordPress posts do not have one. Post images belong
+under `src/assets/images/posts/<slug>/` and are referenced through the
+`@assets/*` TypeScript alias.
 
-The WordPress importer fetches a hard-coded set of legacy posts and downloads
-their images. It refuses to replace existing post files by default. Passing
-`--force` (for example, `pnpm import:wordpress -- --force`) can overwrite local
-content, so use it only when intentionally refreshing those imports.
+WordPress post formats (`standard`, `aside`, `link`), ACF subtitles, and
+link-format `link_url` values are stored in front matter so that metadata is
+not dropped during import.
+
+The WordPress importer fetches every published post and downloads local copies
+of their images. Existing post files are skipped by default. Passing `--force`
+(for example, `pnpm import:wordpress -- --force`) can overwrite local content,
+so use it only when intentionally refreshing those imports.

@@ -46,7 +46,15 @@ const publishedAtFor = (date: Date) =>
           <a href="/">Home</a><span aria-hidden="true">/</span><a href="/blog/">Blog</a>
         </nav>
         <h1>{post.data.title}</h1>
+        {post.data.subtitle && <p class="entry-subtitle">{post.data.subtitle}</p>}
         <time datetime={post.data.publishedAt.toISOString()}>{publishedAt}</time>
+        {post.data.linkUrl && (
+          <p class="entry-external-link">
+            <a href={post.data.linkUrl} rel="noopener noreferrer">
+              View original link
+            </a>
+          </p>
+        )}
       </header>
 
       <div class="entry-layout">
