@@ -218,17 +218,23 @@ async function importPost(post) {
     const featuredRemoteUrl = matchingInlineSource ?? featuredRemote.source_url;
     const featuredExtension = imageExtension(featuredRemoteUrl);
     featuredFilename = `featuredImage.${featuredExtension}`;
-    await mkdir(postImageDirectory, { recursive: true });
-    await downloadImage(
-      featuredRemoteUrl,
-      path.join(postImageDirectory, featuredFilename),
-    );
-    assetPaths.set(
-      featuredIdentity,
-      `@assets/images/posts/${slug}/${featuredFilename}`,
-    );
-    featuredImageAlt =
-      featuredImageAltOverrides[slug] ?? featuredRemote.alt_text?.trim() ?? '';
+    try {
+      await mkdir(postImageDirectory, { recursive: true });
+      await downloadImage(
+        featuredRemoteUrl,
+        path.join(postImageDirectory, featuredFilename),
+      );
+      assetPaths.set(
+        featuredIdentity,
+        `@assets/images/posts/${slug}/${featuredFilename}`,
+      );
+      featuredImageAlt =
+        featuredImageAltOverrides[slug] ?? featuredRemote.alt_text?.trim() ?? '';
+    } catch (error) {
+      console.warn(`Skipping featured image for ${slug}: ${error.message}`);
+      featuredIdentity = undefined;
+      featuredFilename = undefined;
+    }
   }
 
   for (const source of sources) {

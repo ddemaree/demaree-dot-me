@@ -1,0 +1,102 @@
+---
+title: "Claude’s Walled Garden"
+description: "Subscribers to Anthropic’s Claude subscription plans all received an email this morning, explaining some changes to how usage is metered and billed when third-party apps and scripts interact with Claude Code, which I’m quoting here almost in its entirety. Bolds/emphasis are mine. Starting June 15, Pro plan subscribers can claim a $20 monthly credit for […]"
+publishedAt: "2026-05-14T12:17"
+updatedAt: "2026-05-14T12:17"
+draft: false
+tags: []
+format: "standard"
+wordpressId: 6815
+sourceUrl: "https://demaree.me/p/claudes-walled-garden/"
+---
+
+Subscribers to Anthropic’s Claude subscription plans all received an email this morning, explaining some changes to how usage is metered and billed when third-party apps and scripts interact with Claude Code, which I’m quoting here almost in its entirety. Bolds/emphasis are mine.
+
+> Starting June 15, Pro plan subscribers can claim a $20 monthly credit for using the Claude Agent SDK and `claude -p`, including third-party tools built on the Agent SDK.
+> 
+> As part of this change, Agent SDK and other programmatic usage will run on this credit, and will not impact your subscription limits. This includes third-party applications built on the Agent SDK. If you use your full Agent SDK credit in a given month, continued use will draw from extra usage, which can be manually enabled and disabled.
+> 
+> **Your subscription usage limits don’t change. They stay reserved for interactive usage of Claude Code, Claude Cowork, and chat.**
+> 
+> **What you need to do**: You will receive another notice from us with the ability to redeem your monthly credit in June. No other action is needed at this time.
+> 
+> **Why we’re making this change:** We heard from users that the rules around Agent SDK and third-party app usage on subscription plans were unclear. This change clarifies the policy, giving the Agent SDK its own predictable budget while keeping subscription limits reserved for interactive Claude use.
+
+For those who may not be even a little AI-pilled: Claude is Anthropic’s competitor to OpenAI’s ChatGPT. In addition to Claude’s models becoming the backend of choice for a number of AI products like Lovable or Replit, more and more users have adopted Claude’s desktop and mobile apps, and *tons* of develoeprs use their terminal-based coding agent, Claude Code. Claude Code has proven wildly popular even among non-coders, such that this year Anthropic rolled out Claude Cowork, which (like Code) can work with files on your computer, but with a graphical interface that’s more friendly to normies.
+
+Claude model usage, like all AI models, is kind of expensive if you’re paying for it directly. On LinkedIn and X one sees a lot of anecdotes about startups paying five- or six-figure bills to Anthropic *each month* for their teams’ AI token usage. This is usually for the *programmatic* use mentioned in the email, where a team will have built their own infrastructure, or *harness*, to automate coding or testing using Claude AI models.
+
+For individuals, Claude subscriptions have been an amazing deal — the Claude Code/Cowork usage limits for a $200/mo Max user are around 5x higher than if you paid for $200 worth of tokens. Put another way, subscribers have been getting an 80% discount on their AI use, which leads a lot of people to use Claude more and more and more, because it feels cheap and easy.
+
+Both OpenAI and Anthropic’s key marketing strategy is to make something expensive (frontier-model AI usage) feel cheap or even free. For businesses, the idea is to set it up so their whole teams will freely use AI while the company pays the bills — even to the point of ‘*tokenmaxxing*‘, where teams whose leaders have incentivized using AI *more* as opposed to *better* or *more effectively*, will just find any excuse to burn tokens to demonstrate AI adoption and not get fired.
+
+For individuals, it’s the same, classic ‘free for now’ business model that powered free ISPs and free Kozmo.com delivery in the ’90s, free music streaming in the 2010s, etc — having VC money heavily subsidize consumers’ usage so they’ll use it more, get hooked, and be ‘monetizable’ later on whenever the market decides making money is important again.
+
+## Framing a 5X price increase as ‘clarity’
+
+Given all of the above, here’s what that email is saying:
+
+Up to now, there have been a few ‘side doors’ through which apps or scripts could use your Claude subscription’s usage pool — with the 80% discount — to talk to Claude models without going through the Claude app or Claude Code terminal UI (TUI).
+
+Like a lot of toxic people, who take disagreement or pushback as a sign that they just didn’t explain themselves well enough, Anthropic’s announcement tries to frame this as a customer benefit. The old model (subscribers can do whatever) was “unclear,” and this new one is “clearer” and more predictable. Of course, what made the old model ‘unclear’ or ‘unpredictable’ was that customers wanted things a certain way, Anthropic was okay with it for a while until it threatened revenue/growth, and then they stopped being okay with it. The uncertainty is coming from inside the house.
+
+Anthropic already closed one such side door earlier this year: a popular open-source coding harness, OpenCode, launched with support for Claude Code (as well as competing models/agents like OpenAI’s Codex and Google’s Gemini), but [has since been blocked](https://thenewstack.io/anthropic-claudecode-opencode-split/) (and [Anthropic has also taken legal action](https://github.com/anomalyco/opencode/pull/18186)). Now, if you want to use Claude models with OpenCode, you have to use an API key and pay full price for usage.
+
+Some other third-party tools like [Conductor](https://www.conductor.build/) have still been able to use subscription limits via the Agent SDK; per [this longer tweet-thread version](https://x.com/ClaudeDevs/status/2054610152817619388?s=20) of the same email announcement, starting June 15, this will still work but will be billed at the higher rates.
+
+Here’s the really insidious part: *the ‘credit’ included in subscription plans isn’t automatic*. It’s not like “your first $200 of third-party usage is free, we block you after that unless you enable billing,” as with other hybrid subscription/usage-based services like Vercel. If you don’t activate your credit, you don’t get it, and if you have billing enabled you’ll just get charged?
+
+## What’s the point of all this?
+
+[Anthropic is not a profitable company](https://www.theatlantic.com/economy/2026/05/ai-bubble-revenue-anthropic/687022/), though their revenues are now in the billions and growing fast. Like other AI companies they’re aggressively seeking new cash infusions from investors, including ostensible competitors like Google. But they also need to generate a ton of cash from customers, because even at an insane $1 trillion+ valuation, all the VC money in the world is not enough to pay for AI expansion.
+
+A lot of their ability to generate cash hinges on getting people to pay full freight for frontier-model usage. Enterprises who use Claude APIs make up the majority of Anthropic’s revenue, even with bulk discounts and other subsidies.
+
+With Claude apps and the Claude Code harness, Anthropic is trading some revenue potential to get customer loyalty and, frankly, lock-in. You can use Claude models for all your work at an 80% discount *if* you use Claude’s apps, which gives Anthropic a future wedge to sell other services, serve ads, sell data, or whatever else they may do to make money.
+
+Even in the short term, tying heavily subsidized usage to their own apps gives them something investors love just as much as massive enterprise money: annual recurring revenue and customer retention. As long as people see Claude as the best, most reliable, most productive AI toolkit, and Claude apps are known to be the best value, Anthropic’s subscriber growth and retention numbers will continue to look fabulous, which in turn will help keep the VC flywheel spinning.
+
+## Everything is free (unless it’s not)
+
+Now, if you’re used to using Claude Code in the app or TUI — the normal, officially supported way — nothing will change for you and this announcement is a no-op. Most of my Claude Coding is in the TUI; I have muscle memory around `claude .`, `/compact`, `/commit`, etc. That workflow can keep on keeping on.
+
+However, if you currently use any other interface to work with Claude Code — or even would like the option to try other things, just as you can try other IDEs or Git clients — things are gonna get more expensive and annoying.
+
+Anthropic hasn’t said they’re aiming for vendor lock-in, but they haven’t been supportive of emerging industry standards for AI interop either. Claude Code introduced the pattern of a `CLAUDE.md` file and `.claude/skills` directory to extend and tailor how the agent works with your codebase. Since then, other harnesses have adopted a more generalized `AGENTS.md` and `.agents/skills`, as opposed to having to litter your code with separate `.codex` or `.gemini` folders and files.
+
+Only one AI coding harness has refused to adopt the new, generic file naming: Claude. This has led to perversities like symlinking all your skills and instructions so they’re available both as `.claude` and `.agents`. It wouldn’t shock me if, before long, Claude Code starts refusing to read symlinks, so that the “real” files in your repo are always Claude’s, and everyone else has to live in Claude’s world.
+
+This month I’ve been spending more time with OpenAI’s Codex app. Codex was the original AI coding model, powering the first versions of GitHub Copilot, and OpenAI has been steadily working to improve it to catch up with Anthropic, which took the coding-model crown in 2024 and has held it ever since. While ChatGPT has been the leading AI chatbot since its launch, Codex is the upstart against Claude Code, and OpenAI has both offered super-generous plan limits and better, slicker apps and integrations to compete with Claude Code’s dominant developer experience.
+
+One thing I noticed while working with Codex: if you tell it to commit changes to your Git repo, it does so simply, firing off `git commit -m` with a short-but-descriptive one-line message.
+
+Claude, on the other hand, loves to talk, drafting highly detailed, multi-line commit messages, with itself listed as a co-author of your changes. (It’ll do this even if you’re just asking it to summarize and commit work you did, BTW.)
+
+![](@assets/images/posts/claudes-walled-garden/cleanshot-2026-05-14-at-10-37-49-2x-6816c0c8c.webp)
+
+This ‘habit’ of Claude Code’s seems helpful, but also serves two ulterior motives:
+
+-   **Marketing:** Every commit of yours, especially in public repos, is now a mini-ad for Claude, and also providing metrics showing Claude growth and adoption by tagging Claude-generated commits
+-   **Token usage:** Long messages use more tokens than short ones — if it defaults to helpful but wordy commit messages (just as [it defaults to wordy output in other places](https://www.bitsandletters.com/ideas/on-designing-from-ai-artifacts)), you’ll hit limits faster and need to pay more to keep working. <!-- // pragma: allowlist secret -->
+
+The Codex Mac app — which feels much more Mac-native (or “Mac-assed” as some folks like to say) than Anthropic’s Claude app — also includes some features from more advanced tools, like multiple Git worktrees, a built-in diff viewer and terminal pane, generally doing more for developers at a lower cost with much less lock-in.
+
+Conductor, the agent orchestration app, supports Claude Code (via the Agent SDK, which will now cost extra) but also Codex (using your subscription limits, because OpenAI isn’t trying so hard to protect revenue).
+
+![](@assets/images/posts/claudes-walled-garden/cleanshot-2026-05-14-at-11-19-05-2x-6817ae84b.webp)
+
+I should probably note here that, just as Anthropic’s stinginess and gatekeeping are products of a strategy, so are OpenAI’s apparent generosity and openness. If the roles were reversed, it’s possible OpenAI would be doing all the same things, or different annoying things. Codex being the underdog in coding agents, OpenAI is incentivized to keep things free (or cheap) and easy so as to peel off some converts from Anthropic. And Anthropic cracking down on cheap third-party usage gives OpenAI a great wedge to do exactly that.
+
+I haven’t mentioned at all whether Codex is any good. Until very recently the case was that Claude was decent to good, and other models were different kinds of terrible. As it happens, as of now (May 2026), Codex is now also decent to good, and unlike Claude it tends to be more focused and spend less tokens for comparable tasks. Together with the more polished Mac experience, the Codex app is well worth checking out if you’re into the AI coding thing at all. (And if you prefer TUIs, just as Codex plays nicely with Conductor it also works well in OpenCode.)
+
+## If you’re not paying (much), you’re the product
+
+To sum up, 👆 exactly this. The creepiest, riskiest thing about the AI ‘revolution’ is how much it centralizes control of potentially *all* software processes in a couple of humongous model companies, one of whom is now flexing its control over not just how agentic work is done behind the scenes, but the interfaces we use to talk to agents.
+
+A lot of folks I know have decided this is why to avoid AI altogether. That’s a perfectly valid choice, and though I’m not one to promote the hair-on-fire-urgent AI FOMO that AI companies and backers do, there is *just* enough good and interesting about AI that it’s worth experimenting with.
+
+Other folks I know are much more deeply pro-AI, but what excites them is the potential to create new kinds of workflows that aren’t limited to a single app or harness. These are the folks that promoted Model Context Protocol (MCP), and are now pushing skills as a common format for teaching robots to do things. Very few AI boosters would be that excited about an AI platform that was 100% dictated by a single company — a lot of these guys are *Linux users*, for heaven’s sake.
+
+The internet, the web, and most of the world-scale platforms we take for granted came to be the way they are because they were designed for interoperability. Word docs became the *lingua franca* for word processing because, yeah, Microsoft spent decades making Word the industry leader. But they *also* support a global `docx` ecosystem, because if you had to pay Microsoft a license fee or subscription to share your manuscript with your printer, someone else would invent a cheaper format.
+
+Anthropic, more than other AI players, seems to be trying to create App Store-like dominance and lock-in. We’ll see how it works out for them in the long term. In the short term, it’s annoying and I’m gonna be spending a lot more time in their competitors.
