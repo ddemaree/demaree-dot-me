@@ -53,10 +53,29 @@ export default config({
           label: 'Tags',
           itemLabel: ({ value }) => value || 'Untitled tag',
         }),
+        format: fields.select({
+          label: 'Format',
+          description: 'WordPress post format. Link posts store an external URL.',
+          options: [
+            { label: 'Standard', value: 'standard' },
+            { label: 'Aside', value: 'aside' },
+            { label: 'Link', value: 'link' },
+          ],
+          defaultValue: 'standard',
+        }),
+        subtitle: fields.text({
+          label: 'Subtitle',
+          description: 'Optional dek shown below the title.',
+        }),
+        linkUrl: fields.url({
+          label: 'External link URL',
+          description: 'Required for link-format posts; the original linked article.',
+          validation: { isRequired: false },
+        }),
         featuredImage: fields.image({
           label: 'Featured image',
           ...postImages,
-          validation: { isRequired: true },
+          validation: { isRequired: false },
         }),
         featuredImageAlt: fields.text({
           label: 'Featured image alt text',

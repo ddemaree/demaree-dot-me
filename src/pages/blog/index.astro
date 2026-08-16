@@ -22,7 +22,12 @@ const formatDate = (date: Date) =>
 
     <section class="post-index" aria-label="All posts">
       {posts.map((post) => {
-        const category = post.data.tags[0] ?? 'Uncategorized';
+        const category =
+          post.data.format === 'link'
+            ? 'Link'
+            : post.data.format === 'aside'
+              ? 'Aside'
+              : (post.data.tags[0] ?? 'Uncategorized');
 
         return (
           <article class="index-entry">

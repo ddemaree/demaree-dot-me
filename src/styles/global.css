@@ -295,6 +295,14 @@ img {
   text-wrap: balance;
 }
 
+.entry-subtitle {
+  max-width: 36ch;
+  margin: 0 0 0.75rem;
+  color: var(--stone-600);
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
+
 .entry-header time {
   display: block;
   @apply font-display;
@@ -302,6 +310,12 @@ img {
   font-weight: 500;
   line-height: 1rem;
   text-transform: uppercase;
+}
+
+.entry-external-link {
+  margin: 0.75rem 0 0;
+  font-size: 0.9375rem;
+  font-weight: 630;
 }
 
 .entry-layout {
