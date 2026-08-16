@@ -1,0 +1,38 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedPosts, getTopics, postTopicId } from '../../lib/taxonomy';
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');
+
+const [topics, posts] = await Promise.all([getTopics(), getPublishedPosts()]);
+const counts = new Map<string, number>();
+for (const post of posts) {
+  const id = postTopicId(post);
+  counts.set(id, (counts.get(id) ?? 0) + 1);
+}
+---
+
+<BaseLayout
+  title="Topics — David Demaree"
+  description="Mini-blogs and other collections of writing by David Demaree."
+>
+  <main id="main" class="index-shell">
+    <header class="index-header">
+      <p class="index-eyebrow">Index</p>
+      <h1>Topics</h1>
+      <p class="index-lede">A few curated collections, including mini-blogs that live in the site navigation.</p>
+    </header>
+
+    <section class="taxonomy-index" aria-label="Topics">
+      {topics.map((topic) => (
+        <article class="taxonomy-card">
+          <h2><a href={`/topics/${topic.id}/`}>{topic.data.title}</a></h2>
+          <p>{topic.data.description}</p>
+          <p class="taxonomy-card__meta">{counts.get(topic.id) ?? 0} posts</p>
+        </article>
+      ))}
+    </section>
+  </main>
+</BaseLayout>

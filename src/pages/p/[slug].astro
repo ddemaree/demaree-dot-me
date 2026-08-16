@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import sidebarImage from '../../assets/images/site/bits-and-letters.png';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDate, getTopic, postTopicId, slugifyTag } from '../../lib/taxonomy';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
@@ -27,15 +28,9 @@ interface Props {
 
 const { post, newerPost, olderPost } = Astro.props;
 const { Content } = await render(post);
-const publishedAt = new Intl.DateTimeFormat('en-US', {
-  dateStyle: 'long',
-  timeZone: 'America/New_York',
-}).format(post.data.publishedAt);
-const publishedAtFor = (date: Date) =>
-  new Intl.DateTimeFormat('en-US', {
-    dateStyle: 'long',
-    timeZone: 'America/New_York',
-  }).format(date);
+const publishedAt = formatDate(post.data.publishedAt);
+const topic = await getTopic(postTopicId(post));
+const tags = post.data.tags.map((tag) => ({ tag, slug: slugifyTag(tag) }));
 ---
 
 <BaseLayout title={`${post.data.title} — David Demaree`} description={post.data.description}>
@@ -43,7 +38,15 @@ const publishedAtFor = (date: Date) =>
     <article>
       <header class="entry-header">
         <nav class="entry-breadcrumb" aria-label="Breadcrumb">
-          <a href="/">Home</a><span aria-hidden="true">/</span><a href="/blog/">Blog</a>
+          <a href="/">Home</a>
+          <span aria-hidden="true">/</span>
+          <a href="/blog/">Blog</a>
+          {topic && (
+            <>
+              <span aria-hidden="true">/</span>
+              <a href={`/topics/${topic.id}/`}>{topic.data.title}</a>
+            </>
+          )}
         </nav>
         <h1>{post.data.title}</h1>
         {post.data.subtitle && <p class="entry-subtitle">{post.data.subtitle}</p>}
@@ -63,12 +66,26 @@ const publishedAtFor = (date: Date) =>
             <Content />
           </div>
 
-          {post.data.tags.length > 0 && (
+          {(topic || tags.length > 0) && (
             <footer class="article-taxonomies">
-              <span>Tagged</span>
-              <ul aria-label="Tags">
-                {post.data.tags.map((tag) => <li>{tag}</li>)}
-              </ul>
+              {topic && (
+                <div class="article-taxonomies__row">
+                  <span>Filed in</span>
+                  <a href={`/topics/${topic.id}/`}>{topic.data.title}</a>
+                </div>
+              )}
+              {tags.length > 0 && (
+                <div class="article-taxonomies__row">
+                  <span>Tagged</span>
+                  <ul aria-label="Tags">
+                    {tags.map(({ tag, slug }) => (
+                      <li>
+                        <a href={`/labels/${slug}/`}>{tag}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </footer>
           )}
         </div>
@@ -89,14 +106,14 @@ const publishedAtFor = (date: Date) =>
             <a href={`/p/${olderPost.id}/`}>
               <span class="post-navigation__label">← Previous post</span>
               <strong>{olderPost.data.title}</strong>
-              <time>{publishedAtFor(olderPost.data.publishedAt)}</time>
+              <time>{formatDate(olderPost.data.publishedAt)}</time>
             </a>
           )}
           {newerPost && (
             <a class="post-navigation__next" href={`/p/${newerPost.id}/`}>
               <span class="post-navigation__label">Next post →</span>
               <strong>{newerPost.data.title}</strong>
-              <time>{publishedAtFor(newerPost.data.publishedAt)}</time>
+              <time>{formatDate(newerPost.data.publishedAt)}</time>
             </a>
           )}
         </nav>

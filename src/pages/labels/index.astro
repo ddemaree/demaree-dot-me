@@ -1,0 +1,34 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getTagIndex } from '../../lib/taxonomy';
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');
+
+const tags = await getTagIndex();
+---
+
+<BaseLayout
+  title="Tags — David Demaree"
+  description="Browse writing by David Demaree by tag."
+>
+  <main id="main" class="index-shell">
+    <header class="index-header">
+      <p class="index-eyebrow">Index</p>
+      <h1>Tags</h1>
+      <p class="index-lede">On-demand archives for every label used on a published post.</p>
+    </header>
+
+    <ul class="tag-index" aria-label="Tags">
+      {tags.map((entry) => (
+        <li>
+          <a href={`/labels/${entry.slug}/`}>
+            <span>{entry.tag}</span>
+            <span class="tag-index__count">{entry.count}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </main>
+</BaseLayout>

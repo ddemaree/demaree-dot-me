@@ -1,6 +1,19 @@
-import { defineCollection } from 'astro:content';
+import { defineCollection, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+
+const topics = defineCollection({
+  loader: glob({
+    base: './src/content/topics',
+    pattern: '**/*.{yaml,yml}',
+  }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    inNav: z.boolean().default(false),
+    navOrder: z.number().int().default(0),
+  }),
+});
 
 const posts = defineCollection({
   loader: glob({
@@ -14,6 +27,7 @@ const posts = defineCollection({
       publishedAt: z.coerce.date(),
       updatedAt: z.coerce.date().optional(),
       draft: z.boolean().default(false),
+      topic: reference('topics').optional(),
       tags: z.array(z.string()).default([]),
       format: z.enum(['standard', 'aside', 'link']).default('standard'),
       subtitle: z.string().optional(),
@@ -25,4 +39,4 @@ const posts = defineCollection({
     }),
 });
 
-export const collections = { posts };
+export const collections = { posts, topics };

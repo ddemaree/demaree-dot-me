@@ -2,7 +2,8 @@
 
 This repository is the in-progress Astro rebuild of `demaree.me`. The current
 site is mostly static: Astro prerenders the home page, blog index, and published
-post pages, while the Vercel adapter packages the Keystatic server endpoints.
+post pages. Topic and tag archives render on demand. The Vercel adapter also
+packages the Keystatic server endpoints.
 
 ## Toolchain
 
@@ -41,7 +42,10 @@ permission needed to bind that listener rather than changing project code.
 ## Architecture and conventions
 
 - `src/pages/` owns file-based routes. The implemented public routes are `/`,
-  `/blog/`, and `/p/[slug]/`.
+ `/blog/`, `/p/[slug]/`, `/topics/`, `/topics/[slug]/`, `/labels/`, and
+ `/labels/[slug]/`.
+- Topic and tag archives are rendered on demand (`prerender = false`) so the
+ build does not generate a static page for every label.
 - `src/layouts/BaseLayout.astro` owns the document shell and shared site chrome.
 - `src/components/` contains shared Astro components. React is installed and
   integrated, but the current pages do not use React components.
@@ -60,7 +64,8 @@ permission needed to bind that listener rather than changing project code.
 
 - Posts are Markdoc files in `src/content/posts/`.
 - Keep `src/content.config.ts` and `keystatic.config.ts` aligned when changing
-  post fields, validation, or asset paths.
+ post fields, validation, or asset paths. Topic documents live in
+ `src/content/topics/` and must stay aligned as well.
 - Keystatic uses local storage. Editing at `/keystatic` changes repository files
   directly; it has no remote storage or authentication configuration.
 - Both the blog index and `getStaticPaths()` explicitly exclude posts whose

@@ -15,6 +15,38 @@ export default config({
     },
   },
   collections: {
+    topics: collection({
+      label: 'Topics',
+      path: 'src/content/topics/*',
+      slugField: 'title',
+      format: { data: 'yaml' },
+      previewUrl: '/topics/{slug}/',
+      columns: ['title', 'inNav'],
+      schema: {
+        title: fields.slug({
+          name: { label: 'Title' },
+          slug: {
+            label: 'URL slug',
+            description: 'Used in /topics/{slug}/ and when assigning a post to this mini-blog.',
+          },
+        }),
+        description: fields.text({
+          label: 'Description',
+          multiline: true,
+          description: 'Shown on the topic archive and used in page metadata.',
+        }),
+        inNav: fields.checkbox({
+          label: 'Show in main navigation',
+          defaultValue: false,
+          description: 'Featured topics appear in the header as mini-blogs.',
+        }),
+        navOrder: fields.integer({
+          label: 'Navigation order',
+          defaultValue: 0,
+          description: 'Lower numbers appear first among featured topics.',
+        }),
+      },
+    }),
     posts: collection({
       label: 'Posts',
       path: 'src/content/posts/*',
@@ -22,7 +54,7 @@ export default config({
       entryLayout: 'content',
       format: { contentField: 'content' },
       previewUrl: '/p/{slug}',
-      columns: ['title', 'publishedAt', 'draft'],
+      columns: ['title', 'publishedAt', 'topic', 'draft'],
       schema: {
         title: fields.slug({
           name: { label: 'Title' },
@@ -49,8 +81,16 @@ export default config({
           defaultValue: true,
           description: 'Draft posts are excluded from the public static build.',
         }),
+        topic: fields.relationship({
+          label: 'Topic',
+          description:
+            'Which mini-blog this post belongs to. Create and edit topics in the Topics collection.',
+          collection: 'topics',
+        }),
         tags: fields.array(fields.text({ label: 'Tag' }), {
           label: 'Tags',
+          description:
+            'Freeform labels. Each tag gets an on-demand archive at /labels/{slug}/.',
           itemLabel: ({ value }) => value || 'Untitled tag',
         }),
         format: fields.select({
