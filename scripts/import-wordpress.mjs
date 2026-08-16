@@ -317,7 +317,6 @@ async function importPost(post) {
     title,
     description,
     tags: importedTags,
-    format,
   });
   const acf = acfFields(post);
   const featuredImage = featuredFilename

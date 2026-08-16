@@ -41,7 +41,9 @@ export async function getTopic(slug: string) {
 }
 
 export function postTopicId(post: PostEntry) {
-  return post.data.topic ?? 'notebook';
+  const topic = post.data.topic;
+  if (!topic) return 'notebook';
+  return typeof topic === 'string' ? topic : topic.id;
 }
 
 export async function getPostsByTopic(slug: string) {

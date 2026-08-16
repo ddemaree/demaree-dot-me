@@ -70,7 +70,6 @@ for (const filename of files) {
     title: parseField(frontmatter, 'title'),
     description: parseField(frontmatter, 'description'),
     tags: parseList(frontmatter, 'tags'),
-    format: parseField(frontmatter, 'format') || 'standard',
   });
 
   let next = replaceTags(frontmatter, classification.tags);

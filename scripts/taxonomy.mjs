@@ -160,7 +160,6 @@ export function classifyEntry({
   title = '',
   description = '',
   tags = [],
-  format = 'standard',
 }) {
   const override = SLUG_OVERRIDES[slug];
   const haystack = `${title} ${description}`;
