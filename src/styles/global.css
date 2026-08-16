@@ -192,6 +192,24 @@ img {
   line-height: 1;
 }
 
+.index-lede {
+  max-width: 46ch;
+  margin: 1rem 0 0;
+  color: var(--stone-600);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.index-lede a {
+  font-weight: 630;
+}
+
+.index-empty {
+  margin: 0;
+  padding-block: 3rem;
+  color: var(--stone-600);
+}
+
 .post-index {
   border-bottom: 1px solid var(--stone-400);
 }
@@ -446,13 +464,20 @@ img {
 .article-taxonomies {
   display: flex;
   max-width: 36rem;
-  flex-wrap: wrap;
-  gap: 0.625rem 0.75rem;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.75rem;
   margin-top: 3.75rem;
 }
 
-.article-taxonomies > span {
+.article-taxonomies__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem 0.75rem;
+  align-items: center;
+  margin: 0;
+}
+
+.article-taxonomies span {
   color: var(--stone-500);
   font-size: 0.75rem;
   font-weight: 600;
@@ -469,7 +494,8 @@ img {
   list-style: none;
 }
 
-.article-taxonomies li {
+.article-taxonomies li,
+.article-taxonomies__row > a {
   padding: 0.25rem 0.5rem;
   border: 1px solid var(--stone-300);
   border-radius: 0.125rem;
@@ -477,6 +503,82 @@ img {
   font-size: 0.8125rem;
   font-weight: 550;
   line-height: 1;
+}
+
+.article-taxonomies a:hover {
+  border-color: var(--stone-500);
+  text-decoration: none;
+}
+
+.taxonomy-index {
+  display: grid;
+  gap: 0;
+  max-width: 56rem;
+  margin-inline: auto;
+  border-bottom: 1px solid var(--stone-400);
+}
+
+.taxonomy-card {
+  padding-block: clamp(2rem, 5vw, 3.5rem);
+  border-top: 1px solid var(--stone-300);
+}
+
+.taxonomy-card:first-child {
+  border-top: 0;
+}
+
+.taxonomy-card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 650;
+  line-height: 1;
+}
+
+.taxonomy-card p {
+  max-width: 48ch;
+  margin: 0;
+  color: var(--stone-700);
+  line-height: 1.5;
+}
+
+.taxonomy-card__meta {
+  margin-top: 0.75rem !important;
+  color: var(--stone-500);
+  @apply font-mono;
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.tag-index {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 2rem 0 4rem;
+  list-style: none;
+}
+
+.tag-index a {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--stone-300);
+  font-weight: 550;
+}
+
+.tag-index a:hover {
+  text-decoration: none;
+  color: var(--red-muted);
+}
+
+.tag-index__count {
+  color: var(--stone-500);
+  @apply font-mono;
+  font-size: 0.75rem;
+  font-weight: 650;
 }
 
 .post-navigation {

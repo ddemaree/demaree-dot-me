@@ -1,6 +1,7 @@
 import { access, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import TurndownService from 'turndown';
+import { classifyEntry } from './taxonomy.mjs';
 
 const siteUrl = 'https://demaree.me';
 const force = process.argv.includes('--force');
@@ -147,6 +148,7 @@ function frontmatter({
   post,
   featuredImage,
   featuredImageAlt,
+  topic,
   tags,
   format,
   subtitle,
@@ -164,6 +166,7 @@ function frontmatter({
   }
 
   fields.push('draft: false');
+  fields.push(`topic: ${yamlString(topic)}`);
   if (tags.length === 0) {
     fields.push('tags: []');
   } else {
@@ -302,10 +305,20 @@ async function importPost(post) {
     .turndown(rewrittenHtml)
     .replace(/\n{3,}/g, '\n\n')
     .trim();
-  const tags = (post._embedded?.['wp:term'] ?? [])
+  const importedTags = (post._embedded?.['wp:term'] ?? [])
     .flat()
     .filter((term) => term.taxonomy === 'post_tag')
     .map((term) => term.name);
+  const title = plainText(post.title.rendered);
+  const description = plainText(post.excerpt.rendered);
+  const format = postFormat(post);
+  const { topic, tags } = classifyEntry({
+    slug,
+    title,
+    description,
+    tags: importedTags,
+    format,
+  });
   const acf = acfFields(post);
   const featuredImage = featuredFilename
     ? `@assets/images/posts/${slug}/${featuredFilename}`
@@ -314,8 +327,9 @@ async function importPost(post) {
     post,
     featuredImage,
     featuredImageAlt,
+    topic,
     tags,
-    format: postFormat(post),
+    format,
     subtitle: typeof acf.subtitle === 'string' ? acf.subtitle.trim() : '',
     linkUrl: typeof acf.link_url === 'string' ? acf.link_url.trim() : '',
   })}\n\n${body}\n`;

@@ -1,0 +1,35 @@
+---
+export const prerender = false;
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostIndex from '../../components/PostIndex.astro';
+import { getPostsByTopic, getTopic, getTopics } from '../../lib/taxonomy';
+
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');
+
+const slug = Astro.params.slug ?? '';
+const topic = await getTopic(slug);
+const topics = await getTopics();
+
+if (!topic) {
+  Astro.response.status = 404;
+}
+
+const posts = topic ? await getPostsByTopic(topic.id) : [];
+const title = topic ? `${topic.data.title} — David Demaree` : 'Topic not found — David Demaree';
+const description = topic?.data.description ?? 'This topic does not exist.';
+---
+
+<BaseLayout title={title} description={description}>
+  <main id="main" class="index-shell">
+    <header class="index-header">
+      <p class="index-eyebrow">
+        <a href="/topics/">Topics</a>
+      </p>
+      <h1>{topic ? topic.data.title : 'Topic not found'}</h1>
+      {topic && <p class="index-lede">{topic.data.description}</p>}
+    </header>
+
+    {topic && <PostIndex posts={posts} topics={topics} label={topic.data.title} />}
+  </main>
+</BaseLayout>

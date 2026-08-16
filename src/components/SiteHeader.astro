@@ -1,6 +1,23 @@
 ---
+import { getNavTopics } from '../lib/taxonomy';
+
 const path = Astro.url.pathname;
-const isBlog = path === "/blog/" || path.startsWith("/p/");
+const navTopics = await getNavTopics();
+const isBlog =
+  path === '/blog/' ||
+  path === '/blog' ||
+  path.startsWith('/p/') ||
+  path.startsWith('/labels/');
+
+const links = [
+  { href: 'https://demaree.me/about/', label: 'About David', current: false },
+  ...navTopics.map((topic) => ({
+    href: `/topics/${topic.id}/`,
+    label: topic.data.title,
+    current: path === `/topics/${topic.id}/` || path === `/topics/${topic.id}`,
+  })),
+  { href: '/blog/', label: 'All posts', current: isBlog },
+];
 ---
 
 <a class="skip-link" href="#main">Skip to content</a>
@@ -10,10 +27,10 @@ const isBlog = path === "/blog/" || path.startsWith("/p/");
       <img src="/images/site/dd-mark.svg" alt="" width="502" height="386" />
     </a>
 
-    <nav class="hidden" aria-label="Main menu">
-      <a href="https://demaree.me/about/">About David</a>
-      <a href="https://demaree.me/topics/tech-thoughts/">Tech Thoughts</a>
-      <a class:list={{ current: isBlog }} href="/blog/">All posts</a>
+    <nav class="desktop-navigation" aria-label="Main menu">
+      {links.map((link) => (
+        <a class:list={{ current: link.current }} href={link.href}>{link.label}</a>
+      ))}
     </nav>
 
     <details class="mobile-navigation">
@@ -26,9 +43,9 @@ const isBlog = path === "/blog/" || path.startsWith("/p/");
         />
       </summary>
       <nav aria-label="Mobile menu">
-        <a href="https://demaree.me/about/">About David</a>
-        <a href="https://demaree.me/topics/tech-thoughts/">Tech Thoughts</a>
-        <a class:list={{ current: isBlog }} href="/blog/">All posts</a>
+        {links.map((link) => (
+          <a class:list={{ current: link.current }} href={link.href}>{link.label}</a>
+        ))}
       </nav>
     </details>
   </div>

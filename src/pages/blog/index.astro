@@ -1,16 +1,9 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostIndex from '../../components/PostIndex.astro';
+import { getPublishedPosts, getTopics } from '../../lib/taxonomy';
 
-const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
-);
-
-const formatDate = (date: Date) =>
-  new Intl.DateTimeFormat('en-US', {
-    dateStyle: 'long',
-    timeZone: 'America/New_York',
-  }).format(date);
+const [posts, topics] = await Promise.all([getPublishedPosts(), getTopics()]);
 ---
 
 <BaseLayout title="All posts — David Demaree" description="Writing by David Demaree.">
@@ -18,31 +11,13 @@ const formatDate = (date: Date) =>
     <header class="index-header">
       <p class="index-eyebrow">Index</p>
       <h1>All posts</h1>
+      <p class="index-lede">
+        <a href="/topics/">Topics</a>
+        <span aria-hidden="true"> · </span>
+        <a href="/labels/">Tags</a>
+      </p>
     </header>
 
-    <section class="post-index" aria-label="All posts">
-      {posts.map((post) => {
-        const category =
-          post.data.format === 'link'
-            ? 'Link'
-            : post.data.format === 'aside'
-              ? 'Aside'
-              : (post.data.tags[0] ?? 'Uncategorized');
-
-        return (
-          <article class="index-entry">
-            <div class="index-entry__meta">
-              <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
-              <span>{category}</span>
-            </div>
-            <div class="index-entry__body">
-              <h2><a href={`/p/${post.id}/`}>{post.data.title}</a></h2>
-              <p>{post.data.description}</p>
-            </div>
-            <a class="index-entry__arrow" href={`/p/${post.id}/`} aria-label={`Read ${post.data.title}`}>→</a>
-          </article>
-        );
-      })}
-    </section>
+    <PostIndex posts={posts} topics={topics} label="All posts" />
   </main>
 </BaseLayout>

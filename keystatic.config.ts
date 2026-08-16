@@ -15,6 +15,37 @@ export default config({
     },
   },
   collections: {
+    topics: collection({
+      label: 'Topics',
+      path: 'src/content/topics/*',
+      slugField: 'title',
+      format: { data: 'yaml' },
+      columns: ['title', 'inNav'],
+      schema: {
+        title: fields.slug({
+          name: { label: 'Title' },
+          slug: {
+            label: 'URL slug',
+            description: 'Used in /topics/{slug}/ and post relationships.',
+          },
+        }),
+        description: fields.text({
+          label: 'Description',
+          multiline: true,
+          description: 'Shown on the topic archive and used in page metadata.',
+        }),
+        inNav: fields.checkbox({
+          label: 'Show in main navigation',
+          defaultValue: false,
+          description: 'Featured topics appear in the header as mini-blogs.',
+        }),
+        navOrder: fields.integer({
+          label: 'Navigation order',
+          defaultValue: 0,
+          description: 'Lower numbers appear first among featured topics.',
+        }),
+      },
+    }),
     posts: collection({
       label: 'Posts',
       path: 'src/content/posts/*',
@@ -22,7 +53,7 @@ export default config({
       entryLayout: 'content',
       format: { contentField: 'content' },
       previewUrl: '/p/{slug}',
-      columns: ['title', 'publishedAt', 'draft'],
+      columns: ['title', 'publishedAt', 'topic', 'draft'],
       schema: {
         title: fields.slug({
           name: { label: 'Title' },
@@ -48,6 +79,11 @@ export default config({
           label: 'Draft',
           defaultValue: true,
           description: 'Draft posts are excluded from the public static build.',
+        }),
+        topic: fields.relationship({
+          label: 'Topic',
+          description: 'The mini-blog this post belongs to.',
+          collection: 'topics',
         }),
         tags: fields.array(fields.text({ label: 'Tag' }), {
           label: 'Tags',
