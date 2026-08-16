@@ -20,13 +20,14 @@ export default config({
       path: 'src/content/topics/*',
       slugField: 'title',
       format: { data: 'yaml' },
+      previewUrl: '/topics/{slug}/',
       columns: ['title', 'inNav'],
       schema: {
         title: fields.slug({
           name: { label: 'Title' },
           slug: {
             label: 'URL slug',
-            description: 'Used in /topics/{slug}/ and post relationships.',
+            description: 'Used in /topics/{slug}/ and when assigning a post to this mini-blog.',
           },
         }),
         description: fields.text({
@@ -82,11 +83,14 @@ export default config({
         }),
         topic: fields.relationship({
           label: 'Topic',
-          description: 'The mini-blog this post belongs to.',
+          description:
+            'Which mini-blog this post belongs to. Create and edit topics in the Topics collection.',
           collection: 'topics',
         }),
         tags: fields.array(fields.text({ label: 'Tag' }), {
           label: 'Tags',
+          description:
+            'Freeform labels. Each tag gets an on-demand archive at /labels/{slug}/.',
           itemLabel: ({ value }) => value || 'Untitled tag',
         }),
         format: fields.select({

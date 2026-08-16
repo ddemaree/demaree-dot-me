@@ -45,8 +45,10 @@ pnpm astro dev stop
 ```
 
 The local Keystatic editor is available at <http://localhost:4321/keystatic>.
-It writes post documents and their images directly to this repository; there
-is no remote Keystatic storage or authentication configured.
+It writes post documents, topic documents, and their images directly to this
+repository; there is no remote Keystatic storage or authentication configured.
+The Topics collection edits mini-blogs (title, description, nav). Each post has
+a Topic relationship and a Tags list.
 
 ## Commands
 
