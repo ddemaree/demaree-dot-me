@@ -1,0 +1,51 @@
+---
+title: "Bazzite is the Linux You Should Use"
+description: "This post is for anyone who, like me, is curious about the whole Linux thing — especially the whole Linux-on-a-Framework-Laptop thing that’s in vogue among programmers — but don’t know where to start, and don’t know your Fedoras from your Arches. This is not meant to be a blanket statement about which Linux distro is […]"
+publishedAt: "2026-05-01T12:43"
+updatedAt: "2026-05-01T13:11"
+draft: false
+tags: []
+format: "standard"
+wordpressId: 6812
+sourceUrl: "https://demaree.me/p/bazzite-is-the-linux-you-should-use/"
+---
+
+This post is for anyone who, like me, is curious about the whole Linux thing — especially [the whole Linux-on-a-Framework-Laptop thing](https://www.reddit.com/r/framework/comments/1m7zawm/dhh_is_really_making_real_the_year_of_linux_and/) that’s in vogue among programmers — but don’t know where to start, and don’t know your Fedoras from your Arches.
+
+This is not meant to be a blanket statement about which Linux distro is the best one; I am not qualified to judge such a thing, and besides, [Reddit already answered this question and it’s apparently OpenSUSE](https://www.reddit.com/r/linuxmemes/comments/1rsoo3l/so_opensuse_won/).
+
+What I can say is that [Bazzite](https://bazzite.gg) — a gaming-focused distro based on Fedora, which many folks know as a way to turn Windows gaming handhelds into something like a [Steam Deck](https://store.steampowered.com/steamdeck) — is an excellent default choice if you expect certain things from a computer, and that some of what makes it so good are kinda buried on their website and in the discourse.
+
+## Out of the box, it’s a Steam Deck
+
+The best thing about the Steam Deck is that Valve has designed its OS so that, like any good video game console, you don’t need to think about its OS. If you care, SteamOS is a Linux distro based on Arch, which runs Steam’s Big Picture Mode by default but can be rebooted into a KDE Plasma desktop. Most people don’t care, and what I just said is gobbledygook. The Steam Deck invites users to let that be gobbledygook and just play games.
+
+Bazzite has different Linux underpinnings, but a similar philosophy — by default it just wants your device to run smoothly. Like SteamOS, Bazzite is an *atomic* system — the OS is sandboxed so you can’t modify system files, which makes software updates and hardware support much simpler and cleaner. Unless you go looking for ways to hack it, Bazzite is gonna Just Work, especially for gaming.
+
+Speaking of gaming: as a gaming-focused distro, it ships with the Steam client app, as well as open-source launchers for other gaming storefronts, and a bunch of retro game emulators. You can set it to boot into Big Picture mode, just like a Steam Deck, or to boot into desktop mode — either way, everything is nice and set up for you to dive in and start gaming right away.
+
+Even if you don’t care about games even a little bit, the fact that the Bazzite maintainers have put work into solid hardware support and a smooth out-of-box experience means less jank if you’re dipping your toes into Linux for the first time.
+
+## Sandboxed, but Flexible
+
+I was under a misconception that, because Bazzite doesn’t let you install random Linux packages with `dnf install thingy`, that meant you couldn’t install `thingy` without jumping through hoops and therefore sandboxing was not gonna work for me.
+
+Here’s one of those details that’s easy to miss beneath the “gamer distro” positioning: while you can’t use Fedora’s package manager, you *can* use Homebrew, which comes preinstalled. Some Homebrew packages are macOS-only (they’ll tell you if you try to `brew install` them), but many support Linux, and because Homebrew saves all its stuff to your home directory on Linux, it works just fine.
+
+For anything that isn’t available on Homebrew, there’s Flatpak — a packaging tool where apps are, like the OS, atomic and sandboxed — and AppImages, the latter being the Linux ecosystem’s answer to the Mac’s self-contained `.app` packages. Google Chrome, 1Password, Discord, and many other apps are available in the App Store-like Flatpak client that comes with Bazzite; others, like Polypane, are distributed as AppImages.
+
+Lastly, some apps like Claude Code, OpenCode, and Zed have Linux installers that are just Bash scripts you’re supposed to copy and paste from their websites, which (like Homebrew) install apps to your home directory. These work just fine on Bazzite as they would on most other distros.
+
+For developer tools, I don’t recall if Bazzite ships with `mise` (a cross-language NVM-type tool) or if I installed it, but it works great. You can also install Docker and any Docker-based tools, and if all else fails, you can mount another Linux distro via distrobox, go hog wild, and if things get messed up you can delete the distrobox and start over without hurting the underlying Bazzite system.
+
+## What can’t Bazzite — or Linux — do?
+
+You’ll have noticed nearly all the software I’ve mentioned are developer tools. Linux is a developer’s playground; if you live in a terminal app and web browser on the Mac, Linux will likely work out just fine for you.
+
+But if you need any industry-standard tools that *aren’t* on the web, you may be better off sticking with macOS, at least for a while. By these, of course I mean the Adobe suite, as well as Affinity, and most photography apps. (Lightroom, yeah, but also Capture One, and you’d be totally missing out on my friends’ Ryan and Naz’s new thing Aphera, which is indie and Mac-only.)
+
+Video and 3D software *is* somewhat available on Linux — Blender is open source and has been on Linux from day one, and DaVinci Resolve is one of the few major creative apps whose Linux build has 100% parity with Windows/Mac. (I think this is because a lot of studios use beefy Linux rendering rigs, and the 3D graphics industry has a long Unix/Linux heritage dating back to the 1990s Silicon Graphics era.)
+
+A few upstart Figma competitors — the two hottest of which are hilariously named Paper and Pencil — either offer Linux builds or work well in a browser, including good support for custom fonts.
+
+Figma, for its part, works fine in a browser, but only supports custom fonts if you (a) run a third-party command line tool that pretends to be Figma’s Windows font-serving helper, and (b) trick the Figma web app into believing it’s on Windows, not Linux. This is too much hassle, and if you spend all day in Figma you should stick to a Mac.

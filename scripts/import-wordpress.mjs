@@ -4,11 +4,7 @@ import TurndownService from 'turndown';
 
 const siteUrl = 'https://demaree.me';
 const force = process.argv.includes('--force');
-const selectedSlugs = [
-  'hey-siri-call-google',
-  'betterdisplay-mac-display-manager',
-  'where-the-web-fonts-go',
-];
+const postFormats = new Set(['standard', 'aside', 'link']);
 
 const featuredImageAltOverrides = {
   'betterdisplay-mac-display-manager': 'BetterDisplay settings window on macOS',
@@ -41,6 +37,27 @@ turndown.addRule('figureCaption', {
     return content.trim() ? `\n\n*${content.trim()}*\n\n` : '';
   },
 });
+turndown.addRule('wpEmbed', {
+  filter(node) {
+    return (
+      node.nodeName === 'FIGURE' &&
+      /\bwp-block-embed\b/.test(node.getAttribute('class') || '')
+    );
+  },
+  replacement(_content, node) {
+    const url = node.textContent.replace(/\s+/g, ' ').trim();
+    return url ? `\n\n${url}\n\n` : '';
+  },
+});
+turndown.addRule('iframe', {
+  filter: 'iframe',
+  replacement(_content, node) {
+    const src = node.getAttribute('src');
+    if (!src) return '';
+    const title = node.getAttribute('title')?.trim() || src;
+    return `\n\n[${title}](${src})\n\n`;
+  },
+});
 
 function plainText(html) {
   return turndown
@@ -58,6 +75,16 @@ function keystaticDatetime(value) {
   const match = value?.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/);
   if (!match) throw new Error(`Invalid WordPress datetime: ${value}`);
   return match[0];
+}
+
+function acfFields(post) {
+  return post.acf && typeof post.acf === 'object' && !Array.isArray(post.acf)
+    ? post.acf
+    : {};
+}
+
+function postFormat(post) {
+  return postFormats.has(post.format) ? post.format : 'standard';
 }
 
 function assetIdentity(rawUrl) {
@@ -116,7 +143,15 @@ async function downloadImage(remoteUrl, outputPath) {
   await writeFile(outputPath, new Uint8Array(await response.arrayBuffer()));
 }
 
-function frontmatter(post, featuredImage, featuredImageAlt, tags) {
+function frontmatter({
+  post,
+  featuredImage,
+  featuredImageAlt,
+  tags,
+  format,
+  subtitle,
+  linkUrl,
+}) {
   const fields = [
     '---',
     `title: ${yamlString(plainText(post.title.rendered))}`,
@@ -135,8 +170,13 @@ function frontmatter(post, featuredImage, featuredImageAlt, tags) {
     fields.push('tags:');
     for (const tag of tags) fields.push(`  - ${yamlString(tag)}`);
   }
-  fields.push(`featuredImage: ${yamlString(featuredImage)}`);
-  fields.push(`featuredImageAlt: ${yamlString(featuredImageAlt)}`);
+  fields.push(`format: ${yamlString(format)}`);
+  if (subtitle) fields.push(`subtitle: ${yamlString(subtitle)}`);
+  if (linkUrl) fields.push(`linkUrl: ${yamlString(linkUrl)}`);
+  if (featuredImage) {
+    fields.push(`featuredImage: ${yamlString(featuredImage)}`);
+    fields.push(`featuredImageAlt: ${yamlString(featuredImageAlt)}`);
+  }
   fields.push(`wordpressId: ${post.id}`);
   fields.push(`sourceUrl: ${yamlString(post.link)}`);
   fields.push('---');
@@ -151,39 +191,51 @@ async function importPost(post) {
   if (!force) {
     try {
       await access(contentPath);
-      throw new Error(
-        `${contentPath} already exists. Rerun with --force only if you intend to replace local edits.`,
-      );
+      return 'skipped';
     } catch (error) {
       if (error.code !== 'ENOENT') throw error;
     }
   }
 
   const postImageDirectory = path.join(imageDirectory, slug);
-  await mkdir(postImageDirectory, { recursive: true });
-
   const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
-  if (!featuredMedia?.source_url) {
-    throw new Error(`${slug} does not have a featured image`);
-  }
+  const featuredRemote =
+    featuredMedia && !featuredMedia.code && featuredMedia.source_url
+      ? featuredMedia
+      : undefined;
 
-  const featuredIdentity = assetIdentity(featuredMedia.source_url);
   const sources = imageSources(post.content.rendered);
-  const matchingInlineSource = sources.find(
-    (source) => assetIdentity(source) === featuredIdentity,
-  );
-  const featuredRemoteUrl = matchingInlineSource ?? featuredMedia.source_url;
-  const featuredExtension = imageExtension(featuredRemoteUrl);
-  const featuredFilename = `featuredImage.${featuredExtension}`;
-  const featuredOutput = path.join(postImageDirectory, featuredFilename);
-  await downloadImage(featuredRemoteUrl, featuredOutput);
+  const assetPaths = new Map();
+  let featuredIdentity;
+  let featuredFilename;
+  let featuredImageAlt = '';
 
-  const assetPaths = new Map([
-    [
-      featuredIdentity,
-      `@assets/images/posts/${slug}/${featuredFilename}`,
-    ],
-  ]);
+  if (featuredRemote) {
+    featuredIdentity = assetIdentity(featuredRemote.source_url);
+    const matchingInlineSource = sources.find(
+      (source) => assetIdentity(source) === featuredIdentity,
+    );
+    const featuredRemoteUrl = matchingInlineSource ?? featuredRemote.source_url;
+    const featuredExtension = imageExtension(featuredRemoteUrl);
+    featuredFilename = `featuredImage.${featuredExtension}`;
+    try {
+      await mkdir(postImageDirectory, { recursive: true });
+      await downloadImage(
+        featuredRemoteUrl,
+        path.join(postImageDirectory, featuredFilename),
+      );
+      assetPaths.set(
+        featuredIdentity,
+        `@assets/images/posts/${slug}/${featuredFilename}`,
+      );
+      featuredImageAlt =
+        featuredImageAltOverrides[slug] ?? featuredRemote.alt_text?.trim() ?? '';
+    } catch (error) {
+      console.warn(`Skipping featured image for ${slug}: ${error.message}`);
+      featuredIdentity = undefined;
+      featuredFilename = undefined;
+    }
+  }
 
   for (const source of sources) {
     const identity = assetIdentity(source);
@@ -191,12 +243,15 @@ async function importPost(post) {
 
     const extension = imageExtension(source);
     const filename = `${imageBasename(source)}.${extension}`;
-    await downloadImage(source, path.join(postImageDirectory, filename));
-    assetPaths.set(identity, `@assets/images/posts/${slug}/${filename}`);
+    await mkdir(postImageDirectory, { recursive: true });
+    try {
+      await downloadImage(source, path.join(postImageDirectory, filename));
+      assetPaths.set(identity, `@assets/images/posts/${slug}/${filename}`);
+    } catch (error) {
+      console.warn(`Keeping remote image for ${slug}: ${error.message}`);
+    }
   }
 
-  const featuredImageAlt =
-    featuredImageAltOverrides[slug] ?? featuredMedia.alt_text?.trim() ?? '';
   const legacyExternalLink = new RegExp(
     `https://demaree\\.me/p/${slug}/(?=(?:www\\.)?[a-z0-9.-]+\\.[a-z]{2,})`,
     'gi',
@@ -251,38 +306,77 @@ async function importPost(post) {
     .flat()
     .filter((term) => term.taxonomy === 'post_tag')
     .map((term) => term.name);
-  const featuredImage = `@assets/images/posts/${slug}/${featuredFilename}`;
-  const document = `${frontmatter(
+  const acf = acfFields(post);
+  const featuredImage = featuredFilename
+    ? `@assets/images/posts/${slug}/${featuredFilename}`
+    : undefined;
+  const document = `${frontmatter({
     post,
     featuredImage,
     featuredImageAlt,
     tags,
-  )}\n\n${body}\n`;
+    format: postFormat(post),
+    subtitle: typeof acf.subtitle === 'string' ? acf.subtitle.trim() : '',
+    linkUrl: typeof acf.link_url === 'string' ? acf.link_url.trim() : '',
+  })}\n\n${body}\n`;
 
   await writeFile(contentPath, document);
-  console.log(`Imported ${post.title.rendered} (${slug})`);
+  console.log(`Imported ${plainText(post.title.rendered)} (${slug})`);
+  return 'imported';
+}
+
+async function fetchAllPosts() {
+  const posts = [];
+  let page = 1;
+  let totalPages = 1;
+
+  while (page <= totalPages) {
+    const endpoint = new URL('/wp-json/wp/v2/posts', siteUrl);
+    endpoint.searchParams.set('per_page', '50');
+    endpoint.searchParams.set('page', String(page));
+    endpoint.searchParams.set('_embed', '1');
+
+    const response = await fetch(endpoint);
+    if (!response.ok) {
+      throw new Error(`WordPress request failed: ${response.status}`);
+    }
+
+    totalPages = Number(response.headers.get('X-WP-TotalPages') || '1');
+    const batch = await response.json();
+    if (!Array.isArray(batch)) {
+      throw new Error(`Unexpected WordPress response on page ${page}`);
+    }
+
+    posts.push(...batch);
+    console.log(`Fetched WordPress page ${page}/${totalPages} (${posts.length} posts)`);
+    page += 1;
+  }
+
+  return posts;
 }
 
 await mkdir(contentDirectory, { recursive: true });
 await mkdir(imageDirectory, { recursive: true });
 
-const endpoint = new URL('/wp-json/wp/v2/posts', siteUrl);
-endpoint.searchParams.set('slug', selectedSlugs.join(','));
-endpoint.searchParams.set('per_page', String(selectedSlugs.length));
-endpoint.searchParams.set('_embed', '1');
+const posts = await fetchAllPosts();
+const results = { imported: 0, skipped: 0, failed: 0 };
+const failures = [];
 
-const response = await fetch(endpoint);
-if (!response.ok) {
-  throw new Error(`WordPress request failed: ${response.status}`);
+for (const post of posts) {
+  try {
+    const result = await importPost(post);
+    results[result] += 1;
+  } catch (error) {
+    results.failed += 1;
+    failures.push(`${post.slug}: ${error.message}`);
+    console.error(`Failed ${post.slug}: ${error.message}`);
+  }
 }
 
-const posts = await response.json();
-if (posts.length !== selectedSlugs.length) {
-  throw new Error(`Expected ${selectedSlugs.length} posts, received ${posts.length}`);
-}
+console.log(
+  `Done. Imported ${results.imported}, skipped ${results.skipped}, failed ${results.failed} of ${posts.length} posts.`,
+);
 
-for (const slug of selectedSlugs) {
-  const post = posts.find((candidate) => candidate.slug === slug);
-  if (!post) throw new Error(`WordPress did not return ${slug}`);
-  await importPost(post);
+if (failures.length > 0) {
+  throw new Error(`Failed to import ${failures.length} posts:\n${failures.join('\n')}`);
 }

@@ -67,9 +67,9 @@ permission needed to bind that listener rather than changing project code.
   `draft` field is true. Preserve that behavior unless the task says otherwise.
 - Store post images in `src/assets/images/posts/<slug>/` and reference them as
   `@assets/images/posts/<slug>/<filename>`.
-- The WordPress importer is intentionally narrow: it imports only the three
-  slugs listed in `scripts/import-wordpress.mjs`. Do not run it unless the task
-  calls for an import. Its `--force` option can replace locally edited content.
+- The WordPress importer fetches every published post. Existing local files are
+  skipped unless `--force` is passed. Do not run it unless the task calls for
+  an import. `--force` can replace locally edited content.
 
 ## Generated files
 
