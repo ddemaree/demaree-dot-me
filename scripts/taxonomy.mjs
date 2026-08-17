@@ -1,9 +1,9 @@
 /** Shared topic/tag assignment used by the importer and one-off backfill. */
 
 export const DEFAULT_TOPIC = 'notebook';
-export const SOURCE_TAGS = new Set(['From Tumblr']);
+export const SOURCE_TAGS = new Set(['From Tumblr', 'From Substack', 'From Medium']);
 
-export const TOPICS = ['tech-thoughts', 'work', 'culture', 'notebook'];
+export const TOPICS = ['tech-thoughts', 'work', 'culture', 'notebook', 'letters'];
 
 const TAG_TO_TOPIC = new Map([
   ['Adobe', 'tech-thoughts'],
@@ -81,8 +81,9 @@ const KEYWORD_TAGS = [
   { tag: 'Typography', re: /\b(typograph|typekit|webfont|oklch|fonts?)\b/i },
   { tag: 'Product Management', re: /\b(product org|product management|\bpm\b|roadmap)\b/i },
   { tag: 'Work', re: /\b(career|management|process kills|agency|consult)\b/i },
-  { tag: 'Video Games', re: /\b(elden ring|starfield|video game|nintendo|playstation)\b/i },
+  { tag: 'Video Games', re: /\b(elden ring|starfield|video game|nintendo|playstation|zelda|korok)\b/i },
   { tag: 'Travel', re: /\b(road trip|travel|electric vehicle)\b/i },
+  { tag: 'Covid-19', re: /\b(covid|covid-19|coronavirus|pandemic)\b/i },
 ];
 
 const TOPIC_KEYWORDS = [
@@ -170,6 +171,7 @@ export function classifyEntry({
   ]);
   const topic =
     override?.topic ??
+    (nextTags.includes('From Substack') ? 'letters' : undefined) ??
     topicFromTags(nextTags) ??
     topicFromText(haystack) ??
     DEFAULT_TOPIC;

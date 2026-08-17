@@ -12,6 +12,7 @@
     "check": "astro check",
     "preview": "astro preview",
     "import:wordpress": "node scripts/import-wordpress.mjs",
+    "import:publications": "node scripts/import-publications.mjs",
     "taxonomy:assign": "node scripts/assign-taxonomy.mjs",
     "astro": "astro"
   },

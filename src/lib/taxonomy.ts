@@ -60,12 +60,14 @@ export async function getPostsByTag(slug: string) {
   return posts.filter((post) => post.data.tags.some((tag) => slugifyTag(tag) === slug));
 }
 
+const SOURCE_TAGS = new Set(['From Tumblr', 'From Substack', 'From Medium']);
+
 export async function getTagIndex() {
   const counts = new Map<string, { tag: string; slug: string; count: number }>();
 
   for (const post of await getPublishedPosts()) {
     for (const tag of post.data.tags) {
-      if (tag === 'From Tumblr') continue;
+      if (SOURCE_TAGS.has(tag)) continue;
       const slug = slugifyTag(tag);
       const current = counts.get(slug);
       if (current) current.count += 1;
