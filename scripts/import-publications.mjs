@@ -1,4 +1,4 @@
-import { access, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import TurndownService from 'turndown';
 import { classifyEntry } from './taxonomy.mjs';
