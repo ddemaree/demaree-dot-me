@@ -1,0 +1,81 @@
+---
+title: "Fear of a Chrome planet"
+description: "*A response to* [*Nolan Lawson’s post “Safari is the new IE”*](http://nolanlawson.com/2015/06/30/safari-is-the-new-ie/)"
+publishedAt: "2015-07-01T16:19"
+draft: false
+topic: "tech-thoughts"
+tags:
+  - "From Medium"
+format: "standard"
+sourceUrl: "https://medium.com/words-by-demaree/fear-of-a-chrome-planet-ca0455392539"
+---
+
+*A response to* [*Nolan Lawson’s post “Safari is the new IE”*](http://nolanlawson.com/2015/06/30/safari-is-the-new-ie/)
+
+Yesterday, I tweeted this:
+
+### David Demaree on Twitter
+
+Shorter version of that "Safari is the new IE" post: Not supporting 10 minute old standards + Apple doesn't go to RandomWebConfs =
+
+And it got a few retweets and favorites. Not a ton, but a lot for me. It also got some responses, via retweeters. (It hasn’t seemed to bring in a lot of new followers, but I can understand not wanting people someone else telling them to get off his lawn on the reg.)
+
+#### Actually, Chrome is the new IE
+
+Safari is my default browser on every device where it’s supported; Chrome is my default only on Windows 8.
+
+I work on the web, so naturally I have other browsers installed, though not as many as I used to. Chrome is installed on my Mac, of course. I have VMs running various versions of Windows, for the sole purpose of running various IEs. I haven’t yet installed Firefox or Opera on my current, three-month-old laptop, but I know I can’t escape them forever. Generally, these other browsers are only for testing.
+
+Of all of them, the only one I *need* to run on a regular basis is Chrome. Once upon a time that would have been Internet Explorer, in order to use web sites built around proprietary Microsoft technologies. Today it’s Chrome, which I’m obliged to run in order to use web sites built around ostensibly open Google technologies. From this user’s perspective, the result is the same: sometimes I have to use a browser that isn’t my favorite due to other web authors’ technology choices.
+
+#### Why Safari is my default browser
+
+There are, of course, the usual platform reasons: Safari is the only browser option on iOS (unless you want to make a special effort to switch into Chrome iOS, which I don’t), Safari Mac syncs tabs, bookmarks, and history with Safari iOS, therefore one should use Safari Mac if only to easily go back to the web page they were looking at an hour ago on their iPad.
+
+This is where I hear a pedantic voice reminding me *well, actually, David, Chrome has done bookmark and whatever syncing way longer and better than Safari*. That’s why I led off by mentioning Safari iOS. Though you can sync state between Chrome browsers on all platforms, only Mac Safari syncs with Mobile Safari, and Mobile Safari is the permanent default browser on the mobile platform I use. Safari has home court advantage.
+
+However, I also find Safari to be a superior browser than Chrome in many respects. Let me pre-parse those words for you: though Chrome/Blink may very well be a superior *web rendering engine*, Safari is by far a superior *browser*. Chrome’s technology is arguably better, but Safari is the better app.
+
+Safari’s bookmark manager is, and always has been, the best of any desktop browser. Chrome has a new, fancy, Material Design-influenced bookmark manager; it’s nice, but a bit much. I can tell Chrome users don’t use bookmarks much because the old bookmark manager is one of the worst UIs I’ve ever used in a shipping product. Safari’s, by contrast, has always been a simple, attractive, eminently usable native UI.
+
+Safari has a built-in command called “Merge All Windows” — if you have multiple open windows, each with a bunch of tabs, and you want to quickly consolidate them all into a single window, *boom*, Merge All Windows does that. When I’ve wished for a similar Chrome feature in the past, I’ve always been told that I can install *random extension x* or use *scripting technique y* to replicate it. No thanks.
+
+Lately, the best reason to use Safari has been battery life. Earlier I had to open up Chrome to work with a certain web-based word processor that has small but annoying ongoing issues in Safari. Minutes later, my MacBook Pro’s battery had dropped from 20% to 2%.
+
+#### Chrome/Blink as monoculture
+
+Just about anything can be called a movement if you can get enough people shouting about it loudly enough. What distinguishes the true will of the people from mob rule is how rigorously one defines “enough.”
+
+The modern web standards movement claims to speak for the people, that is, all the people who make web sites. At the same time, we have posts like Lawson’s, complaining that my default browser — which gets faster and a little nicer to use all the time, from this user’s perspective — is “lagging”, and its developer is “benevolently neglectful” or a “web skeptic.”
+
+As evidence, he cites Safari’s level of support (that is, little or none) for a short list of web technologies: IndexedDB, Shadow DOM, Service Workers, and Web Components. I know what all four of those things are, but that’s about it, and frankly I had to Google “Shadow DOM.” This isn’t to say these four things are useless. Far from it! All are interesting, powerful contributions to the web as application platform. They’re also of almost no value to me as someone who authors web pages.
+
+While I’ve made a healthy living working in and around web development for the last decade, I’d describe myself first and foremost as a web *author*. While it’s exciting to me that the web has evolved into an excellent platform for delivering apps, I believe strongly that the web’s role as app platform should not exist at the expense of the web’s original role as a platform for authoring and sharing documents. This is also not to say that either use case has primacy. Both can coexist, they *should* coexist, and many smart people have put years into defining patterns, like progressive enhancement, that allow them to coexist.
+
+Lawson’s post seems to me to come from a very (to coin a term) Chrome-ist view of web development and innovation. Where once the web standards community moved very slowly towards specs that had no basis in the real world, today’s web is like a speeding freight train, picking up new technologies (and even revising or re-revising old ones — hello Flexbox) faster than many developers can keep up with them. [Frank Chimero wrote a thing about the state of modern web development](http://frankchimero.com/writing/two-sentences-about-getting-older-and-working-on-the-web/) a little over a year ago; he was mad about Git, but his words could just as easily describe this puddle of seemingly essential web features Lawson cites in his post as major omissions from Safari.
+
+All that’s to say: Safari and WebKit’s sin isn’t that it’s a bad browser whose evolution stalled out 5 or 6 years ago. It’s that WebKit changes more slowly than Chrome, whose frankly *ridiculous* pace has now in turn caused Firefox and Opera to speed up their own development to keep up. Of the major browser vendors, only Apple and Microsoft have resisted adopting Chrome’s “channel” strategy for rolling out a constant stream of automatic updates.
+
+Another thing cited as evidence of Apple’s lack of commitment toward the web is this:
+
+> It’s hard to get insight into why Apple is behaving this way. They never send anyone to web conferences, their [Surfin’ Safari blog](https://www.webkit.org/blog/) is a shadow of its former self, and nobody knows what the next version of Safari will contain until that year’s WWDC. In a sense, Apple is like Santa Claus, descending yearly to give us some much-anticipated presents, with no forewarning about which of our wishes he’ll grant this year.
+
+Here, Lawson is saying that Apple is showing a neglectful — and, by inference, lazy or disrespectful — attitude towards the web, because Safari sees major updates only once a year, Apple only talks about its evolution at an Apple-run developer conference, and they won’t talk about their product roadmap *ever.*
+
+I will agree this is suboptimal. But so is a profession whose standard base of knowledge is both changing *and* growing *constantly*. It is impossible to keep up with the ridiculous mess of standards being churned out by community groups. Chrome *barely* keeps up with them, but Google engineers are engaged enough with the standards-writing process, and sponsor enough of the community’s work, that folks like Lawson see them as part of the crew, and Apple’s engineers as something else.
+
+Lawson briefly and half-heartedly cites the web/native tension, and whether Apple is trying to sabotage the web to prop up the App Store. To his credit, he doesn’t dwell much on that, though the fact that he mentioned it at all is bothersome, as it reflects two pieces of annoying conventional wisdom: that native is an enemy to the web, and that by the transitive property, Apple, as one of native’s biggest champions, is also an enemy. Me, I don’t think there *are* any enemies here, just companies and individuals and rendering engines and products, all trying to coexist on the least mediated information-sharing platform in history.
+
+#### Safari isn’t IE, it’s just boring
+
+There are annoying omissions from this year’s Safari releases, as there are every year. (Safari *still* doesn’t fully support advanced web typography, for one thing.) But that’s the web for you. The fact that some browsers are more capable than others isn’t a sign that something’s wrong. It’s a sign that *the system works*.
+
+Safari is not IE, and Apple is not Microsoft. Safari isn’t hopelessly broken, or slow, or insecure. Apple hasn’t scaled back its commitment to developing Safari or WebKit, the way Microsoft let IE development stagnate from 2002–2007. For all we know, Apple is investing *more* into Safari, but focusing on performance, privacy, and battery life more than on making the web do new tricks. Its support for recent standards is, I fully admit, not as advanced as I and others would like. But nearly every web page or web app works with it *just fine*.
+
+Safari isn’t bad, it’s just a little boring, its pace of development is relatively slow (but way faster than it once was), and its developers have a tendency to wait and see how standards are adopted and used in the real world before they invest time into adding support for them. None of these strike me as bad things.
+
+In fact, having lived through Chrome release cycles where web sites (or certain web font services) had major bugs, there’s something to be said about a modern browser that roughly keeps pace with the web’s evolution year over year, but which I can count on working the same way day to day.
+
+* * *
+
+[Fear of a Chrome planet](https://medium.com/words-by-demaree/fear-of-a-chrome-planet-ca0455392539) was originally published in [David Demaree’s blog](https://medium.com/words-by-demaree) on Medium, where people are continuing the conversation by highlighting and responding to this story.

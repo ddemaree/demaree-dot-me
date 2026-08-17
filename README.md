@@ -59,6 +59,7 @@ a Topic relationship and a Tags list.
 | `pnpm build` | Create the production build in `dist/` and Vercel output in `.vercel/output/` |
 | `pnpm preview` | Preview the production build locally |
 | `pnpm import:wordpress` | Import published WordPress posts that are not already in `src/content/posts` |
+| `pnpm import:publications` | Import Substack (`letters.demaree.me`) and Medium posts that are not already local |
 | `pnpm taxonomy:assign` | Apply topic/tag classification rules to local post front matter |
 | `pnpm astro --help` | Show Astro CLI help |
 
@@ -72,6 +73,7 @@ There is currently no separate test or lint command. Run both `pnpm check` and
 ├── keystatic.config.ts       # Local post-editor schema
 ├── scripts/
 │   ├── import-wordpress.mjs # One-off importer for selected legacy posts
+│   ├── import-publications.mjs # Substack and Medium importer
 │   ├── taxonomy.mjs         # Topic/tag classification rules
 │   └── assign-taxonomy.mjs  # Apply classification to local posts
 ├── public/                   # Files copied to the site unchanged
@@ -125,3 +127,8 @@ The WordPress importer fetches every published post and downloads local copies
 of their images. Existing post files are skipped by default. Passing `--force`
 (for example, `pnpm import:wordpress -- --force`) can overwrite local content,
 so use it only when intentionally refreshing those imports.
+
+`pnpm import:publications` pulls newsletter issues from `letters.demaree.me` and
+essays from David’s Medium profile and *words-by-demaree* publication. Matching
+local slugs or titles are skipped unless `--force` is passed. Limit the run with
+`--source=substack` or `--source=medium`.

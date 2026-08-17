@@ -125,7 +125,9 @@ export default config({
           validation: { isRequired: false },
         }),
         sourceUrl: fields.url({
-          label: 'Original WordPress URL',
+          label: 'Original source URL',
+          description:
+            'Canonical URL on WordPress, Substack, Medium, or another original publication.',
           validation: { isRequired: false },
         }),
         content: fields.markdoc({

@@ -75,6 +75,10 @@ permission needed to bind that listener rather than changing project code.
 - The WordPress importer fetches every published post. Existing local files are
   skipped unless `--force` is passed. Do not run it unless the task calls for
   an import. `--force` can replace locally edited content.
+- `pnpm import:publications` imports Substack (`letters.demaree.me`) and Medium
+  posts that are not already present. Existing local slugs and matching titles
+  are skipped unless `--force` is passed. Do not run it unless the task calls
+  for an import.
 
 ## Generated files
 
