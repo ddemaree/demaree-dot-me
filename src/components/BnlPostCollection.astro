@@ -1,0 +1,47 @@
+---
+import { getLiveCollection } from 'astro:content';
+import { formatDate } from '../lib/taxonomy';
+
+interface Props {
+  title: string;
+}
+
+const result = await getLiveCollection('bnlPosts', { limit: 5 });
+const posts = result.entries ?? [];
+const { error } = result;
+
+const { title } = Astro.props as Props;
+
+Astro.response.headers.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
+---
+
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-6 py-10 container mx-auto" aria-labelledby="bnl-posts-heading">
+<div class="col-span-full">
+    <slot name="heading">
+      <h2 id="bnl-posts-heading" class="text-2xl/none font-medium">{title}</h2>
+    </slot>
+  </div>
+  {error ? (
+    <p class="col-span-full text-current/70">B&amp;L posts are temporarily unavailable.</p>
+  ) : posts.length === 0 ? (
+    <p class="col-span-full text-current/70">No B&amp;L posts are available yet.</p>
+  ) : (
+  <div class="posts-list">
+    {posts.map((post) => (
+      <article class="posts-list__item">
+        <time class="posts-list__date" datetime={post.data.publishedAt.toISOString()}>
+          {formatDate(post.data.publishedAt)}
+        </time>
+        <h3 class="posts-list__title">
+          <a href={post.data.url}>
+            {post.data.title}
+          </a>
+        </h3>
+        <div class="posts-list__description">
+          <p>{post.data.description}</p>
+        </div>
+      </article>
+    ))
+  }</div>)}
+  <p><a href="https://www.bitsandletters.com/ideas">See more at bitsandletters.com <i class="fas fa-chevron-right"></i></a></p>
+</section>

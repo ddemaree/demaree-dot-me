@@ -72,6 +72,26 @@ function yamlString(value) {
   return JSON.stringify(value);
 }
 
+function postDescription(post) {
+  const excerptHtml = post.excerpt?.rendered || '';
+  const excerpt = plainText(excerptHtml);
+  // WordPress renders a body-derived excerpt when no editorial excerpt exists.
+  // Long posts end in a read-more marker; short posts repeat the entire body.
+  const comparableText = (html) =>
+    plainText(html.replace(/<[^>]+>/g, ' '))
+      .replace(/[^\p{L}\p{N}]/gu, '')
+      .toLowerCase();
+
+  if (
+    /\[(?:…|\.{3})\]$/.test(excerpt) ||
+    comparableText(excerptHtml) === comparableText(post.content?.rendered || '')
+  ) {
+    return '';
+  }
+
+  return excerpt;
+}
+
 function keystaticDatetime(value) {
   const match = value?.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/);
   if (!match) throw new Error(`Invalid WordPress datetime: ${value}`);
@@ -157,7 +177,7 @@ function frontmatter({
   const fields = [
     '---',
     `title: ${yamlString(plainText(post.title.rendered))}`,
-    `description: ${yamlString(plainText(post.excerpt.rendered))}`,
+    `description: ${yamlString(postDescription(post))}`,
     `publishedAt: ${yamlString(keystaticDatetime(post.date))}`,
   ];
 

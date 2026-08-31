@@ -1,0 +1,43 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type LinkProps = Omit<HTMLAttributes<"a">, "href"> & {
+	href: string;
+};
+
+type NativeButtonProps = HTMLAttributes<"button"> & {
+	href?: never;
+};
+
+type Props = LinkProps | NativeButtonProps;
+
+const { class: className, ...props } = Astro.props;
+---
+
+{
+	props.href !== undefined ? (
+		<a class={`dd-button ${className}`} {...props}><slot /></a>
+	) : (
+		<button class={`dd-button ${className}`} {...props}><slot /></button>
+	)
+}
+
+<style is:global>
+	@reference "@/styles/theme.css";
+
+	@layer components {
+		@scope(.dd-button) {
+			:scope {
+			  @apply inline-flex items-center gap-1 border min-h-10 px-3 rounded-md;
+			}
+
+			:scope:is(a) {
+			  @apply no-underline;
+			}
+
+			:scope:hover {
+			  background-color: color-mix(in oklab, currentColor 5%, transparent);
+			}
+		}
+	}
+</style>

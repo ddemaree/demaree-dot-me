@@ -13,5 +13,91 @@ import memoji from '../assets/images/site/memoji.png';
       <li><a class="social-link social-link--linkedin" href="https://linkedin.com/in/ddemaree" aria-label="LinkedIn"><img src="/images/site/social-linkedin.svg" alt="" /></a></li>
       <li><a class="social-link social-link--mail" href="mailto:david@demaree.me" aria-label="Mail"><img src="/images/site/social-mail.svg" alt="" /></a></li>
     </ul>
+    <bnl-logo></bnl-logo>
   </div>
 </footer>
+
+<script is:inline type="module" src="https://unpkg.com/bitsandletters-logo"></script>
+
+<style is:global>
+  @reference "@/styles/theme.css";
+
+  @layer components {
+    .site-footer {
+      padding: 2.5rem 1.5rem;
+      background: var(--footer);
+    }
+
+    .site-footer__inner {
+      display: flex;
+      max-width: 56rem;
+      min-height: 14.5rem;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-inline: auto;
+      text-align: center;
+    }
+
+    .footer-memoji {
+      width: 6rem;
+    }
+
+    .site-footer p {
+      margin: 1rem 0 1.25rem;
+    }
+
+    .site-footer p a:hover {
+      text-decoration: none;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 0.75rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .social-link {
+      display: flex;
+      width: 2.25rem;
+      height: 2.25rem;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      transition: transform 140ms ease;
+    }
+
+    .social-link:hover {
+      transform: translateY(-2px);
+    }
+
+    .social-link img {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .social-link--x {
+      background: #000;
+    }
+
+    .social-link--x img,
+    .social-link--bluesky img,
+    .social-link--linkedin img {
+      filter: invert(1);
+    }
+
+    .social-link--bluesky {
+      background: #3b82f6;
+    }
+
+    .social-link--linkedin {
+      background: #3275b7;
+    }
+
+    .social-link--mail {
+      background: #f5f5f4;
+    }
+  }
+</style>

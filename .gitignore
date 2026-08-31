@@ -23,6 +23,7 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .vercel
+.pnpm-store
 
 # Licensed font binaries are hosted outside this public repository.
 src/assets/fonts/

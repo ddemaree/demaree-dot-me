@@ -1,0 +1,39 @@
+---
+import { formatDate, getPublishedPosts } from "../lib/taxonomy";
+import Button from "./Button.astro";
+
+const recentPosts = (await getPublishedPosts()).slice(0, 5);
+---
+<section class="home-posts my-10">
+  <div class="col-span-full">
+    <h2 class="text-2xl/none font-medium mb-[1lh]">Recent blog posts</h2>
+  </div>
+  <div class="home-posts__list posts-list">
+  {recentPosts.map((post) => (
+    <article class="home-posts__item posts-list__item">
+      <time class="home-posts__date posts-list__date" datetime={post.data.publishedAt.toISOString()}>
+        {formatDate(post.data.publishedAt)}
+      </time>
+      <h3 class="home-posts__title posts-list__title">
+        <a href={`/p/${post.id}/`}>{post.data.title}</a>
+      </h3>
+      <div class="home-posts__description posts-list__description">
+        <p>{post.data.description}</p>
+      </div>
+    </article>
+  ))}
+  </div>
+  <Button href="/blog">
+    <i class="fass fa-newspaper me-2"></i>
+    See more in the archives
+    <i class="fas fa-chevron-right"></i>
+  </Button>
+</section>
+
+<style is:global>
+  @reference '@/styles/theme.css';
+
+  .home-posts {
+    @apply max-w-5xl mx-auto;
+  }
+</style>

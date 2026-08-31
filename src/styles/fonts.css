@@ -24,7 +24,7 @@
 
 @font-face {
   font-family: "Berkeley Mono";
-  src: url("https://fonts.demaree.me/demaree-dot-me/Berkeley%20Mono%20Variable.woff2") format("woff2");
+  src: url("https://fonts.demaree.me/demaree-dot-me/Berkeley-Mono-Variable.woff2") format("woff2");
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
@@ -43,5 +43,21 @@
   src: url("https://fonts.demaree.me/demaree-dot-me/GT-Maru-Mono-VF.woff2");
   font-style: normal;
   font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'family-vf';
+  src: url("https://fonts.demaree.me/demaree-dot-me/family-vf-roman.woff2");
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'family-vf';
+  src: url("https://fonts.demaree.me/demaree-dot-me/family-vf-italic.woff2");
+  font-style: italic;
+  font-weight: 300 900;
   font-display: swap;
 }

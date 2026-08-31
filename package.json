@@ -37,5 +37,9 @@
     "@types/turndown": "^5.0.6",
     "turndown": "^7.2.4",
     "typescript": "^6.0.3"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "fsevents@2.3.3": true
   }
 }

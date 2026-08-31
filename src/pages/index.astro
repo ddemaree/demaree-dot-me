@@ -2,6 +2,14 @@
 import { Image } from "astro:assets";
 import portrait from "../assets/images/site/dd-dithered.png";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import BnlPostCollection from "../components/BnlPostCollection.astro";
+import LocalPostCollection from "@/components/LocalPostCollection.astro";
+
+import ddPixelPortrait from '@/assets/images/site/dd-pixel-portrait-edited.png'
+
+import { formatDate, getPublishedPosts } from "../lib/taxonomy";
+
+const recentPosts = (await getPublishedPosts()).slice(0, 8);
 ---
 
 <BaseLayout
@@ -9,144 +17,79 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   description="David Demaree is a web designer, engineer, and systems thinker."
 >
   <main id="main" class="home-page">
-    <section class="home-intro" aria-labelledby="home-intro-heading">
-      <div class="home-intro__container">
-        <div class="home-portrait">
-          <Image
-            class="home-portrait__img"
-            src={portrait}
-            alt="Pixelated portrait of David Demaree wearing sunglasses, in a stylized blue and pink halftone effect"
-            width={400}
-            height={400}
-            loading="eager"
-          />
-        </div>
-        <div class="home-intro__copy">
-          <h1 id="home-intro-heading">
-            I’m <strong class="text-nowrap">David Demaree</strong>, a <span
-              class="text-nowrap">web designer</span
-            >, <span class="text-nowrap">software engineer</span>, and systems
-            thinker.
+    <div class="container mx-auto">
+      <section class="home-intro" aria-labelledby="home-intro-heading">
+        <div class="home-intro__container py-[1lh] flex flex-col lg:flex-row max-w-4xl mx-auto items-center">
+          <figure class="max-w-50">
+            <Image src={ddPixelPortrait} alt="David Demaree" class="home-intro__image" layout="constrained" width={400} />
+          </figure>
+          <h1 id="home-intro-heading" class="home-intro__heading text-balance font-serif mt-[0.5lh] text-center max-w-[40ch]">
+            <strong>David Demaree</strong> is a <span>software product leader</span>, <span>web designer</span>, <span>developer</span>, and <span>author</span>.
           </h1>
-          <p>
-            Welcome to Gitea, where we are committed to delivering cutting-edge
-            solutions to streamline your development process.
-          </p>
-          <!-- <a class="button" href="/about/">
-            More about me
-          </a> -->
         </div>
-      </div>
-    </section>
+      </section>
+
+      <LocalPostCollection />
+
+      <hr class="my-10" />
+
+      <BnlPostCollection title="Recent posts from the Bits&Letters blog" server:defer>
+        <section slot="fallback" class="py-10 container mx-auto" aria-labelledby="bnl-posts-loading-heading">
+          <h2 id="bnl-posts-loading-heading" class="text-2xl/none font-medium">Recent posts from the Bits&amp;Letters blog</h2>
+          <p class="mt-6 text-current/70">Loading posts…</p>
+        </section>
+      </BnlPostCollection>
+    </div>
+
   </main>
-  <div slot="footer"></div>
 </BaseLayout>
 
 <style is:global>
   @reference '@/styles/theme.css';
 
-  /* Home */
-  .home-page {
-    --home-color-bg: #2d364a;
-    --home-color-fg: #ffb1a5;
-    min-height: calc(100vh - var(--header-height));
-    padding: 1.5rem;
+  @layer components {
 
-    background-color: color-mix(in oklab, var(--home-color-bg), black 15%);
-    color: contrast-color(var(--home-color-bg));
+    .home-page {
+      --home-color-bg: color-mix(in oklab, #2d364a, black 35%);
+      --home-color-bg: var(--color-mauve-100);
+      --home-color-fg: var(--color-pink-600);
 
-    @variant md {
+      background-color: var(--home-color-bg);
+      color: contrast-color(var(--home-color-bg));
+      min-height: calc(100vh - var(--header-height));
+      padding: 1.5rem max(1.75rem, 5vw);
       padding-block-start: 3rem;
     }
-  }
 
-  .home-intro {
-    display: flex;
-    width: min(100%, 68rem);
-    margin-inline: auto;
-  }
-
-  .home-intro__container {
-    display: grid;
-    grid-template-columns: 1fr;
-    width: 100%;
-    row-gap: 2.5rem;
-    align-items: start;
-
-    max-width: 36rem;
-    margin-inline: auto;
-
-    @variant lg {
-      grid-template-columns: 25rem 1fr;
-      max-width: none;
-    }
-  }
-
-  .home-portrait {
-    /*width: min(25rem, calc(100vw - 5rem));*/
-    /*width: 100%;*/
-    margin-inline: -1.5rem;
-    margin-block-start: -1.5rem;
-    max-width: 100vw;
-
-    img {
-      @apply size-full object-cover aspect-4/3;
+    .home-intro {
+      @apply flex items-center;
+      min-height: 40vh;
     }
 
-    @variant sm {
-      margin: 0;
-      max-width: 20rem;
-    }
-
-    @variant md {
-      aspect-ratio: 1;
-    }
-
-    @variant lg {
-      max-width: none;
-      display: flex;
-      justify-content: end;
-
-      img {
-        width: 500px;
-        height: 500px;
-        max-width: none;
-      }
-    }
-  }
-
-  .home-intro__copy {
-    color: #ffb1a5;
-    container-type: inline-size;
-    container-name: home-intro__copy;
-    width: 100%;
-
-    font-family: gt-maru-mono-vf;
-    font-size: clamp(24px, 2.25cqi, 99px);
-    line-height: 1.5;
-    letter-spacing: -0.03em;
-
-    @variant lg {
-      padding-inline-start: 5cqi;
-    }
-
-    > * + * {
-      margin-block-start: 0.75lh;
-    }
-
-    h1 {
-      margin: 0;
-      font-weight: 390;
+    .home-intro__container {
       width: 100%;
+      container-type: inline-size;
+      container-name: home-intro__copy;
+    }
 
-      &:before {
-        content: "# ";
+    .home-intro__image {
+      border-radius: 100%;
+    }
+
+    .home-intro__heading {
+      @apply text-mauve-500;
+      font-size: clamp(28px, 10cqi, 32px);
+      font-weight: 420;
+      line-height: 1.1;
+      margin: 0;
+      width: 100%;
+      /*letter-spacing: 0.02em;*/
+
+      strong {
+        color: black;
+        font-weight: 600;
       }
     }
-
-    strong {
-      color: white;
-      font-weight: 480;
-    }
   }
+
 </style>

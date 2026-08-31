@@ -1,7 +1,12 @@
 @import "tailwindcss";
 
-@theme {
+@theme static {
   --font-sans: "Die Grotesk", "Helvetica Neue", sans-serif;
   --font-mono: "Berkeley Mono", ui-monospace, monospace;
+  --font-serif: 'family-vf', 'Comic Sans MS';
   --font-display: "Gorton Perfected", var(--font-sans);
+  --font-display-alt: 'gt-maru-vf';
+  --font-display-alt--font-variation-settings: 'slnt' 0;
+
+  --color-brand-red: #FC571A;
 }

@@ -10,7 +10,7 @@ const isBlog =
   path.startsWith('/labels/');
 
 const links = [
-  { href: 'https://demaree.me/about/', label: 'About David', current: false },
+  { href: '/about/', label: 'About David', current: false },
   ...navTopics.map((topic) => ({
     href: `/topics/${topic.id}/`,
     label: topic.data.title,
@@ -24,10 +24,11 @@ const links = [
 <header class="site-header">
   <div class="site-header__inner">
     <a class="brand" href="/" aria-label="David Demaree">
-      <img src="/images/site/dd-mark.svg" alt="" width="502" height="386" />
+      <!-- <img src="/images/site/dd-mark.svg" alt="" width="502" height="386" /> -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Pro v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.--><path d="M52.6 64C41.2 64 32 72.8 32 83.7C32 94.6 41.2 103.4 52.6 103.4L299.5 103.4Q299.5 103.4 299.5 103.4Q299.5 103.4 299.5 103.4C372 103.4 432 154.7 441.9 221.5L400.2 221.5C390.7 176.6 349.2 142.7 299.4 142.7L52.5 142.7C41.2 142.8 32 151.6 32 162.5C32 173.4 41.2 182.2 52.6 182.2L155.5 182.2L155.5 300.4L52.6 300.4C41.2 300.3 32 309.1 32 320C32 330.9 41.2 339.7 52.6 339.7L299.5 339.7C349.3 339.7 390.8 305.9 400.3 260.9L422.9 260.9Q422.9 260.9 422.9 260.9Q422.9 260.9 422.9 260.9C429.3 260.9 435.6 261.3 441.8 262.1C431.3 328.3 371.6 379.1 299.4 379.1L52.5 379.1C41.2 379.1 32 387.9 32 398.8C32 409.7 41.2 418.5 52.6 418.5L278.9 418.5L278.9 457.9L176 457.9C164.6 457.9 155.4 466.7 155.4 477.6C155.4 488.5 164.6 497.3 176 497.3L422.9 497.3L433.4 496.8C485.3 491.8 525.7 449.8 525.7 398.9C525.7 360.6 502.9 327.5 469.6 311.2C475 299.1 479 286.3 481.5 273C531.8 294.5 566.8 342.8 566.8 398.9C566.8 475 502.3 536.7 422.8 536.7L175.9 536.7C164.5 536.7 155.3 545.5 155.3 556.4C155.3 567.3 164.6 576 176 576L422.9 576C525.1 576 608 496.6 608 398.8C608 321.5 556.3 255.8 484.2 231.6C479 138.2 398.3 64 299.4 64L52.6 64zM196.6 221.5L196.6 182.1L299.5 182.1C326.4 182.1 349.2 198.5 357.6 221.5L196.6 221.5zM196.6 300.3L196.6 260.9L357.6 260.9C349.1 283.8 326.3 300.3 299.5 300.3L196.6 300.3zM320 417.3C373.1 411.7 419.3 384.6 449.2 345.3C470.1 354.8 484.6 375.1 484.6 398.7C484.6 431.3 457 457.8 422.9 457.8L320 457.8L320 417.3z"/></svg>
     </a>
 
-    <nav class="desktop-navigation" aria-label="Main menu">
+    <nav class="desktop-navigation hidden" aria-label="Main menu">
       {links.map((link) => (
         <a class:list={{ current: link.current }} href={link.href}>{link.label}</a>
       ))}
@@ -54,93 +55,98 @@ const links = [
 <style is:global>
   @reference '@/styles/theme.css';
 
-  :root {
-    --header-height: 4.0625rem;
+  @layer base {
+    :root {
+      --header-height: 4.0625rem;
+    }
   }
 
-  .skip-link {
-    position: fixed;
-    top: 0.5rem;
-    left: 0.5rem;
-    z-index: 20;
-    transform: translateY(-200%);
-    padding: 0.5rem 0.75rem;
-    background: white;
+  @layer components {
+    .skip-link {
+      position: fixed;
+      top: 0.5rem;
+      left: 0.5rem;
+      z-index: 20;
+      transform: translateY(-200%);
+      padding: 0.5rem 0.75rem;
+      background: white;
+    }
+
+    .skip-link:focus {
+      transform: none;
+    }
+
+    .site-header {
+      position: relative;
+      z-index: 5;
+      height: var(--header-height);
+      padding-inline: 1.5rem;
+      border-top: 0.5rem solid var(--subsurface);
+      border-bottom: 1px solid #d4d4d8;
+      background: var(--header);
+    }
+
+    .site-header__inner {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      height: 3.5rem;
+    }
+
+    .brand {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      width: 4.5rem;
+      height: 4.5rem;
+      align-items: center;
+      justify-content: center;
+      background: var(--color-brand-red);
+      transition: background-color 160ms ease;
+    }
+
+    .brand:hover {
+      background: #b91c1c;
+    }
+
+    .brand img, .brand svg {
+      width: 75.5%;
+      filter: invert(1);
+      transition: transform 160ms ease;
+    }
+
+    .brand:hover img {
+      transform: scale(1.08);
+    }
+
+    .desktop-navigation {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      height: 3.5rem;
+      margin-left: auto;
+    }
+
+    .desktop-navigation a,
+    .mobile-navigation a {
+      padding: 0.25rem 0.5rem;
+      color: #52525b;
+      @apply font-mono;
+      font-size: 0.875rem;
+      font-weight: 650;
+      text-transform: uppercase;
+    }
+
+    .desktop-navigation a.current,
+    .mobile-navigation a.current {
+      background: white;
+      color: #241c25;
+    }
+
+    .mobile-navigation {
+      display: none;
+      margin-left: auto;
+    }
   }
 
-  .skip-link:focus {
-    transform: none;
-  }
-
-  .site-header {
-    position: relative;
-    z-index: 5;
-    height: var(--header-height);
-    padding-inline: 1.5rem;
-    border-top: 0.5rem solid var(--subsurface);
-    border-bottom: 1px solid #d4d4d8;
-    background: var(--header);
-  }
-
-  .site-header__inner {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    height: 3.5rem;
-  }
-
-  .brand {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    width: 4.5rem;
-    height: 4.5rem;
-    align-items: center;
-    justify-content: center;
-    background: var(--red);
-    transition: background-color 160ms ease;
-  }
-
-  .brand:hover {
-    background: #b91c1c;
-  }
-
-  .brand img {
-    width: 75.5%;
-    filter: invert(1);
-    transition: transform 160ms ease;
-  }
-
-  .brand:hover img {
-    transform: scale(1.08);
-  }
-
-  .desktop-navigation {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    height: 3.5rem;
-    margin-left: auto;
-  }
-
-  .desktop-navigation a,
-  .mobile-navigation a {
-    padding: 0.25rem 0.5rem;
-    color: #52525b;
-    @apply font-mono;
-    font-size: 0.875rem;
-    font-weight: 650;
-    text-transform: uppercase;
-  }
-
-  .desktop-navigation a.current,
-  .mobile-navigation a.current {
-    background: white;
-    color: #241c25;
-  }
-
-  .mobile-navigation {
-    display: none;
-    margin-left: auto;
-  }
 </style>
