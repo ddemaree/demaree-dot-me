@@ -23,4 +23,6 @@ export default defineConfig({
   // Local storage writes repository files and is only useful in development.
   integrations: [react(), markdoc(), ...(env.NODE_ENV === 'development' ? [keystatic()] : [])],
   adapter: cloudflare(),
+  // This site does not use sessions; avoid provisioning a Cloudflare KV namespace.
+  session: false,
 });
