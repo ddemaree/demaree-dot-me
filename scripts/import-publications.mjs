@@ -2,6 +2,7 @@ import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import TurndownService from 'turndown';
 import { classifyEntry } from './taxonomy.mjs';
+import { toKeystaticDatetime } from '../src/lib/dates.mjs';
 
 const force = process.argv.includes('--force');
 const sources = new Set(
@@ -89,22 +90,12 @@ function trimSlug(value, maxLength = 70) {
 }
 
 function keystaticDatetime(value) {
-  const date = value instanceof Date ? value : new Date(value);
-  if (Number.isNaN(date.valueOf())) {
-    throw new Error(`Invalid datetime: ${value}`);
+  // RSS pubDate uses RFC 2822; only parse it with Date when a zone is explicit.
+  // ISO timestamps, including naive New York times, use the shared parser.
+  if (typeof value === 'string' && /\s(?:GMT|UT|[+-]\d{4})$/i.test(value)) {
+    return toKeystaticDatetime(new Date(value));
   }
-
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/New_York',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    hourCycle: 'h23',
-  }).formatToParts(date);
-  const read = (type) => parts.find((part) => part.type === type)?.value;
-  return `${read('year')}-${read('month')}-${read('day')}T${read('hour')}:${read('minute')}`;
+  return toKeystaticDatetime(value);
 }
 
 function plainText(html) {

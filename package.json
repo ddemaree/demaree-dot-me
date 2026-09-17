@@ -20,6 +20,7 @@
     "@astrojs/markdoc": "^2.0.6",
     "@astrojs/react": "^6.0.2",
     "@astrojs/vercel": "^11.0.5",
+    "@js-temporal/polyfill": "^0.5.1",
     "@keystatic/astro": "^5.2.0",
     "@keystatic/core": "^0.6.4",
     "@tailwindcss/vite": "^4.3.3",
@@ -34,6 +35,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@types/node": "^22.20.3",
     "@types/turndown": "^5.0.6",
     "turndown": "^7.2.4",
     "typescript": "^6.0.3"

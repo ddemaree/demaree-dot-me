@@ -47,6 +47,8 @@ pnpm astro dev stop
 The local Keystatic editor is available at <http://localhost:4321/keystatic>.
 It writes post documents, topic documents, and their images directly to this
 repository; there is no remote Keystatic storage or authentication configured.
+The editor and its file APIs are enabled only in development and are excluded
+from production builds. Publishing requires committing content and rebuilding.
 The Topics collection edits mini-blogs (title, description, nav). Each post has
 a Topic relationship and a Tags list.
 
@@ -56,6 +58,7 @@ a Topic relationship and a Tags list.
 | --- | --- |
 | `pnpm dev --background` | Start the background development server |
 | `pnpm check` | Run Astro and TypeScript diagnostics |
+| `node scripts/check-content-dates.mjs` | Verify content dates and DST behavior across host time zones |
 | `pnpm build` | Create the production build in `dist/` and Vercel output in `.vercel/output/` |
 | `pnpm preview` | Preview the production build locally |
 | `pnpm import:wordpress` | Import published WordPress posts that are not already in `src/content/posts` |
@@ -96,6 +99,14 @@ The public routes currently implemented are:
 - `/p/[slug]/` — statically generated post pages
 - `/topics/` and `/topics/[slug]/` — on-demand mini-blog / category archives
 - `/labels/` and `/labels/[slug]/` — on-demand tag archives
+- `/feed.xml` — full-content RSS feed, with `/feed/` and legacy path aliases redirecting here
+- `/sitemap.xml` and `/robots.txt` — search-engine discovery for published pages
+- `/404` — custom not-found page used for missing routes
+
+Legacy WordPress query feeds (`/?feed=rss2`, `rss`, or `atom`) are redirected by
+`vercel.json`; these platform rules need verification on a Vercel preview.
+The feed preserves existing WordPress GUIDs and excludes drafts. Page metadata
+uses editorial descriptions when available, otherwise a plain-text excerpt.
 
 Some navigation links still point to pages on the existing production
 `demaree.me` site because those routes have not been rebuilt here yet. Featured
@@ -112,6 +123,17 @@ Each post requires a title, description, and publication date. Featured images
 are optional because most WordPress posts do not have one. Post images belong
 under `src/assets/images/posts/<slug>/` and are referenced through the
 `@assets/*` TypeScript alias.
+
+Keystatic timestamps use New York wall time (`America/New_York`), independent
+of the build host's time zone. Nonexistent spring DST times are rejected;
+repeated autumn times select the first occurrence. Explicit offsets in content
+are preserved by the loader. Importers use the same conversion and reject
+instants that the editor's offset-free format cannot represent faithfully.
+`node scripts/check-content-dates.mjs` checks all stored dates in four time zones.
+
+Featured images supply social metadata. Images present in a source article's
+body remain in that body; the WordPress importer must not remove them merely
+because they also serve as its featured image.
 
 Posts also have a `topic` (one of the curated mini-blogs in `src/content/topics`)
 and `tags`. Topic and tag index pages are server-rendered on demand so adding a

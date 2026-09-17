@@ -2,8 +2,12 @@
 import { Image } from 'astro:assets';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import sidebarImage from '../../assets/images/site/bits-and-letters.png';
+import bookImage from '../../assets/images/site/git-for-humans.webp';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { formatDate, getTopic, postTopicId, slugifyTag } from '../../lib/taxonomy';
+import { getPostDescription } from '../../lib/post-description';
+
+import SidebarPromo from '@/components/blog/SidebarPromo.astro';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
@@ -33,7 +37,15 @@ const topic = await getTopic(postTopicId(post));
 const tags = post.data.tags.map((tag) => ({ tag, slug: slugifyTag(tag) }));
 ---
 
-<BaseLayout title={`${post.data.title} — David Demaree`} description={post.data.description}>
+<BaseLayout
+  title={`${post.data.title} — David Demaree`}
+  description={getPostDescription(post)}
+  type="article"
+  image={post.data.featuredImage}
+  imageAlt={post.data.featuredImageAlt}
+  publishedAt={post.data.publishedAt}
+  updatedAt={post.data.updatedAt}
+>
   <main id="main" class="single-post">
     <article>
       <header class="entry-header">
@@ -65,9 +77,11 @@ const tags = post.data.tags.map((tag) => ({ tag, slug: slugifyTag(tag) }));
           <div class="prose flow">
             <Content />
           </div>
+        </div>
 
+        <aside class="entry-sidebar" aria-label="Post sidebar">
           {(topic || tags.length > 0) && (
-            <footer class="article-taxonomies">
+            <nav class="article-taxonomies" aria-label="Post topics and tags">
               {topic && (
                 <div class="article-taxonomies__row">
                   <span>Filed in</span>
@@ -86,17 +100,17 @@ const tags = post.data.tags.map((tag) => ({ tag, slug: slugifyTag(tag) }));
                   </ul>
                 </div>
               )}
-            </footer>
+            </nav>
           )}
-        </div>
 
-        <aside class="entry-sidebar" aria-label="Post sidebar">
-          {[0, 1].map(() => (
-            <a class="sidebar-promo" href="https://www.bitsandletters.com/">
-              <Image src={sidebarImage} alt="Bits & Letters" width={220} />
-              <span><strong>Websites and apps made with clarity and craft.</strong> Bits&amp;Letters is a little consultancy for all your biggest digital problems.</span>
-            </a>
-          ))}
+          <SidebarPromo image={sidebarImage} imageAlt="Bits&Letters" href="https://www.bitsandletters.com/">
+            <span><strong>Websites and apps made with clarity and craft.</strong> Bits&amp;Letters is a little consultancy for all your biggest digital problems.</span>
+          </SidebarPromo>
+
+          <SidebarPromo image={bookImage} imageAlt="Git for Humans book cover" href="https://gitforhumans.us/">
+            <span><strong>Git for Humans.</strong> My friendly guide to Git, from your first commit to branches and merge conflicts.</span>
+            <span class="sidebar-promo__cta">Get the book <span aria-hidden="true">→</span></span>
+          </SidebarPromo>
         </aside>
       </div>
 

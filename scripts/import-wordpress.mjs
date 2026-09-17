@@ -2,6 +2,7 @@ import { access, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import TurndownService from 'turndown';
 import { classifyEntry } from './taxonomy.mjs';
+import { toKeystaticDatetime } from '../src/lib/dates.mjs';
 
 const siteUrl = 'https://demaree.me';
 const force = process.argv.includes('--force');
@@ -93,9 +94,8 @@ function postDescription(post) {
 }
 
 function keystaticDatetime(value) {
-  const match = value?.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/);
-  if (!match) throw new Error(`Invalid WordPress datetime: ${value}`);
-  return match[0];
+  // WordPress's `date` and `modified` fields use the site's New York wall clock.
+  return toKeystaticDatetime(value);
 }
 
 function acfFields(post) {
@@ -280,18 +280,12 @@ async function importPost(post) {
     'gi',
   );
   const normalizedHtml = post.content.rendered.replace(legacyExternalLink, 'https://');
-  let removedBodyFeaturedImage = false;
   const rewrittenHtml = normalizedHtml.replace(
     /<img\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>/gi,
     (tag, source) => {
       const identity = assetIdentity(source);
       const localSource = assetPaths.get(identity);
       if (!localSource) return tag;
-
-      if (identity === featuredIdentity && !removedBodyFeaturedImage) {
-        removedBodyFeaturedImage = true;
-        return '';
-      }
 
       let rewritten = tag
         .replace(/\s+srcset\s*=\s*["'][^"']*["']/i, '')

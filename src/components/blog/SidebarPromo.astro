@@ -1,0 +1,17 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  image: ImageMetadata;
+  imageAlt: string;
+  href: string;
+}
+
+const { image, imageAlt, href } = Astro.props;
+
+---
+<a class="sidebar-promo" href={href}>
+  <Image src={image} alt={imageAlt} height={116} width={220} />
+  <slot />
+</a>

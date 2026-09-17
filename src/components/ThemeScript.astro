@@ -1,0 +1,56 @@
+<!-- Keep this inline in the head so the theme is resolved before first paint. -->
+<script is:inline>
+  (() => {
+    const key = 'theme';
+    const system = window.matchMedia('(prefers-color-scheme: dark)');
+    const validTheme = (value) => value === 'light' || value === 'dark' ? value : null;
+    let override = null;
+
+    try {
+      override = validTheme(localStorage.getItem(key));
+    } catch {
+      // Storage can be unavailable; the toggle still works for this page.
+    }
+
+    const systemTheme = () => system.matches ? 'dark' : 'light';
+    const applyTheme = () => {
+      const theme = override ?? systemTheme();
+      document.documentElement.dataset.theme = theme;
+      if (document.body) document.body.dataset.theme = theme;
+      const button = document.querySelector('[data-theme-toggle]');
+      if (button) {
+        button.hidden = false;
+        button.setAttribute('aria-checked', String(theme === 'dark'));
+        button.setAttribute('title', `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`);
+      }
+    };
+
+    applyTheme();
+    document.addEventListener('DOMContentLoaded', applyTheme, { once: true });
+    document.addEventListener('click', (event) => {
+      if (!(event.target instanceof Element) || !event.target.closest('[data-theme-toggle]')) return;
+      const target = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      // Only user interaction can clear an override that matches the OS.
+      // https://lea.verou.me/blog/2026/dark-mode-toggles/
+      override = target === systemTheme() ? null : target;
+      try {
+        if (override) localStorage.setItem(key, override);
+        else localStorage.removeItem(key);
+      } catch {
+        // Retain the in-memory choice even when persistence is blocked.
+      }
+      applyTheme();
+    });
+    system.addEventListener('change', applyTheme);
+    window.addEventListener('storage', (event) => {
+      if (event.key !== key && event.key !== null) return;
+      try {
+        if (event.storageArea !== localStorage) return;
+      } catch {
+        return;
+      }
+      override = validTheme(event.newValue);
+      applyTheme();
+    });
+  })();
+</script>

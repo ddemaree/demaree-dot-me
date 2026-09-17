@@ -1,6 +1,19 @@
 import { defineCollection, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { parseContentDate } from './lib/dates.mjs';
+
+const contentDate = z.union([z.string(), z.date()]).transform((value, context) => {
+  try {
+    return parseContentDate(value);
+  } catch (error) {
+    context.addIssue({
+      code: 'custom',
+      message: error instanceof Error ? error.message : 'Invalid content date',
+    });
+    return z.NEVER;
+  }
+});
 
 const topics = defineCollection({
   loader: glob({
@@ -24,8 +37,8 @@ const posts = defineCollection({
     z.object({
       title: z.string(),
       description: z.string(),
-      publishedAt: z.coerce.date(),
-      updatedAt: z.coerce.date().optional(),
+      publishedAt: contentDate,
+      updatedAt: contentDate.optional(),
       draft: z.boolean().default(false),
       topic: reference('topics').optional(),
       tags: z.array(z.string()).default([]),

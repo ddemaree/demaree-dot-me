@@ -1,4 +1,19 @@
-import { collection, config, fields } from '@keystatic/core';
+import { collection, config, fields, type BasicFormField } from '@keystatic/core';
+import { parseContentDate } from './src/lib/dates.mjs';
+
+const datetimeDescription =
+  'New York time (America/New_York), including daylight saving time. A repeated autumn hour uses its first occurrence; skipped spring times are invalid.';
+
+function postDatetime<Value extends string | null>(field: BasicFormField<string | null, Value>) {
+  return {
+    ...field,
+    validate(value: string | null) {
+      const validated = field.validate(value);
+      if (validated !== null) parseContentDate(validated);
+      return validated;
+    },
+  };
+}
 
 const postImages = {
   directory: 'src/assets/images/posts',
@@ -53,7 +68,7 @@ export default config({
       slugField: 'title',
       entryLayout: 'content',
       format: { contentField: 'content' },
-      previewUrl: '/p/{slug}',
+      previewUrl: '/p/{slug}/',
       columns: ['title', 'publishedAt', 'topic', 'draft'],
       schema: {
         title: fields.slug({
@@ -68,14 +83,16 @@ export default config({
           multiline: true,
           description: 'Used in post listings and page metadata.',
         }),
-        publishedAt: fields.datetime({
+        publishedAt: postDatetime(fields.datetime({
           label: 'Published at',
+          description: datetimeDescription,
           validation: { isRequired: true },
-        }),
-        updatedAt: fields.datetime({
+        })),
+        updatedAt: postDatetime(fields.datetime({
           label: 'Updated at',
+          description: datetimeDescription,
           validation: { isRequired: false },
-        }),
+        })),
         draft: fields.checkbox({
           label: 'Draft',
           defaultValue: true,

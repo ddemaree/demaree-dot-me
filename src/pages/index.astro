@@ -1,15 +1,11 @@
 ---
 import { Image } from "astro:assets";
-import portrait from "../assets/images/site/dd-dithered.png";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BnlPostCollection from "../components/BnlPostCollection.astro";
 import LocalPostCollection from "@/components/LocalPostCollection.astro";
 
 import ddPixelPortrait from '@/assets/images/site/dd-pixel-portrait-edited.png'
 
-import { formatDate, getPublishedPosts } from "../lib/taxonomy";
-
-const recentPosts = (await getPublishedPosts()).slice(0, 8);
 ---
 
 <BaseLayout
@@ -34,7 +30,7 @@ const recentPosts = (await getPublishedPosts()).slice(0, 8);
       <hr class="my-10" />
 
       <BnlPostCollection title="Recent posts from the Bits&Letters blog" server:defer>
-        <section slot="fallback" class="py-10 container mx-auto" aria-labelledby="bnl-posts-loading-heading">
+        <section slot="fallback" class="py-10 max-w-5xl mx-auto" aria-labelledby="bnl-posts-loading-heading">
           <h2 id="bnl-posts-loading-heading" class="text-2xl/none font-medium">Recent posts from the Bits&amp;Letters blog</h2>
           <p class="mt-6 text-current/70">Loading posts…</p>
         </section>
@@ -50,12 +46,11 @@ const recentPosts = (await getPublishedPosts()).slice(0, 8);
   @layer components {
 
     .home-page {
-      --home-color-bg: color-mix(in oklab, #2d364a, black 35%);
-      --home-color-bg: var(--color-mauve-100);
-      --home-color-fg: var(--color-pink-600);
+      --home-color-bg: var(--home-background);
+      --home-color-fg: var(--home-accent);
 
       background-color: var(--home-color-bg);
-      color: contrast-color(var(--home-color-bg));
+      color: var(--text);
       min-height: calc(100vh - var(--header-height));
       padding: 1.5rem max(1.75rem, 5vw);
       padding-block-start: 3rem;
@@ -77,18 +72,21 @@ const recentPosts = (await getPublishedPosts()).slice(0, 8);
     }
 
     .home-intro__heading {
-      @apply text-mauve-500;
-      font-size: clamp(28px, 10cqi, 32px);
+      color: var(--home-muted);
+      font-size: clamp(28px, 10cqi, 40px);
       font-weight: 420;
       line-height: 1.1;
       margin: 0;
       width: 100%;
-      /*letter-spacing: 0.02em;*/
+      max-width: 32ch !important;
 
       strong {
-        color: black;
+        color: var(--text);
         font-weight: 600;
       }
+    }
+
+    @variant lg {
     }
   }
 

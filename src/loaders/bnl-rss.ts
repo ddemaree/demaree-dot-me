@@ -41,7 +41,11 @@ function element(item: string, name: string) {
 }
 
 function parseFeed(xml: string): BnlPost[] {
-  return [...xml.matchAll(/<item(?:\s[^>]*)?>([\s\S]*?)<\/item>/gi)].flatMap((match) => {
+  const rss = xml.match(/<rss(?:\s[^>]*)?>([\s\S]*?)<\/rss>/i);
+  const channel = rss?.[1].match(/<channel(?:\s[^>]*)?>([\s\S]*?)<\/channel>/i);
+  if (!channel) throw new Error('B&L feed did not contain an RSS channel');
+
+  return [...channel[1].matchAll(/<item(?:\s[^>]*)?>([\s\S]*?)<\/item>/gi)].flatMap((match) => {
     const title = element(match[1], 'title');
     const description = element(match[1], 'description');
     const link = element(match[1], 'link');

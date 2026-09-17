@@ -19,13 +19,13 @@ I’m generally a fan of frameworks that let you get to work with a bare minimum
 
 This is a rare feeling these days; in order to give developers the power to make powerful, scalable web apps, it feels like we’ve neglected or even forgotten how to make web *pages*. I miss the simplicity and immediacy — the feeling of *magic* — that made web development so fun when I was starting out.
 
-[Next.js](https://demaree.me/p/simpler-web-hacking-with-parcel/nextjs.org) has some of this magic. It’s a React-based app framework that uses file and directory names to set up URL routes; given a file named `about/index.js`, Next will create a web page whose URL is `/about`. This isn’t *quite* the old web I loved in the 2000s, because React is involved. That file isn’t a web page, it’s a JavaScript file that exports a component, and there are things that are stupidly hard to do without layering on ever more libraries and boilerplate. But what’s nice about Next is that once you install it and its dependencies, you can just create a couple of files, run `next dev`, and you’re off to the races.
+[Next.js](https://nextjs.org/) has some of this magic. It’s a React-based app framework that uses file and directory names to set up URL routes; given a file named `about/index.js`, Next will create a web page whose URL is `/about`. This isn’t *quite* the old web I loved in the 2000s, because React is involved. That file isn’t a web page, it’s a JavaScript file that exports a component, and there are things that are stupidly hard to do without layering on ever more libraries and boilerplate. But what’s nice about Next is that once you install it and its dependencies, you can just create a couple of files, run `next dev`, and you’re off to the races.
 
 * * *
 
 This weekend I wanted to play around with [Chroma.js](https://gka.github.io/chroma.js/), a library for manipulating colors and scales. I started out trying it in CodePen and Glitch — both great tools for trying things out — but found myself wanting to write code in [my favorite editor](https://nova.app), not a browser.
 
-[Parcel](https://demaree.me/p/simpler-web-hacking-with-parcel/parceljs.org) made it possible for me to have my cake and eat it too — to write code like I was building a totally local, static web page, but enjoy all the benefits of modern build tools.
+[Parcel](https://parceljs.org/) made it possible for me to have my cake and eat it too — to write code like I was building a totally local, static web page, but enjoy all the benefits of modern build tools.
 
 Parcel’s website describes it as “a compiler for all your code, regardless of the language or toolchain… (it) takes all of your files and dependencies, transforms them, and merges them together into a smaller set of output files that can be used to run your code.” All of which is true, but I think obscures the most important part: Parcel does all of this with little or no setup, configuration, or boilerplate code.
 

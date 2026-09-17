@@ -81,15 +81,15 @@ Next, let’s tell your tools that there’s a new primary branch in town.
 
 Open your repo page on GitHub while signed in, and click on the Settings tab, then click Branches in the left-hand navigation. Once you’re there, on the right-hand side you’ll see a drop-down that lets you change the name of your default branch.
 
-![GitHub repo settings page, showing default branch option](http://res-1.cloudinary.com/demaree/image/upload/q_auto/v1/tiny-mandolin-production/image2.png) <!-- // pragma: allowlist secret -->
+![GitHub repo settings page, showing default branch option](@assets/images/posts/no-more-masters/screenshot-github-default-branch.png)
 
 Once this is set, new pull requests will automatically be set up to merge into `main`, and `git clone`s from GitHub will also check out `main` by default.
 
 ### Netlify
 
-If you (like me) use Netlify to host your websites and JAMstack apps, and use their GitHub integration to automatically publish changes after you push them, you’ll need to go into your Netlify site settings to select a new production branch. This is under *Build & deploy > Deploy contexts*. <!-- // pragma: allowlist secret -->
+If you (like me) use Netlify to host your websites and JAMstack apps, and use their GitHub integration to automatically publish changes after you push them, you’ll need to go into your Netlify site settings to select a new production branch. This is under *Build & deploy > Deploy contexts*.
 
-![Netlify Build & Deploy settings page showing default production branch setting](http://res-1.cloudinary.com/demaree/image/upload/q_auto/v1/tiny-mandolin-production/image1.png) <!-- // pragma: allowlist secret -->
+![Netlify Build & Deploy settings page showing default production branch setting](@assets/images/posts/no-more-masters/screenshot-netlify.png)
 
 ### What about other integrations?
 
@@ -184,7 +184,7 @@ git push -f origin master
 
 Ahhhhhhhhh, so nice to have that done. Here’s the deprecation message as shown on one of my GitHub repos:
 
-![Screenshot of master branch deprecation message on GitHub web interface](http://res-2.cloudinary.com/demaree/image/upload/q_auto/v1/tiny-mandolin-production/image5.png) <!-- // pragma: allowlist secret -->
+![Screenshot of master branch deprecation message on GitHub web interface](@assets/images/posts/no-more-masters/screenshot-github-readme.png)
 
 Because the server’s `master` now points to this orphaned commit, Git will raise an error whenever you or someone on your team tries to pull from it:
 

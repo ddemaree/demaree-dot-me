@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @theme static {
   --font-sans: "Die Grotesk", "Helvetica Neue", sans-serif;
   --font-mono: "Berkeley Mono", ui-monospace, monospace;

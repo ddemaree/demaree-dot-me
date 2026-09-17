@@ -2,8 +2,8 @@
 
 This repository is the in-progress Astro rebuild of `demaree.me`. The current
 site is mostly static: Astro prerenders the home page, blog index, and published
-post pages. Topic and tag archives render on demand. The Vercel adapter also
-packages the Keystatic server endpoints.
+post pages. Topic and tag archives, feed redirects, and the B&L server island
+render on demand through the Vercel adapter. Keystatic is development-only.
 
 ## Toolchain
 
@@ -54,8 +54,8 @@ permission needed to bind that listener rather than changing project code.
   unchanged and referenced by root-relative URLs.
 - Local fonts and their CSS variables are configured in `astro.config.mjs`.
 - The `@assets/*` alias maps to `src/assets/*`.
-- The Vercel adapter is the deployment target. Do not remove it solely because
-  the public pages are prerendered; Keystatic also contributes server routes.
+- The Vercel adapter is the deployment target. Keep it for dynamic archives,
+  feed redirects, and the B&L server island, even though post pages prerender.
 - Preserve trailing slashes in internal page links, matching the existing site.
 - Some About and topic links intentionally target the existing production site;
   corresponding local routes do not exist yet.
@@ -67,7 +67,11 @@ permission needed to bind that listener rather than changing project code.
  post fields, validation, or asset paths. Topic documents live in
  `src/content/topics/` and must stay aligned as well.
 - Keystatic uses local storage. Editing at `/keystatic` changes repository files
-  directly; it has no remote storage or authentication configuration.
+  directly; it has no remote storage or authentication configuration. Its UI
+  and API must remain excluded from production builds.
+- Offset-free content timestamps mean `America/New_York`, independent of the
+  host timezone. Use `src/lib/dates.mjs` for parsing and importer conversion;
+  verify date changes with `node scripts/check-content-dates.mjs`.
 - Both the blog index and `getStaticPaths()` explicitly exclude posts whose
   `draft` field is true. Preserve that behavior unless the task says otherwise.
 - Store post images in `src/assets/images/posts/<slug>/` and reference them as
