@@ -27,3 +27,4 @@ pnpm-debug.log*
 
 # Licensed font binaries are hosted outside this public repository.
 src/assets/fonts/
+.wrangler

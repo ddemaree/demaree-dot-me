@@ -5,8 +5,9 @@ import { env } from 'node:process';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import markdoc from '@astrojs/markdoc';
-import vercel from '@astrojs/vercel';
 import keystatic from '@keystatic/astro';
+
+import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
 export default defineConfig({
@@ -21,5 +22,5 @@ export default defineConfig({
 
   // Local storage writes repository files and is only useful in development.
   integrations: [react(), markdoc(), ...(env.NODE_ENV === 'development' ? [keystatic()] : [])],
-  adapter: vercel(),
+  adapter: cloudflare(),
 });
