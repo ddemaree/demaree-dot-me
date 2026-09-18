@@ -5,8 +5,6 @@
   :root {
     color-scheme: light;
     --text: #000;
-    --nav-text: #52525b;
-    --header-border: #d4d4d8;
     --promo: #f1f5f9;
     --code: #0f766e;
     --home-background: var(--color-mauve-100);
@@ -15,7 +13,6 @@
     --description: var(--color-mauve-600);
     --surface: #ffffff;
     --subsurface: #443a46;
-    --header: #e4e4e7;
     --footer: #e7ebf3;
     --red: #dc2626;
     --red-muted: #dc2626;
@@ -35,10 +32,7 @@
     --text: #f2edf3;
     --surface: #211e24;
     --subsurface: #171419;
-    --header: #2c2730;
     --footer: #252a35;
-    --nav-text: #d6cdd9;
-    --header-border: #49414e;
     --promo: #2a303b;
     --code: #5eead4;
     --red: #ff8980;
@@ -135,8 +129,8 @@
     }
 
     .posts-list__date {
-      @apply uppercase text-sm tracking-wider font-display-alt;
-      color: var(--home-color-fg, var(--color-fg, gray));
+      @apply uppercase text-sm tracking-wider font-display-alt text-current/65;
+      /*color: var(--home-color-fg, var(--color-fg, gray));*/
       width: min-content;
       text-align: right;
       text-wrap: nowrap;
@@ -743,62 +737,6 @@
 }
 
 @media (max-width: 40rem) {
-  .site-header {
-    height: 3.5rem;
-    padding-inline: 1.5rem 0.75rem;
-  }
-
-  .brand {
-    width: 4rem;
-    height: 4rem;
-  }
-
-  .desktop-navigation {
-    display: none;
-  }
-
-  .mobile-navigation {
-    display: block;
-  }
-
-  .mobile-navigation summary {
-    display: flex;
-    width: 3.5rem;
-    height: 3rem;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    list-style: none;
-  }
-
-  .mobile-navigation summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .mobile-navigation summary img {
-    width: 3.5rem;
-    height: 3rem;
-  }
-
-  .mobile-navigation nav {
-    position: absolute;
-    top: 3rem;
-    right: 0;
-    left: 0;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid var(--header-border);
-    background: var(--header);
-  }
-
-  .mobile-navigation a {
-    display: block;
-    padding: 0.5rem;
-  }
-
   .site-footer p {
     max-width: 28rem;
   }
@@ -828,8 +766,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .brand,
-  .brand img,
   .index-entry__arrow,
   .social-link {
     transition: none;

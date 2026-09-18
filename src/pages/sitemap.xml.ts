@@ -11,6 +11,7 @@ export const GET: APIRoute = async ({ site }) => {
   const tags = new Set(posts.flatMap((post) => postTagSlugs(post).map(({ slug }) => slug)));
   const paths = [
     '/',
+    '/about/',
     '/blog/',
     '/topics/',
     '/labels/',
