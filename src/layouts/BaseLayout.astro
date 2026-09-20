@@ -15,6 +15,7 @@ interface Props {
   publishedAt?: Date;
   updatedAt?: Date;
   noindex?: boolean;
+  standardDocumentUri?: string;
 }
 
 const {
@@ -27,6 +28,7 @@ const {
   publishedAt,
   updatedAt,
   noindex = false,
+  standardDocumentUri,
 } = Astro.props;
 
 const description = suppliedDescription?.trim() || 'Writing by David Demaree.';
@@ -64,6 +66,9 @@ const indexable = !noindex && (Astro.response.status ?? 200) < 400;
     {type === 'article' && publishedAt && <meta property="article:published_time" content={publishedAt.toISOString()} />}
     {type === 'article' && updatedAt && <meta property="article:modified_time" content={updatedAt.toISOString()} />}
     <link rel="alternate" type="application/rss+xml" title="David Demaree" href="/feed/" />
+    {standardDocumentUri && (
+      <link rel="site-standard-document" href={standardDocumentUri} />
+    )}
     <link rel="sitemap" href="/sitemap.xml" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <script is:inline src="https://kit.fontawesome.com/bd2c6c7ddb.js" crossorigin="anonymous" defer></script>
