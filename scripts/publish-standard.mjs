@@ -31,6 +31,11 @@ const dryRun = process.argv.includes('--dry-run');
 const singlePostIdx = process.argv.indexOf('--post');
 const singlePost = singlePostIdx !== -1 ? process.argv[singlePostIdx + 1] : null;
 
+// Only publish posts with publishedAt on or after this date.
+// Frontmatter dates are offset-free America/New_York, so we compare strings
+// (all values share the same YYYY-MM-DDTHH:mm format).
+const PUBLISH_AFTER = '2026-01-01T00:00';
+
 // --- Env ---
 const handle = process.env.STANDARD_SITE_HANDLE;
 const appPassword = process.env.STANDARD_SITE_APP_PASSWORD;
@@ -123,6 +128,9 @@ async function readPosts() {
 
     const slug = file.match(/posts\/([^/]+)\.mdoc$/)?.[1];
     if (!slug) continue;
+
+    // Skip posts published before the cutoff
+    if (fm.publishedAt < PUBLISH_AFTER) continue;
 
     posts.push({
       slug,
