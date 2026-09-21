@@ -4,6 +4,7 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import sidebarImage from '../../assets/images/site/bits-and-letters.png';
 import bookImage from '../../assets/images/site/git-for-humans.webp';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { documentUri } from '../../lib/standard-site';
 import { formatDate, getTopic, postTopicId, slugifyTag } from '../../lib/taxonomy';
 import { getPostDescription } from '../../lib/post-description';
 
@@ -32,6 +33,12 @@ interface Props {
 
 const { post, newerPost, olderPost } = Astro.props;
 const { Content } = await render(post);
+
+// Generate standard.site document AT-URI if DID is configured
+const standardDid = import.meta.env.STANDARD_SITE_DID;
+const standardDocumentUri = standardDid
+  ? documentUri(standardDid, post.id)
+  : undefined;
 const publishedAt = formatDate(post.data.publishedAt);
 const topic = await getTopic(postTopicId(post));
 const tags = post.data.tags.map((tag) => ({ tag, slug: slugifyTag(tag) }));
@@ -45,6 +52,7 @@ const tags = post.data.tags.map((tag) => ({ tag, slug: slugifyTag(tag) }));
   imageAlt={post.data.featuredImageAlt}
   publishedAt={post.data.publishedAt}
   updatedAt={post.data.updatedAt}
+  standardDocumentUri={standardDocumentUri}
 >
   <main id="main" class="single-post">
     <article>
