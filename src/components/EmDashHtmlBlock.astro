@@ -1,0 +1,24 @@
+---
+import { HtmlBlock } from 'emdash/ui';
+import { sanitizeEmDashHtml } from '../lib/emdash-html.mjs';
+
+interface Props {
+  node: {
+    _type: 'htmlBlock';
+    _key: string;
+    html: string;
+    css?: string;
+    js?: string;
+    isolated?: boolean;
+  };
+}
+
+const { node } = Astro.props;
+const html = typeof node?.html === 'string' ? node.html : '';
+---
+
+{node?.isolated ? (
+  <HtmlBlock node={node} />
+) : html ? (
+  <div class="emdash-html-block flow" set:html={sanitizeEmDashHtml(html)} />
+) : null}

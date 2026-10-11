@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "packageManager": "pnpm@11.21.0",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.16.0"
   },
   "scripts": {
     "dev": "astro dev",
@@ -16,7 +16,11 @@
     "standard:publish": "node scripts/publish-standard.mjs",
     "taxonomy:assign": "node scripts/assign-taxonomy.mjs",
     "astro": "astro",
-    "generate-types": "wrangler types"
+    "generate-types": "wrangler types",
+    "import:emdash": "node scripts/import-emdash.mjs",
+    "login:emdash": "node scripts/login-emdash.mjs",
+    "check:emdash": "node scripts/check-emdash-conversion.mjs",
+    "check:emdash-site": "node scripts/check-emdash-site.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.3.2",
@@ -24,6 +28,7 @@
     "@astrojs/react": "^6.0.2",
     "@astrojs/vercel": "^11.0.5",
     "@atproto/api": "^0.20.44",
+    "@emdash-cms/cloudflare": "1.1.0",
     "@js-temporal/polyfill": "^0.5.1",
     "@keystatic/astro": "^5.2.0",
     "@keystatic/core": "^0.6.4",
@@ -31,8 +36,10 @@
     "astro": "^7.3.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "emdash": "1.1.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "sanitize-html": "2.17.1",
     "sharp": "^0.35.3",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.3",
@@ -40,13 +47,19 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@markdoc/markdoc": "0.5.4",
     "@types/node": "^22.20.3",
+    "@types/sanitize-html": "2.16.0",
     "@types/turndown": "^5.0.6",
     "turndown": "^7.2.4",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "yaml": "2.8.2"
   },
   "allowScripts": {
     "esbuild@0.28.2": true,
     "fsevents@2.3.3": true
+  },
+  "emdash": {
+    "seed": "seed/emdash-poc.json"
   }
 }

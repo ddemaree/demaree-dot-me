@@ -1,8 +1,13 @@
 ---
-import { formatDate, getPublishedPosts } from "../lib/taxonomy";
+import { formatDate, type PostEntry } from "../lib/taxonomy";
 import Button from "./Button.astro";
+import { emdashPostUrl } from "../lib/emdash-post";
 
-const recentPosts = (await getPublishedPosts()).slice(0, 5);
+interface Props {
+  posts: PostEntry[];
+}
+
+const { posts: recentPosts } = Astro.props;
 ---
 <section class="home-posts my-10">
   <div class="col-span-full">
@@ -15,7 +20,7 @@ const recentPosts = (await getPublishedPosts()).slice(0, 5);
         {formatDate(post.data.publishedAt)}
       </time>
       <h3 class="home-posts__title posts-list__title">
-        <a href={`/p/${post.id}/`}>{post.data.title}</a>
+        <a href={emdashPostUrl(post)}>{post.data.title}</a>
       </h3>
       <div class="home-posts__description posts-list__description">
         <p>{post.data.description}</p>

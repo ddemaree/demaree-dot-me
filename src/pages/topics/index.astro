@@ -4,9 +4,18 @@ export const prerender = false;
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getPublishedPosts, getTopics, postTopicId } from '../../lib/taxonomy';
 
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');
+Astro.response.headers.set('Cache-Control', 'no-store');
 
-const [topics, posts] = await Promise.all([getTopics(), getPublishedPosts()]);
+let topics: Awaited<ReturnType<typeof getTopics>> = [];
+let posts: Awaited<ReturnType<typeof getPublishedPosts>> = [];
+let unavailable = false;
+try {
+  [topics, posts] = await Promise.all([getTopics(), getPublishedPosts()]);
+} catch (error) {
+  console.error('Unable to load topic index from EmDash.', error);
+  Astro.response.status = 503;
+  unavailable = true;
+}
 const counts = new Map<string, number>();
 for (const post of posts) {
   const id = postTopicId(post);
@@ -22,7 +31,7 @@ for (const post of posts) {
     <header class="index-header">
       <p class="index-eyebrow">Index</p>
       <h1>Topics</h1>
-      <p class="index-lede">A few curated collections, including mini-blogs that live in the site navigation.</p>
+      <p class="index-lede">{unavailable ? 'Content is temporarily unavailable. Please try again shortly.' : 'A few curated collections, including mini-blogs that live in the site navigation.'}</p>
     </header>
 
     <section class="taxonomy-index" aria-label="Topics">

@@ -9,19 +9,26 @@ import {
   tagLabelFromPosts,
 } from '../../lib/taxonomy';
 
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');
+Astro.response.headers.set('Cache-Control', 'no-store');
 
 const slug = Astro.params.slug ?? '';
-const [posts, topics] = await Promise.all([getPostsByTag(slug), getTopics()]);
-const tag = tagLabelFromPosts(slug, posts);
-
-if (posts.length === 0) {
-  Astro.response.status = 404;
+let posts: Awaited<ReturnType<typeof getPostsByTag>> = [];
+let topics: Awaited<ReturnType<typeof getTopics>> = [];
+let unavailable = false;
+try {
+  [posts, topics] = await Promise.all([getPostsByTag(slug), getTopics()]);
+  if (posts.length === 0) Astro.response.status = 404;
+} catch (error) {
+  console.error('Unable to load tag archive from EmDash.', error);
+  Astro.response.status = 503;
+  unavailable = true;
 }
-
-const title = posts.length > 0 ? `${tag} — David Demaree` : 'Tag not found — David Demaree';
-const description =
-  posts.length > 0
+const tag = tagLabelFromPosts(slug, posts);
+const heading = unavailable ? 'Content temporarily unavailable' : posts.length > 0 ? tag : 'Tag not found';
+const title = `${heading} — David Demaree`;
+const description = unavailable
+  ? 'Content is temporarily unavailable. Please try again shortly.'
+  : posts.length > 0
     ? `Posts tagged ${tag}.`
     : 'This tag does not match any published posts.';
 ---
@@ -32,9 +39,10 @@ const description =
       <p class="index-eyebrow">
         <a href="/labels/">Tags</a>
       </p>
-      <h1>{posts.length > 0 ? tag : 'Tag not found'}</h1>
+      <h1>{heading}</h1>
+      {unavailable && <p class="index-lede">{description}</p>}
     </header>
 
-    {posts.length > 0 && <PostIndex posts={posts} topics={topics} label={`Posts tagged ${tag}`} />}
+    {posts.length > 0 && !unavailable && <PostIndex posts={posts} topics={topics} label={`Posts tagged ${tag}`} />}
   </main>
 </BaseLayout>

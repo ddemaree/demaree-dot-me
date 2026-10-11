@@ -12,14 +12,19 @@
  *
  * Environment variables:
  *   STANDARD_SITE_HANDLE        Bluesky handle (e.g. demar.ee)
- *   STANDARD_SITE_REFRESH_TX    App password refresh token triplet (tx)
- *   STANDARD_SITE_REFRESH_T     App password refresh token (t)
- *   STANDARD_SITE_REFRESH_S     App password refresh token (s)
- *   STANDARD_SITE_DID           DID (did:plc:...) — auto-resolved if omitted
+ *   STANDARD_SITE_APP_PASSWORD  Bluesky app password (publishing only)
+ *   STANDARD_SITE_DID           DID (did:plc:...), required for publishing
  *   STANDARD_SITE_PUBLICATION_URI  AT-URI of publication record
+ *   EMDASH_SITE_URL             CMS origin (default https://demaree.me)
+ *   EMDASH_API_TOKEN / EMDASH_TOKEN  CMS read token; otherwise use saved OAuth
+ *
+ * --dry-run reads EmDash but never logs in to Bluesky or writes records/files.
  */
 import { BskyAgent } from '@atproto/api';
-import { readFileSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync } from 'node:fs';
+import { Temporal } from '@js-temporal/polyfill';
+import { readPublishedEmDashPosts } from './lib/emdash-published.mjs';
+import { documentRkey, documentUri, publicationUri } from '../src/lib/standard-site.mjs';
 
 const BSKY_SERVICE = 'https://bsky.social';
 const PUBLICATION_NSID = 'site.standard.publication';
@@ -31,10 +36,13 @@ const dryRun = process.argv.includes('--dry-run');
 const singlePostIdx = process.argv.indexOf('--post');
 const singlePost = singlePostIdx !== -1 ? process.argv[singlePostIdx + 1] : null;
 
-// Only publish posts with publishedAt on or after this date.
-// Frontmatter dates are offset-free America/New_York, so we compare strings
-// (all values share the same YYYY-MM-DDTHH:mm format).
-const PUBLISH_AFTER = '2026-01-01T00:00';
+// Preserve the original January 1 cutoff at midnight in America/New_York.
+// CMS system timestamps identify instants, so compare milliseconds.
+const PUBLISH_AFTER = Temporal.Instant.from('2026-01-01T00:00:00-05:00').epochMilliseconds;
+
+if (singlePostIdx !== -1 && (!singlePost || singlePost.startsWith('--'))) {
+  throw new Error('--post requires a post slug.');
+}
 
 // --- Env ---
 const handle = process.env.STANDARD_SITE_HANDLE;
@@ -42,7 +50,7 @@ const appPassword = process.env.STANDARD_SITE_APP_PASSWORD;
 const did = process.env.STANDARD_SITE_DID;
 const pubUriEnv = process.env.STANDARD_SITE_PUBLICATION_URI;
 
-if (!handle || !appPassword) {
+if (!dryRun && (!handle || !appPassword)) {
   console.error(
     'Missing credentials. Set STANDARD_SITE_HANDLE and STANDARD_SITE_APP_PASSWORD.',
   );
@@ -50,103 +58,37 @@ if (!handle || !appPassword) {
 }
 
 if (!did && !dryRun) {
-  console.error('Missing DID. Set STANDARD_SITE_DID or pass --resolve-did.');
+  console.error('Missing DID. Set STANDARD_SITE_DID.');
   process.exit(1);
 }
 
-// --- Helpers ---
-function documentUri(did, slug) {
-  return `at://${did}/${DOCUMENT_NSID}/posts/${slug}`;
-}
-
-function publicationUriFor(did) {
-  return `at://${did}/${PUBLICATION_NSID}/main`;
-}
-
-/**
- * Parse Markdoc frontmatter (YAML between --- delimiters).
- * Returns an object with the frontmatter fields, or null if parsing fails.
- */
-function parseFrontmatter(content) {
-  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-  if (!match) return null;
-
-  const yaml = match[1];
-  const fields = {};
-  let currentKey = null;
-  let currentArray = null;
-
-  for (const line of yaml.split('\n')) {
-    const arrayMatch = line.match(/^  - (.+)$/);
-    if (arrayMatch && currentKey) {
-      if (!currentArray) currentArray = [];
-      const value = arrayMatch[1].trim();
-      currentArray.push(value.startsWith('"') && value.endsWith('"')
-        ? value.slice(1, -1)
-        : value.startsWith("'") && value.endsWith("'")
-          ? value.slice(1, -1)
-          : value);
-      fields[currentKey] = currentArray;
-      continue;
-    }
-
-    const kvMatch = line.match(/^(\w+):\s*(.*)$/);
-    if (kvMatch) {
-      currentKey = kvMatch[1];
-      currentArray = null;
-      let value = kvMatch[2].trim();
-      // Strip quotes
-      if ((value.startsWith('"') && value.endsWith('"')) ||
-          (value.startsWith("'") && value.endsWith("'"))) {
-        value = value.slice(1, -1);
-      }
-      fields[currentKey] = value;
-    }
-  }
-
-  return fields;
-}
-
-/**
- * Read all published (non-draft) posts from content directory.
- */
+/** Read published CMS posts and assign stable document identities. */
 async function readPosts() {
   const posts = [];
-  const postsDir = './src/content/posts';
+  for (const entry of await readPublishedEmDashPosts()) {
+    if (!entry.publishedAt) throw new Error(`Published CMS post ${entry.slug || entry.id} has no publication date.`);
+    const instant = Temporal.Instant.from(entry.publishedAt);
+    if (instant.epochMilliseconds < PUBLISH_AFTER) continue;
 
-  const files = readdirSync(postsDir, { recursive: true }).map(
-    (name) => `${postsDir}/${name}`,
-  );
-
-  for (const file of files) {
-    if (!file.endsWith('.mdoc')) continue;
-
-    const content = readFileSync(file, 'utf-8');
-    const fm = parseFrontmatter(content);
-    if (!fm) continue;
-    if (fm.draft === 'true') continue;
-
-    const slug = file.match(/posts\/([^/]+)\.mdoc$/)?.[1];
-    if (!slug) continue;
-
-    // Skip posts published before the cutoff
-    if (fm.publishedAt < PUBLISH_AFTER) continue;
-
+    const slug = entry.slug || entry.id;
+    if (!slug || typeof entry.data.title !== 'string' || !entry.data.title.trim()) {
+      throw new Error('A published CMS post is missing its slug or title.');
+    }
     posts.push({
       slug,
-      title: fm.title,
-      description: fm.description || '',
-      url: `${SITE_URL}/p/${slug}/`,
-      publishedAt: fm.publishedAt,
+      title: entry.data.title,
+      description: typeof entry.data.description === 'string' ? entry.data.description : '',
+      path: `/p/${encodeURIComponent(slug)}/`,
+      url: `${SITE_URL}/p/${encodeURIComponent(slug)}/`,
+      publishedAt: instant.toString(),
     });
   }
-
   return posts;
 }
 
 // --- Agent ---
 async function createAgent() {
-  const agent = BskyAgent.create({
+  const agent = new BskyAgent({
     service: BSKY_SERVICE,
   });
 
@@ -162,8 +104,8 @@ async function createAgent() {
 async function createPubRecord(agent, effectiveDid) {
   if (dryRun) {
     console.log('[dry-run] Would create publication record');
-    console.log(`  URI: ${publicationUriFor(effectiveDid)}`);
-    return publicationUriFor(effectiveDid);
+    console.log(`  URI: ${publicationUri(effectiveDid)}`);
+    return publicationUri(effectiveDid);
   }
 
   const result = await agent.com.atproto.repo.putRecord({
@@ -204,20 +146,22 @@ async function publishDocument(agent, effectiveDid, pubUri, post) {
     console.log(`[dry-run] Would publish document: ${post.slug}`);
     console.log(`  URI: ${uri}`);
     console.log(`  Title: ${post.title}`);
+    console.log(`  URL: ${post.url}`);
+    console.log(`  Published: ${post.publishedAt}`);
     return;
   }
 
   await agent.com.atproto.repo.putRecord({
     repo: effectiveDid,
     collection: DOCUMENT_NSID,
-    rkey: `posts/${post.slug}`,
+    rkey: documentRkey(post.slug),
     record: {
       $type: DOCUMENT_NSID,
       title: post.title,
       description: post.description,
-      url: post.url,
-      createdAt: post.publishedAt,
-      publication: pubUri,
+      site: pubUri,
+      path: post.path,
+      publishedAt: post.publishedAt,
     },
   });
 
@@ -226,16 +170,17 @@ async function publishDocument(agent, effectiveDid, pubUri, post) {
 
 // --- Main ---
 async function main() {
-  if (dryRun && !did) {
-    // For dry-run without DID, use a placeholder
-    console.log('Dry-run mode (no DID set, using placeholder)');
-    const placeholderDid = 'did:plc:placeholder';
-    const posts = await readPosts();
-    const filtered = singlePost ? posts.filter(p => p.slug === singlePost) : posts;
+  const posts = await readPosts();
+  const filtered = singlePost ? posts.filter(p => p.slug === singlePost) : posts;
 
-    console.log(`\nWould publish ${filtered.length} document records:\n`);
+  if (dryRun) {
+    const effectiveDid = did || 'did:plc:placeholder';
+    const pubUri = pubUriEnv || publicationUri(effectiveDid);
+    if (!did) console.log('Dry-run mode (no DID set, using placeholder)');
+    if (createPublication) await createPubRecord(null, effectiveDid);
+    console.log(`\nWould publish ${filtered.length} document records from EmDash:\n`);
     for (const post of filtered) {
-      console.log(`  ${documentUri(placeholderDid, post.slug)} — ${post.title}`);
+      await publishDocument(null, effectiveDid, pubUri, post);
     }
     return;
   }
@@ -248,7 +193,7 @@ async function main() {
 
   let pubUri = pubUriEnv;
   if (!pubUri) {
-    pubUri = publicationUriFor(effectiveDid);
+    pubUri = publicationUri(effectiveDid);
   }
 
   if (createPublication) {
@@ -268,9 +213,6 @@ async function main() {
   if (!dryRun && !createPublication) {
     writeWellKnownFile(pubUri);
   }
-
-  const posts = await readPosts();
-  const filtered = singlePost ? posts.filter(p => p.slug === singlePost) : posts;
 
   console.log(`Publishing ${filtered.length} document(s)...\n`);
 
@@ -295,6 +237,6 @@ async function main() {
 }
 
 main().catch(err => {
-  console.error(err);
+  console.error(err.message);
   process.exit(1);
 });

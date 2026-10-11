@@ -4,9 +4,17 @@ export const prerender = false;
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getTagIndex } from '../../lib/taxonomy';
 
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');
+Astro.response.headers.set('Cache-Control', 'no-store');
 
-const tags = await getTagIndex();
+let tags: Awaited<ReturnType<typeof getTagIndex>> = [];
+let unavailable = false;
+try {
+  tags = await getTagIndex();
+} catch (error) {
+  console.error('Unable to load tag index from EmDash.', error);
+  Astro.response.status = 503;
+  unavailable = true;
+}
 ---
 
 <BaseLayout
@@ -17,7 +25,7 @@ const tags = await getTagIndex();
     <header class="index-header">
       <p class="index-eyebrow">Index</p>
       <h1>Tags</h1>
-      <p class="index-lede">On-demand archives for every label used on a published post.</p>
+      <p class="index-lede">{unavailable ? 'Content is temporarily unavailable. Please try again shortly.' : 'On-demand archives for every label used on a published post.'}</p>
     </header>
 
     <ul class="tag-index" aria-label="Tags">
