@@ -1,0 +1,6 @@
+---
+export const prerender = false;
+
+// Preserve existing experiment links when the public archive takes over.
+return Astro.redirect(`/blog/${Astro.url.search}`, 301);
+---

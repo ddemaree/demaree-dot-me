@@ -3,7 +3,15 @@ import DdMark from '@/assets/svg/dd-mark.svg';
 import { getNavTopics } from '../lib/taxonomy';
 
 const path = Astro.url.pathname;
-const navTopics = await getNavTopics();
+let navTopics: Awaited<ReturnType<typeof getNavTopics>> = [];
+try {
+  navTopics = await getNavTopics();
+} catch (error) {
+  console.error('Unable to load navigation topics from EmDash.', error);
+  Astro.response.status = 503;
+  Astro.response.headers.set('Cache-Control', 'no-store');
+  Astro.response.headers.set('X-Robots-Tag', 'noindex');
+}
 const isBlog =
   path === '/blog/' ||
   path === '/blog' ||
