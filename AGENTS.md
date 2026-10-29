@@ -1,7 +1,7 @@
 # Project instructions
 
 This repository is the in-progress Astro rebuild of `demaree.me`.
-EmDash 1.2.0 is the public content backend. Astro
+EmDash 1.4.0 is the public content backend. Astro
 uses server output and the Cloudflare adapter; home, blog, post, topic, tag,
 feed, and sitemap routes read CMS data at request time. The
 `demaree-emdash-poc` Worker serves `demaree.me` and its `www`/`log` aliases.
