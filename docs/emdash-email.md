@@ -46,13 +46,17 @@ A received test email and successful fresh magic-link login are the acceptance
 checks. Never record credentials, tokens, or complete sign-in links in logs,
 issues, or source files.
 
-## Status at preparation
+## Rollout status — October 29, 2026
 
-The local plugin and binding configuration are prepared. No production sender
-was onboarded and no test email was sent. On October 29, the domain's Email
-Sending list was empty and the account's sending quota was unresolved. Billing
-subscription details were unavailable through the connected OAuth account.
-See DEM-23 for rollout progress and owner confirmation.
+The owner approved sender onboarding, deployment, and one test email to the
+existing admin address. Cloudflare Email Sending is enabled for `demaree.me`,
+with sender-domain DNS status `ready` and no reported conflicts. The account
+reports a quota of 1,000 emails per day; no subscription change was required.
+Incoming mail still uses the existing `smtp.google.com` MX record. The bounce
+records and DKIM selector use `cf-bounce`; existing domain DMARC was preserved.
+
+Plugin deployment, delivery testing, and owner-confirmed magic-link sign-in are
+the remaining rollout checks. See DEM-23 for current status.
 
 ## References
 
