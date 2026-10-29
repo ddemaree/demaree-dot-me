@@ -6,6 +6,14 @@ uses server output and the Cloudflare adapter; home, blog, post, topic, tag,
 feed, and sitemap routes read CMS data at request time. The
 `demaree-emdash-poc` Worker serves `demaree.me` and its `www`/`log` aliases.
 
+## Issue tracking
+
+Track this codebase's deferred work in the Linear **DEM** team (Demaree Office).
+Use the **Backlog** state and prefix every issue title with `demaree-dot-me:`.
+Check for an existing issue before creating one, and include evidence plus clear
+acceptance criteria. Work discovered but not completed in the current task must
+be logged there rather than left only in chat or local notes.
+
 ## EmDash and Cloudflare
 
 Follow [docs/emdash-poc.md](docs/emdash-poc.md) for setup, import commands,
