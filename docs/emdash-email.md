@@ -55,8 +55,13 @@ reports a quota of 1,000 emails per day; no subscription change was required.
 Incoming mail still uses the existing `smtp.google.com` MX record. The bounce
 records and DKIM selector use `cf-bounce`; existing domain DMARC was preserved.
 
-Plugin deployment, delivery testing, and owner-confirmed magic-link sign-in are
-the remaining rollout checks. See DEM-23 for current status.
+PR #6 is merged and production deployment succeeded for commit `cd67b9c`
+(Worker version `97096c37-4604-4528-bd83-37cbd1ea8eff`). Settings → Email
+shows `cloudflare-email` active. The one authorized test sent through EmDash
+arrived in the admin's inbox, with SPF, DKIM, and DMARC all passing.
+
+Owner-confirmed fresh magic-link sign-in is the remaining acceptance check.
+See DEM-23 for current status.
 
 ## References
 

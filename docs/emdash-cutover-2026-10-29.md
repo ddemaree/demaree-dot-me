@@ -80,9 +80,12 @@ media upload, and scheduling) were not exercised as part of this cutover check.
 
 ## Deferred follow-up
 
-Remaining work is tracked in the DEM Linear team's Backlog:
+Follow-up work is tracked in the DEM Linear team. Email delivery is verified;
+its final authentication test is in Needs Testing. Other items are in Backlog:
 
 - [DEM-23: Email and magic-link recovery](https://linear.app/bitsandletters/issue/DEM-23/demaree-dot-me-enable-cloudflare-email-and-verify-magic-link-recovery)
 - [DEM-24: Legacy editorial links and content audit](https://linear.app/bitsandletters/issue/DEM-24/demaree-dot-me-repair-legacy-editorial-links-and-recheck-content-audit)
 - [DEM-25: HTTPS and domain alias normalization](https://linear.app/bitsandletters/issue/DEM-25/demaree-dot-me-normalize-https-and-production-domain-aliases)
 - [DEM-26: Editorial workflow verification](https://linear.app/bitsandletters/issue/DEM-26/demaree-dot-me-exercise-production-emdash-editorial-workflows)
+
+- [DEM-27: Production CMS branding](https://linear.app/bitsandletters/issue/DEM-27/demaree-dot-me-update-production-cms-site-title-after-the-emdash)
