@@ -1,0 +1,8 @@
+---
+export const prerender = false;
+
+// The destination applies the same published-only visibility checks as any
+// other public post request, including requests made in an editor's session.
+const destination = Astro.url.pathname.replace(/^\/emdash-test\//, '/p/');
+return Astro.redirect(`${destination}${Astro.url.search}`, 301);
+---

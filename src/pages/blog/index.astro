@@ -1,9 +1,21 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostIndex from '../../components/PostIndex.astro';
-import { getPublishedPosts, getTopics } from '../../lib/taxonomy';
+import { getPublishedPosts, getTopics, type PostEntry, type TopicEntry } from '../../lib/taxonomy';
 
-const [posts, topics] = await Promise.all([getPublishedPosts(), getTopics()]);
+export const prerender = false;
+
+let posts: PostEntry[];
+let topics: TopicEntry[];
+try {
+  [posts, topics] = await Promise.all([getPublishedPosts(), getTopics()]);
+} catch (error) {
+  console.error('[EmDash] Failed to load public archive:', error);
+  return new Response('Posts are temporarily unavailable. Please try again soon.', {
+    status: 503,
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+  });
+}
 ---
 
 <BaseLayout title="All posts — David Demaree" description="Writing by David Demaree.">

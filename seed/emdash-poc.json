@@ -1,0 +1,77 @@
+{
+  "version": "1",
+  "meta": {
+    "name": "Demaree EmDash experiment",
+    "description": "Schema only. Representative historical content is imported by scripts/import-emdash.mjs."
+  },
+  "settings": {
+    "title": "David Demaree — EmDash experiment",
+    "tagline": "An isolated CMS migration experiment for demaree.me.",
+    "timezone": "America/New_York"
+  },
+  "collections": [
+    {
+      "slug": "topics",
+      "label": "Topics",
+      "labelSingular": "Topic",
+      "supports": ["drafts", "revisions"],
+      "urlPattern": "/topics/{slug}/",
+      "fields": [
+        { "slug": "title", "label": "Title", "type": "string", "required": true },
+        { "slug": "description", "label": "Description", "type": "text" },
+        { "slug": "in_nav", "label": "Show in navigation", "type": "boolean", "defaultValue": false },
+        { "slug": "nav_order", "label": "Navigation order", "type": "integer", "defaultValue": 0 },
+        { "slug": "import_hash", "label": "Import hash", "type": "string" }
+      ]
+    },
+    {
+      "slug": "posts",
+      "label": "Posts",
+      "labelSingular": "Post",
+      "supports": ["drafts", "revisions", "preview", "search"],
+      "urlPattern": "/p/{slug}/",
+      "dateField": "original_published_at",
+      "admin": { "listColumns": ["format", "original_published_at"] },
+      "fields": [
+        { "slug": "title", "label": "Title", "type": "string", "required": true, "searchable": true },
+        { "slug": "description", "label": "Description", "type": "text" },
+        { "slug": "subtitle", "label": "Subtitle", "type": "text" },
+        { "slug": "content", "label": "Content", "type": "portableText", "searchable": true },
+        { "slug": "format", "label": "Post format", "type": "select", "defaultValue": "standard", "validation": { "options": ["standard", "aside", "link"] } },
+        { "slug": "link_url", "label": "Link URL", "type": "url" },
+        { "slug": "featured_image", "label": "Featured image", "type": "image" },
+        { "slug": "featured_image_alt", "label": "Featured image alt text", "type": "string" },
+        { "slug": "topic", "label": "Topic", "type": "reference", "validation": { "relation": "post_topic", "relationSide": "child", "multiple": false } },
+        { "slug": "tags", "label": "Original tag labels", "type": "json" },
+        { "slug": "draft", "label": "Original draft flag", "type": "boolean", "defaultValue": false },
+        { "slug": "wordpress_id", "label": "Original WordPress ID", "type": "integer" },
+        { "slug": "source_url", "label": "Original source URL", "type": "url" },
+        { "slug": "original_published_at", "label": "Original publication date", "type": "datetime", "required": true },
+        { "slug": "original_updated_at", "label": "Original update date", "type": "datetime" },
+        { "slug": "original_metadata", "label": "Original frontmatter", "type": "json" },
+        { "slug": "import_hash", "label": "Import hash", "type": "string" }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "slug": "post_topic",
+      "parentCollection": "topics",
+      "childCollection": "posts",
+      "parentLabel": "Topics",
+      "parentLabelSingular": "Topic",
+      "childLabel": "Posts",
+      "childLabelSingular": "Post",
+      "maxParentsPerChild": 1
+    }
+  ],
+  "taxonomies": [
+    {
+      "name": "tag",
+      "label": "Tags",
+      "labelSingular": "Tag",
+      "hierarchical": false,
+      "collections": ["posts"]
+    }
+  ]
+}

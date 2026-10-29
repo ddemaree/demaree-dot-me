@@ -1,17 +1,17 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import { formatDate, postTopicId } from '../lib/taxonomy';
+import { formatDate, postTopicId, type PostEntry, type TopicEntry } from '../lib/taxonomy';
+import { emdashPostUrl } from '../lib/emdash-post';
 
 interface Props {
-  posts: CollectionEntry<'posts'>[];
-  topics: CollectionEntry<'topics'>[];
+  posts: PostEntry[];
+  topics: TopicEntry[];
   label?: string;
 }
 
 const { posts, topics, label = 'Posts' } = Astro.props;
 const topicTitles = new Map(topics.map((topic) => [topic.id, topic.data.title]));
 
-function categoryLabel(post: CollectionEntry<'posts'>) {
+function categoryLabel(post: PostEntry) {
   return topicTitles.get(postTopicId(post)) ?? 'Notebook';
 }
 ---
@@ -27,10 +27,10 @@ function categoryLabel(post: CollectionEntry<'posts'>) {
           <span>{categoryLabel(post)}</span>
         </div>
         <div class="index-entry__body">
-          <h2><a href={`/p/${post.id}/`}>{post.data.title}</a></h2>
+          <h2><a href={emdashPostUrl(post)}>{post.data.title}</a></h2>
           <p>{post.data.description}</p>
         </div>
-        <a class="index-entry__arrow" href={`/p/${post.id}/`} aria-label={`Read ${post.data.title}`}>→</a>
+        <a class="index-entry__arrow" href={emdashPostUrl(post)} aria-label={`Read ${post.data.title}`}>→</a>
       </article>
     ))
   )}

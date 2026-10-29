@@ -1,58 +1,83 @@
 ---
-import { Image } from 'astro:assets';
-import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { decodeSlug } from 'emdash';
 import sidebarImage from '../../assets/images/site/bits-and-letters.png';
 import bookImage from '../../assets/images/site/git-for-humans.webp';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import EmDashContent from '../../components/EmDashContent.astro';
 import { documentUri } from '../../lib/standard-site';
-import { formatDate, getTopic, postTopicId, slugifyTag } from '../../lib/taxonomy';
-import { getPostDescription } from '../../lib/post-description';
-
+import {
+  formatDate,
+  getPostForPage,
+  getPublishedPosts,
+  postTagSlugs,
+  type PostEntry,
+  type PostPageEntry,
+  type TopicEntry,
+} from '../../lib/taxonomy';
+import { emdashPostUrl, emdashSocialImage } from '../../lib/emdash-post';
 import SidebarPromo from '@/components/blog/SidebarPromo.astro';
 
-export async function getStaticPaths() {
-  const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
-  );
+export const prerender = false;
 
-  return posts.map((post, index) => ({
-    params: { slug: post.id },
-    props: {
-      post,
-      newerPost: index > 0 ? posts[index - 1] : undefined,
-      olderPost: index < posts.length - 1 ? posts[index + 1] : undefined,
-    },
-  }));
+let slug: string | undefined;
+try {
+  slug = decodeSlug(Astro.params.slug);
+} catch {
+  // Malformed URL encoding is a missing route, not a CMS outage.
+}
+if (!slug || slug.includes('/')) {
+  Astro.response.status = 404;
+  return Astro.rewrite('/404');
+}
+let post: PostPageEntry | undefined;
+let posts: PostEntry[];
+let topic: TopicEntry | undefined;
+let isPreview = false;
+try {
+  // Lists remain public; only EmDash's validated preview/edit context can
+  // select the pending revision for this single post.
+  const [page, publishedPosts] = await Promise.all([getPostForPage(slug), getPublishedPosts()]);
+  ({ post, topic, isPreview } = page);
+  posts = publishedPosts;
+} catch (error) {
+  console.error('[EmDash] Failed to load public post:', error);
+  return new Response('This post is temporarily unavailable. Please try again soon.', {
+    status: 503,
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+  });
 }
 
-interface Props {
-  post: CollectionEntry<'posts'>;
-  newerPost?: CollectionEntry<'posts'>;
-  olderPost?: CollectionEntry<'posts'>;
+if (!post) {
+  Astro.response.status = 404;
+  return Astro.rewrite('/404');
+}
+if (isPreview) {
+  Astro.response.headers.set('Cache-Control', 'private, no-store');
+  Astro.response.headers.set('X-Robots-Tag', 'noindex');
 }
 
-const { post, newerPost, olderPost } = Astro.props;
-const { Content } = await render(post);
+const position = posts.findIndex((entry) => entry.id === post.id);
+const newerPost = position > 0 ? posts[position - 1] : undefined;
+const olderPost = position >= 0 ? posts[position + 1] : undefined;
 
-// Generate standard.site document AT-URI if DID is configured
+// Generate standard.site document AT-URI if DID is configured.
 const standardDid = import.meta.env.STANDARD_SITE_DID;
-const standardDocumentUri = standardDid
-  ? documentUri(standardDid, post.id)
-  : undefined;
-const publishedAt = formatDate(post.data.publishedAt);
-const topic = await getTopic(postTopicId(post));
-const tags = post.data.tags.map((tag) => ({ tag, slug: slugifyTag(tag) }));
+const standardDocumentUri = standardDid ? documentUri(standardDid, post.id) : undefined;
+const publishedAt = post.data.publishedAt ? formatDate(post.data.publishedAt) : undefined;
+const tags = postTagSlugs(post);
+const image = emdashSocialImage(post.data.featured_image, Astro.locals.emdash?.getPublicMediaUrl, Astro.url.origin);
 ---
 
 <BaseLayout
   title={`${post.data.title} — David Demaree`}
-  description={getPostDescription(post)}
+  description={post.data.description}
   type="article"
-  image={post.data.featuredImage}
-  imageAlt={post.data.featuredImageAlt}
-  publishedAt={post.data.publishedAt}
+  image={image}
+  imageAlt={post.data.featured_image_alt ?? post.data.featured_image?.alt}
+  publishedAt={isPreview ? undefined : post.data.publishedAt}
   updatedAt={post.data.updatedAt}
   standardDocumentUri={standardDocumentUri}
+  noindex={isPreview}
 >
   <main id="main" class="single-post">
     <article>
@@ -68,12 +93,13 @@ const tags = post.data.tags.map((tag) => ({ tag, slug: slugifyTag(tag) }));
             </>
           )}
         </nav>
-        <h1>{post.data.title}</h1>
-        {post.data.subtitle && <p class="entry-subtitle">{post.data.subtitle}</p>}
-        <time datetime={post.data.publishedAt.toISOString()}>{publishedAt}</time>
-        {post.data.linkUrl && (
+        {isPreview && <p class="entry-preview-notice" role="status">Preview — this view may include unpublished changes.</p>}
+        <h1 {...post.edit.title}>{post.data.title}</h1>
+        {post.data.subtitle && <p class="entry-subtitle" {...post.edit.subtitle}>{post.data.subtitle}</p>}
+        {publishedAt && <time datetime={post.data.publishedAt?.toISOString()}>{publishedAt}</time>}
+        {post.data.link_url && (
           <p class="entry-external-link">
-            <a href={post.data.linkUrl} rel="noopener noreferrer">
+            <a href={post.data.link_url} rel="noopener noreferrer">
               View original link
             </a>
           </p>
@@ -83,7 +109,7 @@ const tags = post.data.tags.map((tag) => ({ tag, slug: slugifyTag(tag) }));
       <div class="entry-layout">
         <div class="entry-main">
           <div class="prose flow">
-            <Content />
+            <EmDashContent post={post} />
           </div>
         </div>
 
@@ -125,14 +151,14 @@ const tags = post.data.tags.map((tag) => ({ tag, slug: slugifyTag(tag) }));
       {(olderPost || newerPost) && (
         <nav class="post-navigation" aria-label="More posts">
           {olderPost && (
-            <a href={`/p/${olderPost.id}/`}>
+            <a href={emdashPostUrl(olderPost)}>
               <span class="post-navigation__label">← Previous post</span>
               <strong>{olderPost.data.title}</strong>
               <time>{formatDate(olderPost.data.publishedAt)}</time>
             </a>
           )}
           {newerPost && (
-            <a class="post-navigation__next" href={`/p/${newerPost.id}/`}>
+            <a class="post-navigation__next" href={emdashPostUrl(newerPost)}>
               <span class="post-navigation__label">Next post →</span>
               <strong>{newerPost.data.title}</strong>
               <time>{formatDate(newerPost.data.publishedAt)}</time>

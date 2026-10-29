@@ -3,9 +3,22 @@ import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import BnlPostCollection from "../components/BnlPostCollection.astro";
 import LocalPostCollection from "@/components/LocalPostCollection.astro";
+import { getPublishedPosts, type PostEntry } from "../lib/taxonomy";
 
-import ddPixelPortrait from '@/assets/images/site/dd-pixel-portrait-edited.png'
+import ddPixelPortrait from '@/assets/images/site/dd-pixel-portrait-edited.png';
 
+export const prerender = false;
+
+let recentPosts: PostEntry[];
+try {
+  recentPosts = (await getPublishedPosts()).slice(0, 5);
+} catch (error) {
+  console.error('[EmDash] Failed to load recent public posts:', error);
+  return new Response('Posts are temporarily unavailable. Please try again soon.', {
+    status: 503,
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+  });
+}
 ---
 
 <BaseLayout
@@ -25,7 +38,7 @@ import ddPixelPortrait from '@/assets/images/site/dd-pixel-portrait-edited.png'
         </div>
       </section>
 
-      <LocalPostCollection />
+      <LocalPostCollection posts={recentPosts} />
 
       <hr class="my-10 border-current/30" />
 
