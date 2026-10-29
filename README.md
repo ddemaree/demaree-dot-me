@@ -1,7 +1,7 @@
 # demaree.me
 
 The in-progress Astro rebuild of David Demaree's personal site. This branch
-uses EmDash 1.2.0 as the content backend and renders the public blog through
+uses EmDash 1.4.0 as the content backend and renders the public blog through
 Astro on Cloudflare Workers. Home, post, topic, tag, feed, and sitemap routes
 read published CMS content at request time; editing and publishing no longer
 require a site rebuild.
@@ -17,7 +17,7 @@ passkey transfer, and [the setup notes](docs/emdash-poc.md) for bindings and imp
 ## Stack
 
 - Astro 7 with TypeScript in strict mode and server output
-- EmDash 1.2.0 with Portable Text posts, topic references, and native tags
+- EmDash 1.4.0 with Portable Text posts, topic references, and native tags
 - Cloudflare Workers with D1 content, R2 media, and KV sessions
 - A Worker scheduled handler for EmDash's scheduled publishing
 - Tailwind CSS 4 through its Vite plugin, plus the site's global CSS
