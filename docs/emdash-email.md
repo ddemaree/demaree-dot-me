@@ -60,8 +60,9 @@ PR #6 is merged and production deployment succeeded for commit `cd67b9c`
 shows `cloudflare-email` active. The one authorized test sent through EmDash
 arrived in the admin's inbox, with SPF, DKIM, and DMARC all passing.
 
-Owner-confirmed fresh magic-link sign-in is the remaining acceptance check.
-See DEM-23 for current status.
+The owner confirmed that a fresh magic-link sign-in in a private Chrome window
+opens the production dashboard. Email recovery is verified end to end; DEM-23
+is Done. Production passkey sign-in was also verified during the cutover.
 
 ## References
 
