@@ -24,6 +24,14 @@
 			"bucket_name": "demaree-emdash-poc-media"
 		}
 	],
+	"send_email": [
+		{
+			"name": "EMAIL",
+			"allowed_sender_addresses": [
+				"noreply@demaree.me"
+			]
+		}
+	],
 	"triggers": {
 		"crons": [
 			"* * * * *"

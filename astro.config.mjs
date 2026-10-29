@@ -8,6 +8,7 @@ import keystatic from '@keystatic/astro';
 import cloudflare from '@astrojs/cloudflare';
 import emdash from 'emdash/astro';
 import { d1, r2 } from '@emdash-cms/cloudflare';
+import { cloudflareEmail } from '@emdash-cms/cloudflare/plugins';
 
 export default defineConfig({
   site: 'https://demaree.me',
@@ -22,6 +23,11 @@ export default defineConfig({
     emdash({
       database: d1({ binding: 'DB', session: 'disabled' }),
       storage: r2({ binding: 'MEDIA' }),
+      plugins: [
+        cloudflareEmail({
+          from: { email: 'noreply@demaree.me', name: 'EmDash' },
+        }),
+      ],
     }),
   ],
   // Local D1, R2, and session data stay in this worktree during development.

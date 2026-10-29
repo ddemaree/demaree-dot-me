@@ -77,3 +77,12 @@ the September 18 audit; it does not represent a missing native CMS archive.
 The owner confirmed production passkey registration and a successful fresh
 sign-in in a private Chrome window. Editorial write actions (edit, publish,
 media upload, and scheduling) were not exercised as part of this cutover check.
+
+## Deferred follow-up
+
+Remaining work is tracked in the DEM Linear team's Backlog:
+
+- [DEM-23: Email and magic-link recovery](https://linear.app/bitsandletters/issue/DEM-23/demaree-dot-me-enable-cloudflare-email-and-verify-magic-link-recovery)
+- [DEM-24: Legacy editorial links and content audit](https://linear.app/bitsandletters/issue/DEM-24/demaree-dot-me-repair-legacy-editorial-links-and-recheck-content-audit)
+- [DEM-25: HTTPS and domain alias normalization](https://linear.app/bitsandletters/issue/DEM-25/demaree-dot-me-normalize-https-and-production-domain-aliases)
+- [DEM-26: Editorial workflow verification](https://linear.app/bitsandletters/issue/DEM-26/demaree-dot-me-exercise-production-emdash-editorial-workflows)
