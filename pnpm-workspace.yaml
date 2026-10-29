@@ -10,3 +10,9 @@ minimumReleaseAgeExclude:
   - miniflare@5.20260917.0-alpha
   - workerd@1.20260917.1
   - wrangler@4.134.0
+  - '@emdash-cms/admin@1.1.0'
+  - '@emdash-cms/auth@1.1.0'
+  - '@emdash-cms/blocks@1.1.0'
+  - '@emdash-cms/cloudflare@1.1.0'
+  - '@emdash-cms/gutenberg-to-portable-text@1.1.0'
+  - emdash@1.1.0

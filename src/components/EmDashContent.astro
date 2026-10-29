@@ -1,0 +1,30 @@
+---
+import { Image, PortableText } from 'emdash/ui';
+import EmDashHtmlBlock from './EmDashHtmlBlock.astro';
+import EmDashLink from './EmDashLink.astro';
+import type { EmDashPostEntry } from '../lib/emdash-post';
+
+interface Props {
+  post: EmDashPostEntry;
+  priority?: boolean;
+  editable?: boolean;
+}
+
+const { post, priority = true, editable = true } = Astro.props;
+// Feed HTML always renders the published body, even when requested by an editor.
+const content = editable ? post.data.content ?? [] : structuredClone(post.data.content ?? []);
+---
+
+{post.data.featured_image && (
+  <figure {...(editable ? post.edit.featured_image : {})}>
+    <Image
+      image={post.data.featured_image}
+      alt={post.data.featured_image_alt ?? post.data.featured_image.alt}
+      priority={priority}
+    />
+  </figure>
+)}
+<PortableText
+  value={content}
+  components={{ type: { htmlBlock: EmDashHtmlBlock }, mark: { link: EmDashLink } }}
+/>

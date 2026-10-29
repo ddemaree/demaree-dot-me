@@ -1,23 +1,32 @@
 # demaree.me
 
-The in-progress Astro rebuild of David Demaree's personal site. It currently
-contains a home page, a blog index, and statically generated post pages backed
-by local Markdoc content.
+The in-progress Astro rebuild of David Demaree's personal site. This branch
+uses EmDash 1.2.0 as the content backend and renders the public blog through
+Astro on Cloudflare Workers. Home, post, topic, tag, feed, and sitemap routes
+read published CMS content at request time; editing and publishing no longer
+require a site rebuild.
+
+Git-connected builds target the existing `demaree-emdash-poc` Worker: `main`
+deploys, and other branches upload preview versions. The old `demaree-dot-me`
+Worker no longer has Git build triggers; its existing deployment continues
+serving `demaree.me` until the domain switch. See
+[the current cutover steps](docs/emdash-cutover-2026-10-29.md) for domain and
+passkey transfer, and [the setup notes](docs/emdash-poc.md) for bindings and imports.
 
 ## Stack
 
-- Astro 7 with TypeScript in strict mode
-- Markdoc and Astro content collections for posts
-- Keystatic with local file storage for editing posts
+- Astro 7 with TypeScript in strict mode and server output
+- EmDash 1.2.0 with Portable Text posts, topic references, and native tags
+- Cloudflare Workers with D1 content, R2 media, and KV sessions
+- A Worker scheduled handler for EmDash's scheduled publishing
 - Tailwind CSS 4 through its Vite plugin, plus the site's global CSS
 - Licensed web fonts served from a Cloudflare R2 custom domain
-- React integration for future interactive components
-- Astro's image and local-font pipelines
-- Vercel adapter for deployment
+- React integration and Astro image handling
+- Markdoc collections and development-only Keystatic retained for legacy source files
 
 ## Requirements
 
-- Node.js 22.12 or newer
+- Node.js 22.16 or newer (Node 24 was used for the migration checks)
 - pnpm 11.21.0 (the version pinned in `package.json`)
 
 Install dependencies from the repository root:
@@ -28,29 +37,30 @@ pnpm install
 
 ## Development
 
-Start Astro in background mode:
-
-```sh
-pnpm dev --background
-```
-
-The site is then available at <http://localhost:4321>. Manage the background
-process with:
+Check the server status before starting Astro in background mode:
 
 ```sh
 pnpm astro dev status
+pnpm dev --background
+```
+
+The site is available at <http://localhost:4321>. Manage the background process
+with:
+
+```sh
 pnpm astro dev logs
 pnpm astro dev logs --follow
 pnpm astro dev stop
 ```
 
-The local Keystatic editor is available at <http://localhost:4321/keystatic>.
-It writes post documents, topic documents, and their images directly to this
-repository; there is no remote Keystatic storage or authentication configured.
-The editor and its file APIs are enabled only in development and are excluded
-from production builds. Publishing requires committing content and rebuilding.
-The Topics collection edits mini-blogs (title, description, nav). Each post has
-a Topic relationship and a Tags list.
+EmDash's admin interface is at `/_emdash/admin`. Local D1, R2, and session data
+are separate from the deployed Worker's data; deployment does not copy them.
+Follow the EmDash setup guide before importing content or signing in.
+
+The legacy Keystatic editor remains at <http://localhost:4321/keystatic> in
+development only. It edits repository Markdoc, topic files, and source images.
+Those edits do not change the live CMS until explicitly imported. Keystatic's
+UI and file APIs are excluded from production builds.
 
 ## Commands
 
@@ -58,99 +68,118 @@ a Topic relationship and a Tags list.
 | --- | --- |
 | `pnpm dev --background` | Start the background development server |
 | `pnpm check` | Run Astro and TypeScript diagnostics |
-| `node scripts/check-content-dates.mjs` | Verify content dates and DST behavior across host time zones |
-| `pnpm build` | Create the production build in `dist/` and Vercel output in `.vercel/output/` |
+| `pnpm check:emdash` | Validate Markdoc conversion and Portable Text round trips |
+| `EMDASH_SITE_URL=https://… pnpm check:emdash-site` | Check every published page, archives, feeds, sitemap, redirects, and rendered CMS images |
+| `node scripts/check-content-dates.mjs` | Verify source dates and DST behavior across host time zones |
+| `pnpm build` | Create the Cloudflare production build in `dist/` |
 | `pnpm preview` | Preview the production build locally |
-| `pnpm import:wordpress` | Import published WordPress posts that are not already in `src/content/posts` |
-| `pnpm import:publications` | Import Substack (`letters.demaree.me`) and Medium posts that are not already local |
-| `pnpm taxonomy:assign` | Apply topic/tag classification rules to local post front matter |
+| `pnpm exec wrangler deploy` | Deploy the built Worker to the configured Cloudflare target |
+| `pnpm login:emdash` | Authenticate the importer with a specified CMS origin |
+| `pnpm import:emdash` | Plan an import; `--apply` writes locally, or remotely with `--target=URL` |
+| `pnpm import:wordpress` | Import published WordPress posts missing from the local archive |
+| `pnpm import:publications` | Import Substack and Medium posts missing from the local archive |
+| `pnpm taxonomy:assign` | Apply topic/tag classification rules to local source front matter |
+| `pnpm standard:publish -- --dry-run` | Preview site.standard records from published EmDash posts |
 | `pnpm astro --help` | Show Astro CLI help |
 
-There is currently no separate test or lint command. Run both `pnpm check` and
-`pnpm build` before considering a change verified.
+There is no separate test runner or linter. Run `pnpm check` and `pnpm build`
+before considering code verified, plus `pnpm check:emdash` for converter or
+renderer changes. Deployment, authentication, and editorial workflows need
+separate browser/runtime verification.
 
 ## Project structure
 
 ```text
-├── astro.config.mjs          # Integrations and Vercel adapter
-├── keystatic.config.ts       # Local post-editor schema
-├── scripts/
-│   ├── import-wordpress.mjs # One-off importer for selected legacy posts
-│   ├── import-publications.mjs # Substack and Medium importer
-│   ├── taxonomy.mjs         # Topic/tag classification rules
-│   └── assign-taxonomy.mjs  # Apply classification to local posts
+├── astro.config.mjs          # Integrations, server output, and Cloudflare adapter
+├── wrangler.jsonc            # Worker target, bindings, and schedule
+├── seed/emdash-poc.json       # CMS collections, fields, relation, and taxonomy
+├── keystatic.config.ts       # Legacy local source-editor schema
+├── scripts/                  # CMS importer, source importers, and publishing tools
 ├── public/                   # Files copied to the site unchanged
 └── src/
-    ├── assets/               # Images processed by Astro
-    ├── components/           # Shared site header and footer
-    ├── content/posts/        # Markdoc post documents
-    ├── content/topics/       # Curated mini-blog / category documents
-    ├── lib/                  # Shared helpers for dates and taxonomy
-    ├── content.config.ts     # Astro content collection schema
+    ├── assets/               # Site assets and archived source images
+    ├── components/           # Shared UI and Portable Text rendering
+    ├── content/posts/        # Markdoc import source / historical archive
+    ├── content/topics/       # Topic import source
+    ├── lib/                  # CMS queries, dates, taxonomy, and rendering helpers
+    ├── content.config.ts     # Legacy source collection schema
+    ├── live.config.ts        # EmDash and external B&L live collections
     ├── layouts/              # Shared HTML shell
     ├── pages/                # File-based routes
+    ├── worker.ts             # Cloudflare fetch and EmDash scheduled handlers
     └── styles/global.css     # Site-wide styles and Tailwind import
 ```
 
-The public routes currently implemented are:
+## Public routes and content
 
-- `/` — home page
-- `/blog/` — reverse-chronological list of published posts
-- `/p/[slug]/` — statically generated post pages
-- `/topics/` and `/topics/[slug]/` — on-demand mini-blog / category archives
-- `/labels/` and `/labels/[slug]/` — on-demand tag archives
-- `/feed.xml` — full-content RSS feed, with `/feed/` and legacy path aliases redirecting here
-- `/sitemap.xml` and `/robots.txt` — search-engine discovery for published pages
-- `/404` — custom not-found page used for missing routes
+- `/` — home page with recent published posts
+- `/about/` — About Me
+- `/blog/` — reverse-chronological published archive
+- `/p/[slug]/` — CMS post pages rendered on demand
+- `/topics/` and `/topics/[slug]/` — curated topic archives
+- `/labels/` and `/labels/[slug]/` — native tag archives
+- `/feed.xml` — full-content RSS, with `/feed/` and legacy path aliases redirecting here
+- `/sitemap.xml` and `/robots.txt` — search discovery for published public pages
+- `/404` — custom not-found page
 
-Legacy WordPress query feeds (`/?feed=rss2`, `rss`, or `atom`) are redirected by
-`vercel.json`; these platform rules need verification on a Vercel preview.
-The feed preserves existing WordPress GUIDs and excludes drafts. Page metadata
-uses editorial descriptions when available, otherwise a plain-text excerpt.
+Old `/emdash-test/` links redirect to the public blog and post routes. Preview
+hosts remain excluded from search indexing pending the domain move. Normal
+public requests show published content only; authenticated EmDash preview
+flows must remain private and excluded from indexing. Missing posts and
+archives return 404, while CMS dependency failures return 503. Public content
+responses currently use `no-store` so publishing and removal are immediately
+visible on the next request.
 
-Some navigation links still point to pages on the existing production
-`demaree.me` site because those routes have not been rebuilt here yet. Featured
-topics with `inNav: true` appear in the header as mini-blogs (currently Tech
-Thoughts).
+The RSS feed keeps the ten-post window and existing WordPress GUIDs. Post
+metadata uses editorial descriptions when present, otherwise a plain-text
+excerpt. Featured images supply social metadata. Topics control navigation;
+native CMS references and taxonomy terms determine the live archive links.
 
-## Posts
+## AT Protocol publishing
 
-Posts live in `src/content/posts` as `.mdoc` files. Their schema is defined in
-`src/content.config.ts` and mirrored in `keystatic.config.ts`. Drafts are
-excluded from both the blog index and generated post routes.
+`pnpm standard:publish` reads published EmDash posts dated January 1, 2026 or
+later. Use `--dry-run` to inspect records without logging in or publishing.
+Document record keys are deterministic `posts-<slug>` values; the publisher
+and page verification links share the same identity helper. Records use the
+[Standard.site document schema](https://standard.site/docs/lexicons/document/)
+(`site`, `path`, and `publishedAt`). [AT record keys](https://atproto.com/specs/record-key)
+cannot contain slashes.
 
-Each post requires a title, description, and publication date. Featured images
-are optional because most WordPress posts do not have one. Post images belong
-under `src/assets/images/posts/<slug>/` and are referenced through the
-`@assets/*` TypeScript alias.
+The read-only migration audit found no existing Standard.site publication or
+document records for the documented `demar.ee` identity, and production's
+publication verification endpoint returned 404. No AT records were published
+as part of this migration. Publication setup and a real publish remain
+separate actions.
 
-Keystatic timestamps use New York wall time (`America/New_York`), independent
-of the build host's time zone. Nonexistent spring DST times are rejected;
-repeated autumn times select the first occurrence. Explicit offsets in content
-are preserved by the loader. Importers use the same conversion and reject
-instants that the editor's offset-free format cannot represent faithfully.
-`node scripts/check-content-dates.mjs` checks all stored dates in four time zones.
+## Legacy source and imports
 
-Featured images supply social metadata. Images present in a source article's
-body remain in that body; the WordPress importer must not remove them merely
-because they also serve as its featured image.
+Markdoc files in `src/content/posts/` and topic files in `src/content/topics/`
+remain import sources rather than the public site's content backend. Their
+schemas in `src/content.config.ts` and `keystatic.config.ts` must stay aligned.
+Source images belong under `src/assets/images/posts/<slug>/` and use the
+`@assets/*` alias. Body images must remain in article content even when they
+also serve as featured images.
 
-Posts also have a `topic` (one of the curated mini-blogs in `src/content/topics`)
-and `tags`. Topic and tag index pages are server-rendered on demand so adding a
-label does not require generating another static archive. Re-run
-`pnpm taxonomy:assign` after changing classification rules in
-`scripts/taxonomy.mjs`.
+Offset-free source timestamps mean `America/New_York`, independent of the
+host time zone. `src/lib/dates.mjs` handles source parsing and importer
+conversion, rejects nonexistent spring DST times, and preserves explicit
+instants. CMS publication timestamps identify instants and are formatted in
+New York time on the public site.
 
-WordPress post formats (`standard`, `aside`, `link`), ACF subtitles, and
-link-format `link_url` values are stored in front matter so that metadata is
-not dropped during import.
+`pnpm import:emdash` defaults to dry-run and a representative subset. `--all`
+selects the remaining full corpus; `--apply` writes locally by default, and
+remote writes require `--target=URL`; `--update` permits replacing a changed import. It is a source
+importer, not a merge tool for edits made in the CMS. See the setup guide for
+exact commands and credential handling.
 
-The WordPress importer fetches every published post and downloads local copies
-of their images. Existing post files are skipped by default. Passing `--force`
-(for example, `pnpm import:wordpress -- --force`) can overwrite local content,
-so use it only when intentionally refreshing those imports.
+The WordPress importer fetches every published post and downloads local image
+copies. Existing files are skipped unless `--force` is passed, which can
+replace local edits. `pnpm import:publications` pulls Substack issues from
+`letters.demaree.me` and Medium essays, skipping matching slugs or titles by
+default. Limit that run with `--source=substack` or `--source=medium`. These
+commands update the local archive only; neither publishes into EmDash.
 
-`pnpm import:publications` pulls newsletter issues from `letters.demaree.me` and
-essays from David’s Medium profile and *words-by-demaree* publication. Matching
-local slugs or titles are skipped unless `--force` is passed. Limit the run with
-`--source=substack` or `--source=medium`.
+WordPress formats (`standard`, `aside`, `link`), subtitles, link URLs, and
+historical metadata remain available in the imported CMS schema. Local
+classification commands likewise affect source front matter; live taxonomy
+changes are made in EmDash.

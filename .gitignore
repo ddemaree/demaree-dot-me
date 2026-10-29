@@ -15,6 +15,7 @@ pnpm-debug.log*
 
 # environment variables
 .env
+.env.local
 .env.production
 
 # macOS-specific files
@@ -28,3 +29,9 @@ pnpm-debug.log*
 # Licensed font binaries are hosted outside this public repository.
 src/assets/fonts/
 .wrangler
+
+# EmDash local secrets, import manifests, and generated types
+.dev.vars
+.dev.vars.*
+.emdash/
+emdash-env.d.ts

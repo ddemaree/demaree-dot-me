@@ -1,5 +1,6 @@
 import { defineLiveCollection } from 'astro:content';
 import { z } from 'astro/zod';
+import { emdashLoader } from 'emdash/runtime';
 import { bnlRssLoader } from './loaders/bnl-rss';
 
 const bnlPosts = defineLiveCollection({
@@ -14,4 +15,7 @@ const bnlPosts = defineLiveCollection({
   }),
 });
 
-export const collections = { bnlPosts };
+export const collections = {
+  bnlPosts,
+  _emdash: defineLiveCollection({ loader: emdashLoader() }),
+};

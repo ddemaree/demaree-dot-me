@@ -5,19 +5,28 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostIndex from '../../components/PostIndex.astro';
 import { getPostsByTopic, getTopic, getTopics } from '../../lib/taxonomy';
 
-Astro.response.headers.set('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=86400');
+Astro.response.headers.set('Cache-Control', 'no-store');
 
 const slug = Astro.params.slug ?? '';
-const topic = await getTopic(slug);
-const topics = await getTopics();
-
-if (!topic) {
-  Astro.response.status = 404;
+let topic: Awaited<ReturnType<typeof getTopic>>;
+let topics: Awaited<ReturnType<typeof getTopics>> = [];
+let posts: Awaited<ReturnType<typeof getPostsByTopic>> = [];
+let unavailable = false;
+try {
+  [topic, topics] = await Promise.all([getTopic(slug), getTopics()]);
+  if (topic) posts = await getPostsByTopic(topic.id);
+  else Astro.response.status = 404;
+} catch (error) {
+  console.error('Unable to load topic archive from EmDash.', error);
+  Astro.response.status = 503;
+  unavailable = true;
 }
 
-const posts = topic ? await getPostsByTopic(topic.id) : [];
-const title = topic ? `${topic.data.title} — David Demaree` : 'Topic not found — David Demaree';
-const description = topic?.data.description ?? 'This topic does not exist.';
+const heading = unavailable ? 'Content temporarily unavailable' : topic?.data.title ?? 'Topic not found';
+const title = `${heading} — David Demaree`;
+const description = unavailable
+  ? 'Content is temporarily unavailable. Please try again shortly.'
+  : topic?.data.description ?? 'This topic does not exist.';
 ---
 
 <BaseLayout title={title} description={description}>
@@ -26,10 +35,10 @@ const description = topic?.data.description ?? 'This topic does not exist.';
       <p class="index-eyebrow">
         <a href="/topics/">Topics</a>
       </p>
-      <h1>{topic ? topic.data.title : 'Topic not found'}</h1>
-      {topic && <p class="index-lede">{topic.data.description}</p>}
+      <h1>{heading}</h1>
+      {(topic || unavailable) && <p class="index-lede">{description}</p>}
     </header>
 
-    {topic && <PostIndex posts={posts} topics={topics} label={topic.data.title} />}
+    {topic && !unavailable && <PostIndex posts={posts} topics={topics} label={topic.data.title} />}
   </main>
 </BaseLayout>
