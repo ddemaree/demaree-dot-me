@@ -29,6 +29,13 @@ function meta(html, name) {
     .find((attrs) => attrs.property === name || attrs.name === name)?.content;
 }
 function hrefs(html) { return [...html.matchAll(/<a\b[^>]*>/gi)].map(([tag]) => attributes(tag).href).filter(Boolean); }
+function taxonomyHrefs(html) {
+  // Editorial body links can reference retired archives. Only the template's
+  // native topic/tag navigation defines archives that must exist in the sitemap.
+  return [...html.matchAll(/(<nav\b[^>]*>)([\s\S]*?)<\/nav>/gi)]
+    .filter(([, tag]) => attributes(tag)['aria-label'] === 'Post topics and tags')
+    .flatMap(([, , content]) => hrefs(content));
+}
 function postPaths(html) {
   return new Set(hrefs(html).map((href) => new URL(href, target).pathname).filter((path) => /^\/p\/[^/]+\/$/.test(path)));
 }
@@ -121,7 +128,7 @@ async function main() {
     expect(text(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]) === post.data.title.replace(/\s+/g, ' ').trim(), path, 'CMS title rendered');
     expect(Date.parse(meta(html, 'article:published_time')) === Date.parse(post.publishedAt), path, 'CMS publication instant rendered', meta(html, 'article:published_time'));
     expect(!html.includes('@assets/') && !html.includes('/emdash-test/'), path, 'public rendering has no import aliases or sample links');
-    for (const href of hrefs(html)) {
+    for (const href of taxonomyHrefs(html)) {
       const url = new URL(href, target);
       if (url.origin === target && /^\/(topics|labels)\/[^/]+\/$/.test(url.pathname)) taxonomies.add(url.pathname);
     }
