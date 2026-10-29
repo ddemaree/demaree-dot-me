@@ -1,9 +1,10 @@
-# EmDash production preparation — October 29, 2026
+# EmDash production cutover — October 29, 2026
 
 Cutover update: both PRs are merged. The owner authorized and completed the
 preparatory sign-in, and all three Custom Domains now point to the EmDash
-Worker. The committed runtime origin is `https://demaree.me`. The owner still
-needs to complete the checked Site URL change and register a production passkey.
+Worker. The committed runtime origin is `https://demaree.me`. The owner confirmed
+that the new production passkey works, including a fresh sign-in in a private
+Chrome window. Domain cutover and authentication handover are complete.
 
 Both `emdash` and `@emdash-cms/cloudflare` are pinned to 1.2.0. The existing
 1.1.0 deployment did not provide the Change domain and Continue on controls
@@ -26,12 +27,14 @@ the EmDash Worker. No content reimport is needed.
 `demaree.me`, `www.demaree.me`, and `log.demaree.me` now route to
 `demaree-emdash-poc`. The runtime origin is `https://demaree.me`. The `www` and
 `log` hosts serve mirrors with `noindex`; they do not redirect to the apex.
-The workers.dev address remains enabled for the authenticated handover.
+The workers.dev address remains enabled as a preview host. Production content
+management is at `https://demaree.me/_emdash/admin`.
 
 ## Domain and passkey transfer
 
-Steps 1–3 are complete. Continue from the existing authenticated old-host tab;
-do not sign out or attempt a fresh old-host sign-in during the handover.
+The infrastructure change, browser handover, passkey registration, and fresh
+production sign-in are complete. The sequence below records the transfer
+procedure; it does not need to be repeated.
 
 1. In Chrome, sign into the old workers.dev EmDash admin and keep that tab open.
    Do this before changing `EMDASH_SITE_URL`: that setting also controls the
@@ -71,5 +74,6 @@ The full public acceptance sweep passed against `https://demaree.me`: 465 pages,
 The checker now discovers archives from the template's topic/tag navigation. A
 historical editorial link to `/labels/37-signals/` remains broken, as recorded in
 the September 18 audit; it does not represent a missing native CMS archive.
-Fresh production passkey sign-in and editorial admin actions remain separate
-owner checks.
+The owner confirmed production passkey registration and a successful fresh
+sign-in in a private Chrome window. Editorial write actions (edit, publish,
+media upload, and scheduling) were not exercised as part of this cutover check.
