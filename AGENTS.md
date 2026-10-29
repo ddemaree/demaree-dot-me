@@ -1,7 +1,7 @@
 # Project instructions
 
-This repository is the in-progress Astro rebuild of `demaree.me`. On the
-`codex/emdash-poc` branch, EmDash 1.1.0 is the public content backend. Astro
+This repository is the in-progress Astro rebuild of `demaree.me`.
+EmDash 1.2.0 is the public content backend. Astro
 uses server output and the Cloudflare adapter; home, blog, post, topic, tag,
 feed, and sitemap routes read CMS data at request time. The experimental
 Worker remains the deployment target; the production domain has not moved.
@@ -9,9 +9,9 @@ Worker remains the deployment target; the production domain has not moved.
 ## EmDash and Cloudflare
 
 Follow [docs/emdash-poc.md](docs/emdash-poc.md) for setup, import commands,
-authentication, and verification evidence. This branch is based on
-`standard-site` (existing PR #4 to `main`), so use that branch as the base for
-the EmDash migration PR.
+authentication, and verification evidence. Follow
+[docs/emdash-cutover-2026-10-29.md](docs/emdash-cutover-2026-10-29.md) for the
+current deployment connection and domain/passkey transfer sequence.
 
 - Preserve the Cloudflare adapter, server output, `DB`/`MEDIA` bindings, Astro
   sessions, and Worker scheduled handler. D1 `session: 'disabled'` refers to

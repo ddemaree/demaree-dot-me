@@ -1,5 +1,9 @@
 # EmDash cutover readiness — October 11, 2026
 
+Update October 29: the domain-change and passkey-handover steps below require
+EmDash 1.2.0; they were not available in the 1.1.0 release tested here. See
+[the corrected cutover sequence](emdash-cutover-2026-10-29.md).
+
 The public blog on `codex/emdash-poc` now uses EmDash 1.1.0. The migration
 integrates into the existing Astro design and targets `standard-site`, which
 already has PR #4 to `main`. The production domain has not moved.
