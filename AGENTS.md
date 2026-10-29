@@ -3,8 +3,8 @@
 This repository is the in-progress Astro rebuild of `demaree.me`.
 EmDash 1.2.0 is the public content backend. Astro
 uses server output and the Cloudflare adapter; home, blog, post, topic, tag,
-feed, and sitemap routes read CMS data at request time. The experimental
-Worker remains the deployment target; the production domain has not moved.
+feed, and sitemap routes read CMS data at request time. The
+`demaree-emdash-poc` Worker serves `demaree.me` and its `www`/`log` aliases.
 
 ## EmDash and Cloudflare
 
@@ -26,9 +26,9 @@ current deployment connection and domain/passkey transfer sequence.
 - Public content responses currently use `no-store` for immediate publication
   and removal visibility. Do not introduce caching without verifying
   invalidation and draft exclusion.
-- Keep preview hosts excluded from indexing. Domain cutover requires updating
-  the CMS origin and authentication setup; deploying code alone does not move
-  `demaree.me`.
+- Keep preview hosts excluded from indexing. The production CMS origin is
+  `https://demaree.me`; keep it aligned with the Cloudflare Custom Domains.
+  Changing an admin hostname also requires the passkey handover flow.
 - Keep local bindings local with `remoteBindings: false`. Local D1/R2 data does
   not transfer on deployment. Remote imports require an explicit target and
   authorization for that target.

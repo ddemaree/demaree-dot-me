@@ -1,5 +1,10 @@
 # EmDash production preparation — October 29, 2026
 
+Cutover update: both PRs are merged. The owner authorized and completed the
+preparatory sign-in, and all three Custom Domains now point to the EmDash
+Worker. The committed runtime origin is `https://demaree.me`. The owner still
+needs to complete the checked Site URL change and register a production passkey.
+
 Both `emdash` and `@emdash-cms/cloudflare` are pinned to 1.2.0. The existing
 1.1.0 deployment did not provide the Change domain and Continue on controls
 referenced by the earlier cutover report. The 1.2.0 release supplies them and

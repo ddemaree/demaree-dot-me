@@ -8,8 +8,9 @@ require a site rebuild.
 
 Git-connected builds target the existing `demaree-emdash-poc` Worker: `main`
 deploys, and other branches upload preview versions. The old `demaree-dot-me`
-Worker no longer has Git build triggers; its existing deployment continues
-serving `demaree.me` until the domain switch. See
+Worker no longer has Git build triggers and is retained for rollback.
+`demaree.me`, `www.demaree.me`, and `log.demaree.me` now route to the EmDash
+Worker. See
 [the current cutover steps](docs/emdash-cutover-2026-10-29.md) for domain and
 passkey transfer, and [the setup notes](docs/emdash-poc.md) for bindings and imports.
 

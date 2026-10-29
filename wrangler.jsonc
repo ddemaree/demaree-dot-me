@@ -34,7 +34,7 @@
 	},
 	"account_id": "6f85781cbcce7fb538d337cdd56faee3",
 	"vars": {
-		"EMDASH_SITE_URL": "https://demaree-emdash-poc.bitsandletters.workers.dev"
+		"EMDASH_SITE_URL": "https://demaree.me"
 	},
 	"kv_namespaces": [
 		{
