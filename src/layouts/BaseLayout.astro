@@ -44,7 +44,7 @@ if (!indexable) Astro.response.headers.set('X-Robots-Tag', 'noindex');
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-posthog={indexable ? '' : undefined}>
   <head>
     <meta charset="utf-8" />
     <ThemeScript />
@@ -78,6 +78,25 @@ if (!indexable) Astro.response.headers.set('X-Robots-Tag', 'noindex');
     <!-- Fathom - beautiful, simple website analytics -->
     <script is:inline src="https://cdn.usefathom.com/script.js" data-site="TOFIAIKB" defer></script>
     <!-- / Fathom -->
+    <script>
+      const token = import.meta.env.PUBLIC_POSTHOG_PROJECT_TOKEN;
+      const apiHost = import.meta.env.PUBLIC_POSTHOG_HOST;
+
+      if (token && apiHost && document.documentElement.hasAttribute('data-posthog')) {
+        const { default: posthog } = await import('posthog-js');
+        posthog.init(token, {
+          api_host: apiHost,
+          defaults: '2026-08-30',
+          capture_pageview: true,
+          autocapture: false,
+          capture_dead_clicks: false,
+          capture_heatmaps: false,
+          disable_session_recording: true,
+          disable_surveys: true,
+          person_profiles: 'never',
+        });
+      }
+    </script>
     <title>{title}</title>
   </head>
   <body>

@@ -63,6 +63,18 @@ development only. It edits repository Markdoc, topic files, and source images.
 Those edits do not change the live CMS until explicitly imported. Keystatic's
 UI and file APIs are excluded from production builds.
 
+## Analytics
+
+PostHog runs alongside Fathom on indexable pages on `demaree.me`. It captures
+anonymous pageviews and page leaves. Local pages, preview deployments, and
+private EmDash draft previews are excluded from PostHog.
+
+In Cloudflare Workers Builds for `demaree-emdash-poc`, set
+`PUBLIC_POSTHOG_PROJECT_TOKEN` to the public project token for PostHog project
+`747467` and `PUBLIC_POSTHOG_HOST` to `https://us.i.posthog.com`. Astro reads
+both variables at build time. Set them in `.env.local` for local builds or
+in the build environment when building the Worker outside of Workers Builds.
+
 ## Commands
 
 | Command | Purpose |
