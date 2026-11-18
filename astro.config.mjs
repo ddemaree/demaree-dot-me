@@ -21,6 +21,7 @@ export default defineConfig({
     markdoc(),
     ...(env.NODE_ENV === 'development' ? [keystatic()] : []),
     emdash({
+      fonts: false,
       database: d1({ binding: 'DB', session: 'disabled' }),
       storage: r2({ binding: 'MEDIA' }),
       plugins: [
