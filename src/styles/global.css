@@ -396,29 +396,33 @@
 }
 
 .flow,
-.prose > article {
+.prose > article,
+.prose .emdash-inline-editor {
   --flow-space: 1.5rem;
 }
 
-:where(.flow, .prose > article, .prose blockquote) > * {
-  margin-block: 0;
-}
+/* EmDash nests editable post blocks inside its own content container. */
+:where(.flow, .prose > article, .prose blockquote, .prose .emdash-inline-editor) {
+  > * {
+    margin-block: 0;
+  }
 
-:where(.flow, .prose > article, .prose blockquote) > * + * {
-  margin-block-start: var(--flow-space);
-}
+  > * + * {
+    margin-block-start: var(--flow-space);
+  }
 
-:where(.flow, .prose > article, .prose blockquote) > :is(h2, h3, h4, h5, h6) {
-  --flow-space: 2.25rem;
-}
+  > :is(h2, h3, h4, h5, h6) {
+    --flow-space: 2.25rem;
+  }
 
-:where(.flow, .prose > article, .prose blockquote) > :is(h2, h3, h4, h5, h6) + p {
-  --flow-space: 0.75rem;
-}
+  > :is(h2, h3, h4, h5, h6) + p {
+    --flow-space: 0.75rem;
+  }
 
-:where(.flow, .prose > article, .prose blockquote) > :is(figure, pre, hr, table, blockquote),
-:where(.flow, .prose > article, .prose blockquote) > :is(figure, pre, hr, table, blockquote) + * {
-  --flow-space: 2.25rem;
+  > :is(figure, pre, hr, table, blockquote),
+  > :is(figure, pre, hr, table, blockquote) + * {
+    --flow-space: 2.25rem;
+  }
 }
 
 .prose {
