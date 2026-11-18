@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdtemp, readFile, rm, symlink, writeFile, access } from 'node:fs/promises';
+import { access } from 'node:fs/promises';
 import { createRequire } from 'node:module';
-import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import Markdoc from '@markdoc/markdoc';
@@ -77,37 +76,6 @@ function validateKeys(blocks, slug) {
       assert.equal(typeof span.text, 'string');
       for (const mark of span.marks ?? []) assert.ok(marks.has(mark) || definitions.has(mark), `${slug}: dangling mark ${mark}`);
     }
-  }
-}
-
-/**
- * EmDash publishes the admin converter implementations, but does not re-export
- * their test aliases from the package entry point. Instrument a temporary copy
- * of that installed bundle to exercise the real converters. Never modify the
- * package, use the git checkout as an oracle, or replace them with a facsimile.
- * This deliberately fails if a new EmDash version renames the functions.
- */
-async function withPublishedEditorConverters(run) {
-  const adminEntry = emdashRequire.resolve('@emdash-cms/admin');
-  const adminDirectory = path.dirname(adminEntry);
-  const source = await readFile(adminEntry, 'utf8');
-  for (const name of ['portableTextToProsemirror', 'prosemirrorToPortableText']) {
-    assert.ok(source.includes(`function ${name}(`), `Installed EmDash admin no longer has ${name}; update this validation harness`);
-  }
-  const directory = await mkdtemp(path.join(os.tmpdir(), 'emdash-editor-check-'));
-  try {
-    // Relative chunks resolve to their original location. Bare imports resolve
-    // via a temporary symlink to the installed admin's dependency directory.
-    await symlink(path.resolve(adminDirectory, '../../../'), path.join(directory, 'node_modules'), 'dir');
-    const instrumented = source.replace(/^(import[^\n]*?["'])(\.[^"']+)(["'];?)$/gm,
-      (_match, start, specifier, end) => `${start}${pathToFileURL(path.resolve(adminDirectory, specifier)).href}${end}`)
-      + '\nexport { portableTextToProsemirror, prosemirrorToPortableText };\n';
-    const file = path.join(directory, 'admin-check.mjs');
-    await writeFile(file, instrumented);
-    const converters = await import(pathToFileURL(file).href);
-    await run(converters, emdashRequire);
-  } finally {
-    await rm(directory, { recursive: true, force: true });
   }
 }
 
@@ -203,7 +171,10 @@ async function runFixtures(converters) {
   assert.ok(!unsafe.includes('script') && !unsafe.includes('javascript:') && !unsafe.includes('onerror'));
 }
 
-await withPublishedEditorConverters(async (converters) => {
+async function main() {
+  // Resolve the installed editor's converters through EmDash's own dependency.
+  const converterPath = emdashRequire.resolve('@emdash-cms/admin/internal/portable-text');
+  const converters = await import(pathToFileURL(converterPath).href);
   await runFixtures(converters);
   const posts = await loadPosts();
   const totals = { posts: posts.length, blocks: 0, bodyImages: 0, htmlBlocks: 0, localImages: 0, externalImages: 0, editorRoundTrips: 0 };
@@ -247,7 +218,9 @@ await withPublishedEditorConverters(async (converters) => {
     limitations: ['Editor checks exercise the installed published conversion functions on ProseMirror JSON; browser interaction remains a separate check.',
       'HTML fallbacks preserve structure and can be edited as HTML; complex structures are not editable as ordinary visual rich text.',
       'External image availability is not tested by this read-only audit.'] }, null, 2));
-}).catch((error) => {
+}
+
+await main().catch((error) => {
   console.error(error.message.slice(0, 6000));
   process.exitCode = 1;
 });
