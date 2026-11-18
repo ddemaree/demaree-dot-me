@@ -137,11 +137,19 @@ const image = emdashSocialImage(post.data.featured_image, Astro.locals.emdash?.g
             </nav>
           )}
 
-          <SidebarPromo image={sidebarImage} imageAlt="Bits&Letters" href="https://www.bitsandletters.com/">
+          <SidebarPromo
+            image={sidebarImage}
+            imageAlt="Bits&Letters"
+            href="https://www.bitsandletters.com/?utm_source=demaree.me&utm_medium=referral&utm_campaign=post-sidebar"
+          >
             <span><strong>Websites and apps made with clarity and craft.</strong> Bits&amp;Letters is a little consultancy for all your biggest digital problems.</span>
           </SidebarPromo>
 
-          <SidebarPromo image={bookImage} imageAlt="Git for Humans book cover" href="https://gitforhumans.us/">
+          <SidebarPromo
+            image={bookImage}
+            imageAlt="Git for Humans book cover"
+            href="https://gitforhumans.us/?utm_source=demaree.me&utm_medium=referral&utm_campaign=post-sidebar"
+          >
             <span><strong>Git for Humans.</strong> My friendly guide to Git, from your first commit to branches and merge conflicts.</span>
             <span class="sidebar-promo__cta">Get the book <span aria-hidden="true">→</span></span>
           </SidebarPromo>
