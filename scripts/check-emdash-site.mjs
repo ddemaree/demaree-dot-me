@@ -6,6 +6,7 @@ import { emdashOrigin } from './lib/emdash-auth.mjs';
 
 const started = Date.now();
 const failures = [];
+const archivePageSize = 8;
 const stats = { pages: 0, taxonomyArchives: 0, redirects: 0, imageUrls: 0 };
 const images = new Set();
 const taxonomies = new Set();
@@ -84,7 +85,7 @@ function checkPage(path, response, html, expectedStatus = 200) {
     expect((meta(html, 'robots') ?? '').includes('noindex'), path, 'noindex page metadata');
   } else {
     const canonical = [...html.matchAll(/<link\b[^>]*>/gi)].map(([tag]) => attributes(tag)).find((attrs) => attrs.rel === 'canonical')?.href;
-    expect(canonical === `https://demaree.me${path.split('?')[0]}`, path, 'production canonical', canonical);
+    expect(canonical === `https://demaree.me${path}`, path, 'production canonical', canonical);
     expect(!(meta(html, 'robots') ?? '').includes('noindex'), path, 'production indexing enabled');
   }
 }
@@ -120,6 +121,7 @@ async function main() {
   for (const source of sourcePublished) expect(slugs.has(source.slug), 'CMS', `source post imported: ${source.slug}`);
   for (const slug of [...drafts, retired]) expect(!slugs.has(slug), 'CMS', `draft/retired post excluded: ${slug}`);
   const publishedPaths = new Set(posts.map(expectedPath));
+  const newestFirst = [...posts].sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt) || (b.slug || b.id).localeCompare(a.slug || a.id));
 
   await concurrent(posts, async (post) => {
     const path = expectedPath(post);
@@ -141,16 +143,30 @@ async function main() {
     checkPage(path, response, html, 404);
   }
 
-  for (const path of ['/', '/about/', '/blog/', '/topics/', '/labels/']) {
+  for (const path of ['/', '/about/', '/topics/', '/labels/']) {
     const { response, html } = await get(path);
     checkPage(path, response, html);
-    if (path === '/blog/') checkSet(postPaths(html), publishedPaths, path, 'archive contains exactly published CMS posts');
     if (path === '/') {
-      const recent = [...posts].sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt) || (b.slug || b.id).localeCompare(a.slug || a.id)).slice(0, 5);
-      checkSet(postPaths(html), new Set(recent.map(expectedPath)), path, 'home latest five CMS posts');
+      const recent = newestFirst.slice(0, 6);
+      checkSet(postPaths(html), new Set(recent.map(expectedPath)), path, 'home latest six CMS posts');
     }
     collectImages(html);
   }
+  const archivePageCount = Math.max(1, Math.ceil(posts.length / archivePageSize));
+  const archivePath = (page) => page === 1 ? '/blog/' : `/blog/?page=${page}`;
+  await concurrent(Array.from({ length: archivePageCount }, (_, index) => archivePath(index + 1)), async (path) => {
+    const { response, html } = await get(path);
+    const number = Number(new URL(path, target).searchParams.get('page') ?? 1);
+    const start = (number - 1) * archivePageSize;
+    const expected = newestFirst.slice(start, start + archivePageSize).map(expectedPath);
+    checkPage(path, response, html);
+    checkSet(postPaths(html), new Set(expected), path, 'archive page contains its published posts');
+    const links = [...html.matchAll(/<a\b[^>]*>/gi)].map(([tag]) => attributes(tag));
+    const newer = links.find(({ rel }) => rel === 'prev')?.href;
+    const older = links.find(({ rel }) => rel === 'next')?.href;
+    expect(newer === (number > 1 ? archivePath(number - 1) : undefined), path, 'newer posts link', newer);
+    expect(older === (number < archivePageCount ? archivePath(number + 1) : undefined), path, 'older posts link', older);
+  });
   if (sourcePublished.some((post) => post.data.tags?.length)) {
     expect([...taxonomies].some((path) => path.startsWith('/labels/')), '/blog/', 'native tag links remain exposed for the imported corpus');
   }
@@ -160,7 +176,7 @@ async function main() {
     checkPage(path, response, html);
     stats.taxonomyArchives++;
     const paths = postPaths(html);
-    expect(paths.size > 0 && [...paths].every((postPath) => publishedPaths.has(postPath)), path, 'taxonomy archive has only published CMS posts');
+    expect(paths.size > 0 && paths.size <= archivePageSize && [...paths].every((postPath) => publishedPaths.has(postPath)), path, 'taxonomy archive has only published CMS posts');
   });
 
   const feed = await get('/feed.xml');
@@ -169,7 +185,7 @@ async function main() {
   expect((feed.response.headers.get('cache-control') ?? '').includes('no-store'), '/feed.xml', 'no-store cache policy');
   if (new URL(target).hostname !== 'demaree.me') expect((feed.response.headers.get('x-robots-tag') ?? '').includes('noindex'), '/feed.xml', 'preview noindex');
   const items = [...feed.html.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(([, item]) => item);
-  const recent = [...posts].sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt) || (b.slug || b.id).localeCompare(a.slug || a.id)).slice(0, 10);
+  const recent = newestFirst.slice(0, 10);
   stats.feedItems = items.length;
   expect(items.length === recent.length, '/feed.xml', 'latest ten published items', items.length);
   for (let index = 0; index < Math.min(items.length, recent.length); index++) {

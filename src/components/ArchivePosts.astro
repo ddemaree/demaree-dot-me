@@ -1,0 +1,28 @@
+---
+import ArchiveHeader from './ArchiveHeader.astro';
+import NewsletterSignup from './NewsletterSignup.astro';
+import PostIndex from './PostIndex.astro';
+import type { PostEntry, TopicEntry } from '../lib/taxonomy';
+
+interface Props {
+  heading: string;
+  posts: PostEntry[];
+  topics: TopicEntry[];
+  newer?: string;
+  older?: string;
+  allPosts?: boolean;
+}
+
+const { heading, posts, topics, newer, older, allPosts } = Astro.props;
+---
+<main id="main" class="content-inset archive-page">
+  <ArchiveHeader heading={heading} current={allPosts ? 'posts' : undefined} />
+  <PostIndex posts={posts} topics={topics} label={heading} />
+  {(newer || older) && (
+    <nav class="archive-pagination" aria-label="Post pages">
+      {newer && <a class="arrow-link" href={newer} rel="prev"><span class="arrow arrow--back" aria-hidden="true"></span>Newer posts</a>}
+      {older && <a class="arrow-link archive-pagination__older" href={older} rel="next">Older posts<span class="arrow" aria-hidden="true"></span></a>}
+    </nav>
+  )}
+  <NewsletterSignup />
+</main>

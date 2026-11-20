@@ -1,0 +1,26 @@
+---
+interface Props {
+  showYouTube?: boolean;
+}
+
+const { showYouTube = false } = Astro.props;
+const profiles = {
+  x: { name: 'X', href: 'https://x.com/ddemaree', width: 25, height: 28 },
+  linkedin: { name: 'LinkedIn', href: 'https://linkedin.com/in/ddemaree', width: 28, height: 32 },
+  bluesky: { name: 'Bluesky', href: 'https://bsky.app/profile/demar.ee', width: 27, height: 24 },
+  youtube: { name: 'YouTube', href: 'https://www.youtube.com/@ddemaree', width: 29, height: 26 },
+};
+const order: Array<keyof typeof profiles> = showYouTube ? ['x', 'linkedin', 'bluesky', 'youtube'] : ['x', 'bluesky', 'linkedin'];
+---
+<ul class:list={['profile-links', { 'profile-links--home': showYouTube }]} aria-label="Social profiles">
+  {order.map((icon) => {
+    const { name, href, width, height } = profiles[icon];
+    return (
+      <li>
+        <a href={href} aria-label={name}>
+          <img src={`/images/redesign/${showYouTube ? 'social' : 'footer'}-${icon}.svg`} alt="" width={showYouTube ? width : 24} height={showYouTube ? height : 24} />
+        </a>
+      </li>
+    );
+  })}
+</ul>

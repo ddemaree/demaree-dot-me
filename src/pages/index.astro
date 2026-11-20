@@ -1,106 +1,88 @@
 ---
-import { Image } from "astro:assets";
-import BaseLayout from "../layouts/BaseLayout.astro";
-import BnlPostCollection from "../components/BnlPostCollection.astro";
-import LocalPostCollection from "@/components/LocalPostCollection.astro";
-import { getPublishedPosts, type PostEntry } from "../lib/taxonomy";
-
-import ddPixelPortrait from '@/assets/images/site/dd-pixel-portrait-edited.png';
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BnlPostCollection from '../components/BnlPostCollection.astro';
+import LocalPostCollection from '../components/LocalPostCollection.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+import { getPublishedPosts } from '../lib/taxonomy';
+import pixelPortrait from '@/assets/images/redesign/home-portrait.png';
+import gitArtwork from '@/assets/images/redesign/project-git.png';
+import dragonArtwork from '@/assets/images/redesign/project-dragon.png';
 
 export const prerender = false;
 
-let recentPosts: PostEntry[];
+let recentPosts: Awaited<ReturnType<typeof getPublishedPosts>>;
 try {
-  recentPosts = (await getPublishedPosts()).slice(0, 5);
+  recentPosts = (await getPublishedPosts()).slice(0, 6);
 } catch (error) {
   console.error('[EmDash] Failed to load recent public posts:', error);
   return new Response('Posts are temporarily unavailable. Please try again soon.', {
     status: 503,
-    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' },
   });
 }
+
+const projects = [
+  {
+    title: 'Git for Humans',
+    description: 'A friendly introduction to Git and version control, aimed at designers, writers, or anyone who wants to know what’s really happening behind all those crazy commands.',
+    host: 'gitforhumans.us',
+    image: gitArtwork,
+  },
+  {
+    title: 'Dragon Generator',
+    description: 'An experimental little app aimed at kids and preteens, where they can work with AI to craft stories set in fantasy worlds. D&D-style dice rolls are optional.',
+    host: 'dragongenerator.fun',
+    image: dragonArtwork,
+  },
+];
 ---
 
 <BaseLayout
-  title="David Demaree — A good man, and thorough."
-  description="David Demaree is a web designer, engineer, and systems thinker."
+  title="David Demaree — Designer, writer, and systems thinker"
+  description="David Demaree is a designer, writer, and systems thinker."
 >
   <main id="main" class="home-page">
-    <div class="container mx-auto">
-      <section class="home-intro" aria-labelledby="home-intro-heading">
-        <div class="home-intro__container py-[1lh] flex flex-col lg:flex-row max-w-4xl mx-auto items-center">
-          <figure class="max-w-50">
-            <Image src={ddPixelPortrait} alt="David Demaree" class="home-intro__image" layout="constrained" width={400} />
-          </figure>
-          <h1 id="home-intro-heading" class="home-intro__heading text-balance font-serif mt-[0.5lh] text-center max-w-[40ch]">
-            <strong>David Demaree</strong> is a <span>software product leader</span>, <span>web designer</span>, <span>developer</span>, and <span>author</span>.
-          </h1>
+    <div class="home-hero content-inset">
+      <Image src={pixelPortrait} alt="" width={272} loading="eager" />
+      <h1>David Demaree is a designer, writer, and systems thinker.</h1>
+    </div>
+    <section class="home-about" aria-labelledby="home-about-heading">
+      <h2 id="home-about-heading" class="section-heading">About me</h2>
+      <p class="home-about__lede">Founder &amp; CEO of <a href="https://www.bitsandletters.com/">Bits&amp;Letters</a>, a web &amp; AI consultancy that helps build websites &amp; other creative digital experiences with clarity &amp; craft.</p>
+      <div class="home-about__details">
+        <p>I’ve spent my career building tools and platforms for people who make things on the web. I was part of the original team behind <strong>Typekit</strong> at Adobe, worked on <strong>Material Design</strong> &amp; <strong>Google Fonts</strong> at Google, and brought advanced CSS features to <strong>Webflow</strong>.</p>
+        <div class="home-about__links">
+          <SocialLinks showYouTube />
+          <a href="/about/" class="arrow-link">More about me<span class="arrow" aria-hidden="true"></span></a>
+        </div>
+      </div>
+    </section>
+    <div class="home-content content-inset">
+      <NewsletterSignup />
+      <section class="home-section" aria-labelledby="projects-heading">
+        <h2 id="projects-heading" class="section-heading">Projects</h2>
+        <div class="project-list">
+          {projects.map(({ title, description, image, host }) => (
+            <article class="project-card">
+              <Image src={image} alt="" width={504} loading="lazy" />
+              <div>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </div>
+              <a class="arrow-link" href={`https://${host}/`} aria-label={`Visit ${title}`}>{host}<span class="arrow" aria-hidden="true"></span></a>
+            </article>
+          ))}
         </div>
       </section>
-
       <LocalPostCollection posts={recentPosts} />
-
-      <hr class="my-10 border-current/30" />
-
-      <BnlPostCollection title="Recent posts from the Bits&Letters blog" server:defer>
-        <section slot="fallback" class="py-10 max-w-5xl mx-auto" aria-labelledby="bnl-posts-loading-heading">
-          <h2 id="bnl-posts-loading-heading" class="text-2xl/none font-medium">Recent posts from the Bits&amp;Letters blog</h2>
-          <p class="mt-6 text-current/70">Loading posts…</p>
+      <BnlPostCollection server:defer>
+        <section slot="fallback" class="home-section" aria-labelledby="bnl-posts-loading-heading">
+          <h2 id="bnl-posts-loading-heading" class="section-heading">From the Bits&amp;Letters Blog</h2>
+          <p>Loading posts…</p>
         </section>
       </BnlPostCollection>
     </div>
-
   </main>
 </BaseLayout>
-
-<style is:global>
-  @reference '@/styles/theme.css';
-
-  @layer components {
-
-    .home-page {
-      --home-color-bg: var(--home-background);
-      --home-color-fg: var(--home-accent);
-
-      background-color: var(--home-color-bg);
-      color: var(--text);
-      min-height: calc(100vh - var(--header-height));
-      padding: 1.5rem max(1.75rem, 5vw);
-      padding-block-start: 3rem;
-    }
-
-    .home-intro {
-      @apply flex items-center;
-      min-height: 40vh;
-    }
-
-    .home-intro__container {
-      width: 100%;
-      container-type: inline-size;
-      container-name: home-intro__copy;
-    }
-
-    .home-intro__image {
-      border-radius: 100%;
-    }
-
-    .home-intro__heading {
-      color: var(--home-muted);
-      font-size: clamp(28px, 10cqi, 40px);
-      font-weight: 420;
-      line-height: 1.1;
-      margin: 0;
-      width: 100%;
-      max-width: 32ch !important;
-
-      strong {
-        color: var(--text);
-        font-weight: 600;
-      }
-    }
-
-    @variant lg {
-    }
-  }
-
-</style>

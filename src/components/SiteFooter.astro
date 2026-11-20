@@ -1,108 +1,25 @@
 ---
-import { Image } from 'astro:assets';
-import memoji from '../assets/images/site/memoji.png';
+import SocialLinks from './SocialLinks.astro';
 ---
 
-<footer class="site-footer">
-  <div class="site-footer__inner">
-    <!-- <Image class="footer-memoji" src={memoji} alt="" width={96} /> -->
-    <!-- <p><strong><a href="https://demaree.me/about/">David Demaree</a></strong> is a fabulous gentleman known for wonderful things.</p> -->
-    <ul class="social-links" aria-label="Social links">
-      <li><a class="social-link social-link--x" href="https://x.com/ddemaree" aria-label="X"><img src="/images/site/social-x.svg" alt="" /></a></li>
-      <li><a class="social-link social-link--bluesky" href="https://bsky.app/profile/demar.ee" aria-label="Bluesky"><img src="/images/site/social-bluesky.svg" alt="" /></a></li>
-      <li><a class="social-link social-link--linkedin" href="https://linkedin.com/in/ddemaree" aria-label="LinkedIn"><img src="/images/site/social-linkedin.svg" alt="" /></a></li>
-      <li><a class="social-link social-link--mail" href="mailto:david@demaree.me" aria-label="Mail"><img src="/images/site/social-mail.svg" alt="" /></a></li>
-    </ul>
-    <bnl-logo></bnl-logo>
+<footer class="site-footer content-inset">
+  <div class="site-footer__main">
+    <a class="site-footer__identity" href="/">
+      <span><img src="/images/redesign/site-mark.svg" alt="" width="48" height="48" /></span>
+      David Demaree
+    </a>
+    <nav class="site-footer__links" aria-label="Footer">
+      <a href="/about/">About David</a>
+      <a href="/blog/">All posts</a>
+      <a href="https://www.bitsandletters.com/">Consulting</a>
+      <a href="mailto:david@demaree.me">Contact</a>
+    </nav>
+    <SocialLinks />
+  </div>
+  <div class="site-footer__credit">
+    <bnl-logo theme="on-dark"><a href="https://www.bitsandletters.com/">Bits&amp;Letters</a></bnl-logo>
+    <a href="/feed/">RSS feed</a>
   </div>
 </footer>
 
-<script is:inline type="module" src="https://unpkg.com/bitsandletters-logo"></script>
-
-<style is:global>
-  @reference "@/styles/theme.css";
-
-  @layer components {
-    .site-footer {
-      padding: 2.5rem 1.5rem;
-      background: var(--footer);
-    }
-
-    .site-footer__inner {
-      display: flex;
-      max-width: 56rem;
-      min-height: 14.5rem;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin-inline: auto;
-      text-align: center;
-    }
-
-    .footer-memoji {
-      width: 6rem;
-    }
-
-    .site-footer p {
-      margin: 1rem 0 1.25rem;
-    }
-
-    .site-footer p a:hover {
-      text-decoration: none;
-    }
-
-    .social-links {
-      display: flex;
-      gap: 0.75rem;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .site-footer bnl-logo {
-      display: block;
-      margin-block-start: 2rem;
-    }
-
-    .social-link {
-      display: flex;
-      width: 2.25rem;
-      height: 2.25rem;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      transition: transform 140ms ease;
-    }
-
-    .social-link:hover {
-      transform: translateY(-2px);
-    }
-
-    .social-link img {
-      width: 1.5rem;
-      height: 1.5rem;
-    }
-
-    .social-link--x {
-      background: #000;
-    }
-
-    .social-link--x img,
-    .social-link--bluesky img,
-    .social-link--linkedin img {
-      filter: invert(1);
-    }
-
-    .social-link--bluesky {
-      background: #3b82f6;
-    }
-
-    .social-link--linkedin {
-      background: #3275b7;
-    }
-
-    .social-link--mail {
-      background: #f5f5f4;
-    }
-  }
-</style>
+<script is:inline type="module" src="https://unpkg.com/bitsandletters-logo@0.1.2/dist/index.js"></script>

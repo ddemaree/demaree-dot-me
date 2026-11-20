@@ -1,44 +1,37 @@
 ---
-export const prerender = false;
-
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostIndex from '../../components/PostIndex.astro';
+import ArchiveHeader from '../../components/ArchiveHeader.astro';
+import ArchivePosts from '../../components/ArchivePosts.astro';
+import { paginatePosts } from '../../lib/archive-pagination';
 import { getPostsByTopic, getTopic, getTopics } from '../../lib/taxonomy';
 
-Astro.response.headers.set('Cache-Control', 'no-store');
+export const prerender = false;
 
 const slug = Astro.params.slug ?? '';
 let topic: Awaited<ReturnType<typeof getTopic>>;
-let topics: Awaited<ReturnType<typeof getTopics>> = [];
-let posts: Awaited<ReturnType<typeof getPostsByTopic>> = [];
-let unavailable = false;
+let topics: Awaited<ReturnType<typeof getTopics>>;
+let posts: Awaited<ReturnType<typeof getPostsByTopic>>;
 try {
-  [topic, topics] = await Promise.all([getTopic(slug), getTopics()]);
-  if (topic) posts = await getPostsByTopic(topic.id);
-  else Astro.response.status = 404;
+  [topic, topics, posts] = await Promise.all([getTopic(slug), getTopics(), getPostsByTopic(slug)]);
 } catch (error) {
   console.error('Unable to load topic archive from EmDash.', error);
-  Astro.response.status = 503;
-  unavailable = true;
+  return new Response('Posts are temporarily unavailable. Please try again soon.', {
+    status: 503,
+    headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' },
+  });
 }
 
-const heading = unavailable ? 'Content temporarily unavailable' : topic?.data.title ?? 'Topic not found';
-const title = `${heading} — David Demaree`;
-const description = unavailable
-  ? 'Content is temporarily unavailable. Please try again shortly.'
-  : topic?.data.description ?? 'This topic does not exist.';
+const page = topic && paginatePosts(posts, Astro.url);
+const heading = topic?.data.title ?? 'Topic not found';
+if (!page) Astro.response.status = 404;
 ---
 
-<BaseLayout title={title} description={description}>
-  <main id="main" class="index-shell">
-    <header class="index-header">
-      <p class="index-eyebrow">
-        <a href="/topics/">Topics</a>
-      </p>
-      <h1>{heading}</h1>
-      {(topic || unavailable) && <p class="index-lede">{description}</p>}
-    </header>
-
-    {topic && !unavailable && <PostIndex posts={posts} topics={topics} label={topic.data.title} />}
-  </main>
+<BaseLayout title={`${heading} — David Demaree`} description={topic?.data.description} canonical={page ? page.canonical : undefined}>
+  {page ? (
+    <ArchivePosts heading={heading} posts={page.posts} topics={topics} newer={page.newer} older={page.older} />
+  ) : (
+    <main id="main" class="content-inset archive-page">
+      <ArchiveHeader heading={topic ? 'Page not found' : heading} message={topic ? 'This page of the archive does not exist.' : 'This topic does not exist.'} />
+    </main>
+  )}
 </BaseLayout>

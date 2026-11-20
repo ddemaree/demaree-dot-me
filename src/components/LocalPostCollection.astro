@@ -1,44 +1,24 @@
 ---
-import { formatDate, type PostEntry } from "../lib/taxonomy";
-import Button from "./Button.astro";
-import { emdashPostUrl } from "../lib/emdash-post";
+import type { PostEntry } from '../lib/taxonomy';
+import { emdashPostUrl, emdashSocialImage } from '../lib/emdash-post';
+import HomePostCards from './HomePostCards.astro';
 
 interface Props {
   posts: PostEntry[];
 }
-
-const { posts: recentPosts } = Astro.props;
+const { posts } = Astro.props;
+const cards = posts.map(({ id, data }) => ({
+  title: data.title,
+  description: data.description,
+  href: emdashPostUrl({ id }),
+  date: data.publishedAt,
+  image: emdashSocialImage(data.featured_image, Astro.locals.emdash?.getPublicMediaUrl)?.src,
+  imageAlt: data.featured_image_alt ?? data.featured_image?.alt,
+}));
 ---
-<section class="home-posts my-10">
-  <div class="col-span-full">
-    <h2 class="text-2xl/none font-medium mb-[1lh]">Recent blog posts</h2>
-  </div>
-  <div class="home-posts__list posts-list">
-  {recentPosts.map((post) => (
-    <article class="home-posts__item posts-list__item">
-      <time class="home-posts__date posts-list__date" datetime={post.data.publishedAt.toISOString()}>
-        {formatDate(post.data.publishedAt)}
-      </time>
-      <h3 class="home-posts__title posts-list__title">
-        <a href={emdashPostUrl(post)}>{post.data.title}</a>
-      </h3>
-      <div class="home-posts__description posts-list__description">
-        <p>{post.data.description}</p>
-      </div>
-    </article>
-  ))}
-  </div>
-  <Button href="/blog/">
-    <i class="fass fa-newspaper me-2"></i>
-    See more in the archives
-    <i class="fas fa-chevron-right"></i>
-  </Button>
+
+<section class="home-section" aria-labelledby="recent-posts-heading">
+  <h2 id="recent-posts-heading" class="section-heading">Recent blog posts</h2>
+  <HomePostCards posts={cards} />
+  <a href="/blog/" class="arrow-link">More posts<span class="arrow" aria-hidden="true"></span></a>
 </section>
-
-<style is:global>
-  @reference '@/styles/theme.css';
-
-  .home-posts {
-    @apply max-w-5xl mx-auto;
-  }
-</style>

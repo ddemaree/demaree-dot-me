@@ -1,0 +1,21 @@
+---
+interface Props {
+  heading: string;
+  current?: 'posts' | 'topics' | 'tags';
+  message?: string;
+}
+
+const { heading, current, message } = Astro.props;
+const links = [
+  { key: 'posts', text: 'All Posts', href: '/blog/' },
+  { key: 'topics', text: 'Topics', href: '/topics/' },
+  { key: 'tags', text: 'Tags', href: '/labels/' },
+];
+---
+<header class="archive-heading">
+  <h1>{heading}</h1>
+  <nav aria-label="Browse the archive">
+    {links.filter(({ key }) => key !== current).map(({ text, href }) => <a href={href}>{text}</a>)}
+  </nav>
+  {message && <p>{message}</p>}
+</header>

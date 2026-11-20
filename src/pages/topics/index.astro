@@ -2,6 +2,8 @@
 export const prerender = false;
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArchiveHeader from '../../components/ArchiveHeader.astro';
+import NewsletterSignup from '../../components/NewsletterSignup.astro';
 import { getPublishedPosts, getTopics, postTopicId } from '../../lib/taxonomy';
 
 Astro.response.headers.set('Cache-Control', 'no-store');
@@ -27,21 +29,21 @@ for (const post of posts) {
   title="Topics — David Demaree"
   description="Mini-blogs and other collections of writing by David Demaree."
 >
-  <main id="main" class="index-shell">
-    <header class="index-header">
-      <p class="index-eyebrow">Index</p>
-      <h1>Topics</h1>
-      <p class="index-lede">{unavailable ? 'Content is temporarily unavailable. Please try again shortly.' : 'A few curated collections, including mini-blogs that live in the site navigation.'}</p>
-    </header>
+  <main id="main" class="content-inset archive-page">
+    <ArchiveHeader heading="Topics" current="topics" message={unavailable ? 'Content is temporarily unavailable. Please try again shortly.' : undefined} />
 
     <section class="taxonomy-index" aria-label="Topics">
       {topics.map((topic) => (
         <article class="taxonomy-card">
-          <h2><a href={`/topics/${topic.id}/`}>{topic.data.title}</a></h2>
-          <p>{topic.data.description}</p>
-          <p class="taxonomy-card__meta">{counts.get(topic.id) ?? 0} posts</p>
+          <a href={`/topics/${topic.id}/`}>
+            <h2>{topic.data.title}</h2>
+            <p>{topic.data.description}</p>
+            <span class="taxonomy-card__meta">{counts.get(topic.id) ?? 0} posts</span>
+            <span class="arrow" aria-hidden="true"></span>
+          </a>
         </article>
       ))}
     </section>
+    {!unavailable && <NewsletterSignup />}
   </main>
 </BaseLayout>

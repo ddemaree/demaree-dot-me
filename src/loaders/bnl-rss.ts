@@ -7,6 +7,7 @@ export interface BnlPost {
   description: string;
   publishedAt: Date;
   url: string;
+  image?: string;
 }
 
 interface EntryFilter {
@@ -15,6 +16,7 @@ interface EntryFilter {
 
 interface CollectionFilter {
   limit?: number;
+  includeImages?: boolean;
 }
 
 function decodeXml(value: string) {
@@ -60,6 +62,21 @@ function parseFeed(xml: string): BnlPost[] {
   });
 }
 
+async function withCoverImage(post: BnlPost): Promise<BnlPost> {
+  try {
+    const response = await fetch(post.url, { redirect: 'error', signal: AbortSignal.timeout(3_000) });
+    if (!response.ok) return post;
+    const html = (await response.text()).split(/<\/head\s*>/i, 1)[0];
+    const imageTag = html.match(/<meta\b[^>]*\bproperty=["']og:image["'][^>]*>/i)?.[0];
+    const content = imageTag?.match(/\bcontent=["']([^"']+)["']/i)?.[1];
+    if (!content) return post;
+    const imageUrl = new URL(decodeXml(content), post.url);
+    return imageUrl.protocol === 'https:' ? { ...post, image: imageUrl.href } : post;
+  } catch {
+    return post;
+  }
+}
+
 function postId(post: BnlPost) {
   return new URL(post.url).pathname.replace(/^\/ideas\/|\/$/g, '');
 }
@@ -72,7 +89,7 @@ export function bnlRssLoader(options: { feedUrl: string }): LiveLoader<BnlPost, 
     });
 
     if (!response.ok) throw new Error(`B&L feed returned ${response.status}`);
-    return parseFeed(await response.text());
+    return parseFeed(await response.text()).sort((a, b) => b.publishedAt.valueOf() - a.publishedAt.valueOf());
   }
 
   return {
@@ -82,8 +99,11 @@ export function bnlRssLoader(options: { feedUrl: string }): LiveLoader<BnlPost, 
         const posts = await loadPosts();
         const limit = Math.max(0, filter?.limit ?? posts.length);
 
+        const latest = posts.slice(0, limit);
+        const selected = filter?.includeImages ? await Promise.all(latest.map(withCoverImage)) : latest;
+
         return {
-          entries: posts.slice(0, limit).map((post) => ({ id: postId(post), data: post })),
+          entries: selected.map((post) => ({ id: postId(post), data: post })),
           cacheHint: { lastModified: posts[0]?.publishedAt },
         };
       } catch (cause) {

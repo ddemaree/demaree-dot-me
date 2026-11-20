@@ -12,6 +12,7 @@ const bnlPosts = defineLiveCollection({
     description: z.string(),
     publishedAt: z.coerce.date(),
     url: z.url(),
+    image: z.url().optional(),
   }),
 });
 

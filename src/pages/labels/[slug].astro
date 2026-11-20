@@ -1,48 +1,37 @@
 ---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArchiveHeader from '../../components/ArchiveHeader.astro';
+import ArchivePosts from '../../components/ArchivePosts.astro';
+import { paginatePosts } from '../../lib/archive-pagination';
+import { getPostsByTag, getTopics, tagLabelFromPosts } from '../../lib/taxonomy';
+
 export const prerender = false;
 
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostIndex from '../../components/PostIndex.astro';
-import {
-  getPostsByTag,
-  getTopics,
-  tagLabelFromPosts,
-} from '../../lib/taxonomy';
-
-Astro.response.headers.set('Cache-Control', 'no-store');
-
 const slug = Astro.params.slug ?? '';
-let posts: Awaited<ReturnType<typeof getPostsByTag>> = [];
-let topics: Awaited<ReturnType<typeof getTopics>> = [];
-let unavailable = false;
+let posts: Awaited<ReturnType<typeof getPostsByTag>>;
+let topics: Awaited<ReturnType<typeof getTopics>>;
 try {
   [posts, topics] = await Promise.all([getPostsByTag(slug), getTopics()]);
-  if (posts.length === 0) Astro.response.status = 404;
 } catch (error) {
   console.error('Unable to load tag archive from EmDash.', error);
-  Astro.response.status = 503;
-  unavailable = true;
+  return new Response('Posts are temporarily unavailable. Please try again soon.', {
+    status: 503,
+    headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' },
+  });
 }
-const tag = tagLabelFromPosts(slug, posts);
-const heading = unavailable ? 'Content temporarily unavailable' : posts.length > 0 ? tag : 'Tag not found';
-const title = `${heading} — David Demaree`;
-const description = unavailable
-  ? 'Content is temporarily unavailable. Please try again shortly.'
-  : posts.length > 0
-    ? `Posts tagged ${tag}.`
-    : 'This tag does not match any published posts.';
+
+const tag = posts.length ? tagLabelFromPosts(slug, posts) : undefined;
+const page = tag && paginatePosts(posts, Astro.url);
+const heading = tag ?? 'Tag not found';
+if (!page) Astro.response.status = 404;
 ---
 
-<BaseLayout title={title} description={description}>
-  <main id="main" class="index-shell">
-    <header class="index-header">
-      <p class="index-eyebrow">
-        <a href="/labels/">Tags</a>
-      </p>
-      <h1>{heading}</h1>
-      {unavailable && <p class="index-lede">{description}</p>}
-    </header>
-
-    {posts.length > 0 && !unavailable && <PostIndex posts={posts} topics={topics} label={`Posts tagged ${tag}`} />}
-  </main>
+<BaseLayout title={`${heading} — David Demaree`} description={tag ? `Posts tagged ${tag}.` : undefined} canonical={page ? page.canonical : undefined}>
+  {page ? (
+    <ArchivePosts heading={heading} posts={page.posts} topics={topics} newer={page.newer} older={page.older} />
+  ) : (
+    <main id="main" class="content-inset archive-page">
+      <ArchiveHeader heading={tag ? 'Page not found' : heading} message={tag ? 'This page of the archive does not exist.' : 'This tag does not match any published posts.'} />
+    </main>
+  )}
 </BaseLayout>
