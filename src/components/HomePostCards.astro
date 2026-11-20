@@ -8,8 +8,12 @@ const { posts } = Astro.props;
 ---
 <div class="home-post-card-list">
   {posts.map((post) => (
-    <article class:list={['home-post-card', { 'home-post-card--with-image': post.image }]}>
-      {post.image && <img src={post.image} alt={post.imageAlt ?? ''} decoding="async" loading="lazy" />}
+    <article class="home-post-card">
+      {post.image ? (
+        <img class="home-post-card__media" src={post.image} alt={post.imageAlt ?? ''} decoding="async" loading="lazy" />
+      ) : (
+        <span class="home-post-card__media home-post-card__media--placeholder" aria-hidden="true"></span>
+      )}
       <div>
         <h3><a href={post.href}>{post.title}</a></h3>
         <p>{post.description}</p>
