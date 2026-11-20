@@ -1,4 +1,21 @@
 @font-face {
+  font-family: "Polymath Variable";
+  src: url("https://fonts.demaree.me/demaree-dot-me/PolymathVar.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Polymath Variable";
+  src: url("https://fonts.demaree.me/demaree-dot-me/PolymathVar.ttf") format("truetype");
+  font-style: italic;
+  font-variation-settings: "ital" 1;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Die Grotesk";
   src: url("https://fonts.demaree.me/demaree-dot-me/die-grotesk-vf-roman.woff2") format("woff2");
   font-style: normal;

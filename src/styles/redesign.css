@@ -24,6 +24,7 @@
 }
 
 .site-shell {
+  font-variation-settings: "opsz" 14;
   width: min(calc(100% - 16px), 1180px);
   min-height: calc(100svh - 16px);
   flex-direction: column;
@@ -52,6 +53,7 @@ body:has(.site-shell) {
 .site-shell h2,
 .site-shell h3,
 .site-footer__identity {
+  font-variation-settings: "opsz" 72;
   font-family: var(--font-sans);
   font-weight: 730;
   letter-spacing: -0.025em;
@@ -63,6 +65,7 @@ body:has(.site-shell) {
 }
 
 .site-shell .section-heading {
+  font-variation-settings: "opsz" 6;
   color: var(--heading-accent);
   border-bottom: 1px solid var(--text);
   padding-bottom: 10px;
@@ -152,6 +155,7 @@ body:has(.site-shell) {
 
 .desktop-navigation a,
 #mobile-menu a {
+  font-variation-settings: "opsz" 6;
   border-radius: 999px;
   color: var(--description);
   font-weight: 670;
@@ -438,6 +442,7 @@ body:has(.site-shell) {
 
 .home-post-card p,
 .project-card p {
+  font-variation-settings: "opsz" 6;
   line-height: 1.35;
 }
 
@@ -468,6 +473,7 @@ body:has(.site-shell) {
 }
 
 .home-post-card time {
+  font-variation-settings: "opsz" 6;
   display: block;
   margin-top: 6px;
   font-size: 11px;
@@ -520,6 +526,7 @@ body:has(.site-shell) {
 }
 
 .newsletter__form label {
+  font-variation-settings: "opsz" 6;
   margin-bottom: 5px;
   font-size: 14px;
   font-weight: 700;
@@ -611,6 +618,7 @@ body:has(.site-shell) {
 }
 
 .archive-page .index-entry__meta {
+  font-variation-settings: "opsz" 6;
   grid-column: 1 / -1;
   flex-direction: row;
   flex-wrap: wrap;
@@ -759,6 +767,7 @@ body:has(.site-shell) {
 }
 
 .single-post .entry-header time {
+  font-variation-settings: "opsz" 6;
   color: var(--stone-600);
   font-family: var(--font-sans);
   font-size: 13px;
@@ -771,6 +780,7 @@ body:has(.site-shell) {
   max-width: 640px;
   margin-inline: auto;
   font-family: Georgia, serif;
+  font-variation-settings: normal;
   font-size: 16px;
   line-height: 1.56;
   --flow-space: 26px;
@@ -822,6 +832,7 @@ body:has(.site-shell) {
 }
 
 .article-content .post-navigation__label {
+  font-variation-settings: "opsz" 6;
   display: flex;
   gap: 7px;
   align-items: center;
@@ -834,6 +845,7 @@ body:has(.site-shell) {
 }
 
 .article-content .post-navigation strong {
+  font-variation-settings: "opsz" 72;
   font-family: var(--font-sans);
   font-size: 21px;
   font-weight: 730;
@@ -894,6 +906,7 @@ body:has(.site-shell) {
 }
 
 .about-bio__lead {
+  font-variation-settings: "opsz" 72;
   color: var(--text);
   font-size: clamp(24px, 4vw, 28px);
   line-height: 1.18;
@@ -932,6 +945,7 @@ body:has(.site-shell) {
 }
 
 .about-meta {
+  font-variation-settings: "opsz" 6;
   color: var(--heading-accent);
   font-size: 12px;
   line-height: 16px;
@@ -1005,6 +1019,7 @@ body:has(.site-shell) {
 }
 
 .about-quote--featured blockquote {
+  font-variation-settings: "opsz" 72;
   max-width: 750px;
   font-size: clamp(26px, 5vw, 38px);
   letter-spacing: -0.025em;
