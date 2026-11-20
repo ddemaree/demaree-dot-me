@@ -1,4 +1,5 @@
 import sanitizeHtml from 'sanitize-html';
+import { withBitsAndLettersUtm } from './bits-and-letters-utm.mjs';
 
 // EmDash 1.1.0's inline HTML allowlist, with link titles and ordered-list
 // starting numbers retained from the existing Markdoc content.
@@ -18,6 +19,12 @@ const allowedTags = [
 export function sanitizeEmDashHtml(html) {
   return sanitizeHtml(html, {
     allowedTags,
+    transformTags: {
+      a(tagName, attribs) {
+        if (attribs.href) attribs.href = withBitsAndLettersUtm(attribs.href, 'post-body');
+        return { tagName, attribs };
+      },
+    },
     allowedAttributes: {
       '*': ['class', 'id', 'data-*'],
       a: ['href', 'name', 'target', 'title'],

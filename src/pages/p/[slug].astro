@@ -13,6 +13,7 @@ import {
   type TopicEntry,
 } from '../../lib/taxonomy';
 import { emdashPostUrl, emdashSocialImage } from '../../lib/emdash-post';
+import { withBitsAndLettersUtm } from '../../lib/bits-and-letters-utm.mjs';
 import NewsletterSignup from '../../components/NewsletterSignup.astro';
 
 export const prerender = false;
@@ -88,7 +89,7 @@ const image = emdashSocialImage(post.data.featured_image, Astro.locals.emdash?.g
         {publishedAt && <time datetime={post.data.publishedAt?.toISOString()}>{publishedAt}</time>}
         {post.data.link_url && (
           <p class="entry-external-link">
-            <a href={post.data.link_url} rel="noopener noreferrer">
+            <a href={withBitsAndLettersUtm(post.data.link_url, 'post-original')} rel="noopener noreferrer">
               View original link
             </a>
           </p>

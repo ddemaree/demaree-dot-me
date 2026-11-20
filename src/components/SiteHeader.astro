@@ -1,4 +1,5 @@
 ---
+import { withBitsAndLettersUtm } from '../lib/bits-and-letters-utm.mjs';
 import { getNavTopics } from '../lib/taxonomy';
 
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
@@ -23,7 +24,7 @@ const links = [
     label: 'All Posts',
     current: path === '/blog' || path.startsWith('/p/') || path.startsWith('/labels') || path === '/topics',
   },
-  { href: 'https://www.bitsandletters.com/', label: 'Consulting', current: false },
+  { href: withBitsAndLettersUtm('https://www.bitsandletters.com/', 'header-consulting'), label: 'Consulting', current: false },
   { href: 'mailto:david@demaree.me', label: 'Contact', current: false },
 ];
 ---

@@ -1,12 +1,13 @@
 ---
 import { getLiveCollection } from 'astro:content';
+import { withBitsAndLettersUtm } from '../lib/bits-and-letters-utm.mjs';
 import HomePostCards from './HomePostCards.astro';
 
 const result = await getLiveCollection('bnlPosts', { limit: 3, includeImages: true });
 const posts = (result.entries ?? []).map(({ data }) => ({
   title: data.title,
   description: data.description,
-  href: data.url,
+  href: withBitsAndLettersUtm(data.url, 'homepage-blog-post'),
   date: data.publishedAt,
   image: data.image,
 }));
@@ -17,5 +18,5 @@ if (!result.error) Astro.response.headers.set('Cache-Control', 'public, max-age=
 <section class="home-section" aria-labelledby="bnl-posts-heading">
   <h2 id="bnl-posts-heading" class="section-heading">From the Bits&amp;Letters Blog</h2>
   {result.error ? <p>Bits&amp;Letters posts are temporarily unavailable.</p> : posts.length ? <HomePostCards posts={posts} /> : <p>No posts are available yet.</p>}
-  <a href="https://www.bitsandletters.com/ideas" class="arrow-link">More posts from Bits&amp;Letters<span class="arrow" aria-hidden="true"></span></a>
+  <a href={withBitsAndLettersUtm('https://www.bitsandletters.com/ideas', 'homepage-blog-index')} class="arrow-link">More posts from Bits&amp;Letters<span class="arrow" aria-hidden="true"></span></a>
 </section>

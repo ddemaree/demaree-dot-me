@@ -5,6 +5,7 @@ import BnlPostCollection from '../components/BnlPostCollection.astro';
 import LocalPostCollection from '../components/LocalPostCollection.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
 import SocialLinks from '../components/SocialLinks.astro';
+import { withBitsAndLettersUtm } from '../lib/bits-and-letters-utm.mjs';
 import { getPublishedPosts } from '../lib/taxonomy';
 import pixelPortrait from '@/assets/images/redesign/home-portrait.png';
 import gitArtwork from '@/assets/images/redesign/project-git.png';
@@ -50,7 +51,7 @@ const projects = [
     </div>
     <section class="home-about" aria-labelledby="home-about-heading">
       <h2 id="home-about-heading" class="section-heading">About me</h2>
-      <p class="home-about__lede">Founder &amp; CEO of <a href="https://www.bitsandletters.com/">Bits&amp;Letters</a>, a web &amp; AI consultancy that helps build websites &amp; other creative digital experiences with clarity &amp; craft.</p>
+      <p class="home-about__lede">Founder &amp; CEO of <a href={withBitsAndLettersUtm('https://www.bitsandletters.com/', 'homepage-about')}>Bits&amp;Letters</a>, a web &amp; AI consultancy that helps build websites &amp; other creative digital experiences with clarity &amp; craft.</p>
       <div class="home-about__details">
         <p>I’ve spent my career building tools and platforms for people who make things on the web. I was part of the original team behind <strong>Typekit</strong> at Adobe, worked on <strong>Material Design</strong> &amp; <strong>Google Fonts</strong> at Google, and brought advanced CSS features to <strong>Webflow</strong>.</p>
         <div class="home-about__links">

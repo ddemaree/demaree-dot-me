@@ -1,5 +1,9 @@
 ---
 import SocialLinks from './SocialLinks.astro';
+import { withBitsAndLettersUtm } from '../lib/bits-and-letters-utm.mjs';
+
+const consultingUrl = withBitsAndLettersUtm('https://www.bitsandletters.com/', 'footer-consulting');
+const creditUrl = withBitsAndLettersUtm('https://www.bitsandletters.com/', 'brand-attribution', 'logo');
 ---
 
 <footer class="site-footer content-inset">
@@ -11,13 +15,13 @@ import SocialLinks from './SocialLinks.astro';
     <nav class="site-footer__links" aria-label="Footer">
       <a href="/about/">About David</a>
       <a href="/blog/">All posts</a>
-      <a href="https://www.bitsandletters.com/">Consulting</a>
+      <a href={consultingUrl}>Consulting</a>
       <a href="mailto:david@demaree.me">Contact</a>
     </nav>
     <SocialLinks />
   </div>
   <div class="site-footer__credit">
-    <bnl-logo theme="on-dark"><a href="https://www.bitsandletters.com/">Bits&amp;Letters</a></bnl-logo>
+    <bnl-logo theme="on-dark" source="demaree.me"><a href={creditUrl}>Bits&amp;Letters</a></bnl-logo>
     <a href="/feed/">RSS feed</a>
   </div>
 </footer>
