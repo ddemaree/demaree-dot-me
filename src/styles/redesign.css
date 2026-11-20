@@ -1,5 +1,6 @@
 :root {
   --site-surround: #a89ea9;
+  --site-surround-pattern-opacity: 0.2;
   --site-paper: #f3f1f3;
   --article-paper: #fafafa;
   --site-navy: #263b54;
@@ -14,6 +15,7 @@
 
 :root[data-theme="dark"] {
   --site-surround: #171419;
+  --site-surround-pattern-opacity: 0.06;
   --site-paper: var(--home-background);
   --article-paper: var(--surface);
   --heading-accent: #a6c8e9;
@@ -35,9 +37,23 @@
   box-shadow: 0 24px 40px color-mix(in srgb, var(--site-surround) 52%, #514453);
 }
 
-html:has(.site-shell),
-body:has(.site-shell) {
+html:has(.site-shell) {
+  position: relative;
   background: var(--site-surround);
+}
+
+html:has(.site-shell)::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: url('/images/redesign/site-surround-pattern.svg') repeat;
+  opacity: var(--site-surround-pattern-opacity);
+  content: '';
+}
+
+body:has(.site-shell) {
+  background: transparent;
 }
 
 .site-shell--article {
