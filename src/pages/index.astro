@@ -67,7 +67,14 @@ const projects = [
         <div class="project-list">
           {projects.map(({ title, description, image, host }) => (
             <article class="project-card">
-              <Image src={image} alt="" width={504} loading="lazy" />
+              <Image
+                src={image}
+                alt=""
+                width={504}
+                widths={[384, 504, 768, 1008, 1536]}
+                sizes="(min-width: 50rem) min(40vw, 504px), calc(100vw - 56px)"
+                loading="lazy"
+              />
               <div>
                 <h3>{title}</h3>
                 <p>{description}</p>

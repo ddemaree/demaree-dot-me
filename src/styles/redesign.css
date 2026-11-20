@@ -413,8 +413,6 @@ body:has(.site-shell) {
 
 .project-card > img {
   width: 100%;
-  aspect-ratio: 504 / 281;
-  object-fit: cover;
 }
 
 .home-post-card h3,
