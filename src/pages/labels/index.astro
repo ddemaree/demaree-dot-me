@@ -2,6 +2,8 @@
 export const prerender = false;
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArchiveHeader from '../../components/ArchiveHeader.astro';
+import NewsletterSignup from '../../components/NewsletterSignup.astro';
 import { getTagIndex } from '../../lib/taxonomy';
 
 Astro.response.headers.set('Cache-Control', 'no-store');
@@ -21,12 +23,8 @@ try {
   title="Tags — David Demaree"
   description="Browse writing by David Demaree by tag."
 >
-  <main id="main" class="index-shell">
-    <header class="index-header">
-      <p class="index-eyebrow">Index</p>
-      <h1>Tags</h1>
-      <p class="index-lede">{unavailable ? 'Content is temporarily unavailable. Please try again shortly.' : 'On-demand archives for every label used on a published post.'}</p>
-    </header>
+  <main id="main" class="content-inset archive-page">
+    <ArchiveHeader heading="Tags" current="tags" message={unavailable ? 'Content is temporarily unavailable. Please try again shortly.' : undefined} />
 
     <ul class="tag-index" aria-label="Tags">
       {tags.map((entry) => (
@@ -38,5 +36,6 @@ try {
         </li>
       ))}
     </ul>
+    {!unavailable && <NewsletterSignup />}
   </main>
 </BaseLayout>

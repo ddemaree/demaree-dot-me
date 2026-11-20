@@ -1,47 +1,27 @@
 ---
 import { getLiveCollection } from 'astro:content';
-import { formatDate } from '../lib/taxonomy';
+import { withBitsAndLettersUtm } from '../lib/bits-and-letters-utm.mjs';
+import HomePostCards from './HomePostCards.astro';
 
-interface Props {
-  title: string;
+const result = await getLiveCollection('bnlPosts', { limit: 3 });
+const posts = (result.entries ?? []).map(({ data }) => ({
+  title: data.title,
+  description: data.description,
+  href: withBitsAndLettersUtm(data.url, 'homepage-blog-post'),
+  date: data.publishedAt,
+  image: data.image,
+  imageAlt: data.imageAlt,
+}));
+
+if (result.error) {
+  console.error('[B&L] Failed to load homepage posts:', result.error);
+} else {
+  Astro.response.headers.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
 }
-
-const result = await getLiveCollection('bnlPosts', { limit: 5 });
-const posts = result.entries ?? [];
-const { error } = result;
-
-const { title } = Astro.props as Props;
-
-Astro.response.headers.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
 ---
 
-<section class="py-10 max-w-5xl mx-auto" aria-labelledby="bnl-posts-heading">
-  <div>
-    <slot name="heading">
-      <h2 id="bnl-posts-heading" class="text-2xl/none font-medium">{title}</h2>
-    </slot>
-  </div>
-  {error ? (
-    <p class="mt-6 text-current/70">B&amp;L posts are temporarily unavailable.</p>
-  ) : posts.length === 0 ? (
-    <p class="mt-6 text-current/70">No B&amp;L posts are available yet.</p>
-  ) : (
-  <div class="posts-list">
-    {posts.map((post) => (
-      <article class="posts-list__item">
-        <time class="posts-list__date" datetime={post.data.publishedAt.toISOString()}>
-          {formatDate(post.data.publishedAt)}
-        </time>
-        <h3 class="posts-list__title">
-          <a href={post.data.url}>
-            {post.data.title}
-          </a>
-        </h3>
-        <div class="posts-list__description">
-          <p>{post.data.description}</p>
-        </div>
-      </article>
-    ))
-  }</div>)}
-  <p><a href="https://www.bitsandletters.com/ideas">See more at bitsandletters.com <i class="fas fa-chevron-right"></i></a></p>
+<section class="home-section" aria-labelledby="bnl-posts-heading">
+  <h2 id="bnl-posts-heading" class="section-heading">From the Bits&amp;Letters Blog</h2>
+  {result.error ? <p>Bits&amp;Letters posts are temporarily unavailable.</p> : posts.length ? <HomePostCards posts={posts} /> : <p>No posts are available yet.</p>}
+  <a href={withBitsAndLettersUtm('https://www.bitsandletters.com/ideas', 'homepage-blog-index')} class="arrow-link">More posts from Bits&amp;Letters<span class="arrow" aria-hidden="true"></span></a>
 </section>

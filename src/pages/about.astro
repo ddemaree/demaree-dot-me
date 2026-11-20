@@ -1,33 +1,136 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import portrait from '@/assets/images/redesign/portrait.png';
+import book from '@/assets/images/redesign/about-book.png';
+import dailyish from '@/assets/images/redesign/podcast-dailyish.jpg';
+import unblocked from '@/assets/images/redesign/podcast-unblocked.jpg';
+import responsive from '@/assets/images/redesign/podcast-responsive.jpg';
+import defenders from '@/assets/images/redesign/podcast-defenders.jpg';
+
+const facts = [
+  ['Now', 'Founder, Bits&Letters'],
+  ['Before', 'Webflow, Stripe, Google, Typekit/Adobe'],
+  ['Focus', 'Design systems, developer platforms, product strategy'],
+  ['Book', 'Git for Humans (A Book Apart)'],
+  ['Based', 'Maplewood, NJ'],
+];
+
+const work = [
+  ['Apr 2024–present', 'Bits&Letters', 'Founder & principal', 'A web & UI consultancy building websites and content systems for startups like Rill and Copytree, and live-data signage for Stripe.'],
+  ['Nov 2022–Apr 2024', 'Webflow', 'Design systems', 'Led the launch of Variables — design tokens for one of the web’s biggest visual development platforms — plus work on component libraries.'],
+  ['Oct 2021–Nov 2022', 'Stripe', 'Product', 'Helped ship Stripe Apps, the platform for building on top of the Stripe Dashboard.'],
+  ['Mar 2018–Oct 2021', 'Google', 'Product manager', 'Worked on adaptive color and typography in Material Design, after starting in Corp Eng on internal tools.'],
+  ['Feb 2011–Feb 2018', 'Typekit / Adobe', 'Engineer → product lead', 'Joined early as an engineer and grew into product lead for the web-font service used by millions of designers and developers.'],
+];
+
+const principles = [
+  ['Design is a systems problem.', 'Tokens, components, content models, pipelines. The best interface work happens underneath the interface, where it compounds.'],
+  ['Stay close to the money.', 'A product team’s influence is proportional to how close it is to the business. I make the case in revenue and risk, not vibes.'],
+  ['Leaders should still ship.', 'I write code, draw boxes, and edit specs. Staying hands-on keeps my judgment honest and my estimates real.'],
+  ['Write it down.', 'A book, two decades of blogging, and a lot of docs. Clear writing is how a small team scales its decisions.'],
+];
+
+const references = [
+  ['Speak engineer-ese and can hold your own in a trade off battle with engineering.', 'Donald Thompson, Webflow'],
+  ['A business strategy lens not just a design perspective.', 'Mike Driscoll, Rill'],
+  ['A rigorous, systems-oriented mind that makes complex problems feel solvable.', 'Jared Greenstein'],
+];
+
+const podcasts = [
+  { date: 'Oct 2026', iso: '2026-10', show: 'Daily(ish) with Chris Enns', title: 'Definitely Not Talking AI with David Demaree', description: 'Talking about AI anyway: where it helps, where it feels gross, and why good design should be opinionated.', href: 'https://daily.chrisenns.com/s2/319/transcript', image: dailyish },
+  { date: 'Aug 2023', iso: '2023-08', show: 'Engineering Unblocked', title: 'Design systems and other internal platforms as products', description: 'With Rebecca Murphey, on treating internal platforms like products and making the case for them to leadership.', href: 'https://creators.spotify.com/pod/profile/engineering-unblocked/episodes/Design-systems-and-other-internal-platforms-as-products-with-David-Demaree-from-Webflow-e28grir', image: unblocked },
+  { date: 'Dec 2016', iso: '2016-12', show: 'A Responsive Web Design Podcast', title: 'Typekit', description: 'With Karen McGrane and Ethan Marcotte, on why Typekit went responsive.', href: 'https://responsivewebdesign.com/podcast/typekit/', image: responsive },
+  { date: 'Apr 2016', iso: '2016-04', show: 'User Defenders', title: 'The Beauty of Simplicity', description: 'With Jason Ogle, on simplicity, editing, and knowing your users.', href: 'https://userdefenders.com/podcast/018-the-beauty-of-simplicity-with-david-demaree/', image: defenders },
+];
 ---
 
-<BaseLayout
-  title="About Me — David Demaree"
-  description="About David Demaree, author of Git for Humans: work, writing, and speaking."
->
-  <main id="main" class="index-shell pb-16">
-    <header class="index-header">
-      <h1>About David Demaree</h1>
-      <p class="index-lede">A good man, and thorough.</p>
+<BaseLayout title="About David Demaree" description="About David Demaree, a design and product leader, founder of Bits&Letters, and author of Git for Humans.">
+  <main id="main" class="about-page content-inset">
+    <header class="about-title">
+      <h1>About David</h1>
+      <div class="about-title__portrait">
+        <Image src={portrait} width={207} alt="David Demaree" loading="eager" />
+      </div>
     </header>
-
-    <div class="mx-auto max-w-4xl py-8">
-      <div class="prose flow">
-        <h2 id="work">Work</h2>
-        <p>
-          You can <a href="https://linkedin.com/in/ddemaree">view my work history on LinkedIn</a>,
-          if you’re into that sort of thing.
-        </p>
-
-        <h2 id="writing-speaking">Writing &amp; Speaking</h2>
-        <p>
-          A few years ago I wrote a book about version control, <a href="https://abookapart.com/products/git-for-humans">Git for Humans</a>, for <a href="https://abookapart.com/">A Book Apart</a>. You can read a sample chapter about making Git commits, <a href="https://alistapart.com/article/the-art-of-the-commit/">“The Art of the Commit”</a>, on A List Apart.
-        </p>
-        <p>
-          I’ve spoken at a few conferences about product development and web design. The most recent one was <a href="https://www.webdirections.org/product">Web Directions Product 2019</a> in Melbourne, Australia, where I gave the opening keynote about <a href="https://conffab.com/video/the-product-polygon/">how we define the shape of the product management role</a> (video requires a subscription; the transcript is free).
-        </p>
+    <div class="about-profile">
+      <dl class="about-facts">
+        {facts.map(([term, value]) => <div><dt>{term}</dt><dd>{value}</dd></div>)}
+      </dl>
+      <div class="about-bio">
+        <p class="about-bio__lead">I’m a design and product leader who has spent most of my career building the tools other people use to make the web: fonts, design systems, developer platforms, and the content systems behind good websites.</p>
+        <p>I started out studying painting and filmmaking, first in high school at the Alabama School of Fine Arts, then in college at the School of the Art Institute of Chicago. Along the way, I discovered the web, and how cool it is to be able to create a whole digital experience using nothing but text files and URLs. Post-college, it was a lot easier to make a living as a web designer than as a brand new filmmaker, so the web became my career and I never looked back.</p>
+        <p>Thanks to a friend and co-worker at one of the first Apple Stores, where I worked helping customers pick the right Mac and would sometimes hack on PHP code on my lunch break, I was introduced to Ruby on Rails, then a brand-new framework. I was one of the first wave of Rails devs, and gave my first conference talk at the inaugural RailsConf in 2006.</p>
+        <p>In 2011, I joined Typekit as a Rails developer and technical owner for the <code>typekit.com</code> frontend. Not long after that we were acquired by Adobe, which brought me into the world of Big Tech. Not long after <em>that</em> I moved into product management, helping scale our team from less than 20 people to almost 60, and to grow our user base from tens of thousands of web publishers to over a million Creative Cloud subscribers who relied on desktop font sync.</p>
+        <p>After seven years at Adobe, next I went to Google, where I worked on adaptive color and typography for Material Design and Google Fonts. I worked on the development and launches for two major Material releases — Material 2 in 2018 and Material 3 in 2021 — and, on the fonts side, shipped major updates to the Google Fonts website and pushed to get Google Sans variable fonts adopted by first-party apps used by billions of users on Android and web.</p>
+        <p>My tenure at Stripe was regrettably short — I joined at the tail end of ZIRP over-hiring, and left as the grapevine started talking about layoffs. While there, though, I helped ship the initial release of Stripe Apps, specifically a UI toolkit and design system allowing third-party developers to add useful widgets and integrations to the Stripe Dashboard using familiar React components, wrapped in a secure sandbox so this third-party code couldn't access or steal merchants' critical business data.</p>
+        <p>At Webflow I led the launch of Variables and CSS functions, and worked on component libraries, all features intended to help large organizations or people with large, complex Webflow sites make large-scale changes easily without giving up the convenience of a visual publishing tool.</p>
+        <p>These days I'm the founder of Bits&amp;Letters, a web &amp; UI consultancy where I'm focused on helping clients take advantage of all the modern platform goodness I've helped build in the last 20 years. While in my previous corporate roles, I'd encounter people who work in small businesses — or even big companies outside of Big Tech — who felt lost or stuck navigating how to make technology work for them, forced to pick between self-serve page builders that don't scale or expensive solutions that are hard to operate. At B&amp;L, I try to help clients find just-right, made-to-measure technology solutions  that they'll actually use and benefit from.</p>
+        <p>I live in Maplewood, NJ, close to New York City, with my wife Jody, daughter June, and our dog, Johnny Cash. When not working I love to play video games, build mechanical keyboards, take photos and brew pour-over coffee.</p>
       </div>
     </div>
+    <section aria-labelledby="work">
+      <h2 id="work" class="section-heading">Work</h2>
+      <div class="about-work">
+        {work.map(([dates, company, role, description]) => (
+          <article>
+            <p class="about-meta">{dates}</p>
+            <h3>{company}</h3>
+            <div><strong>{role}</strong><p>{description}</p></div>
+          </article>
+        ))}
+      </div>
+    </section>
+    <section aria-labelledby="principles">
+      <h2 id="principles" class="section-heading">Principles</h2>
+      <div class="about-principles">
+        {principles.map(([title, description]) => (
+          <article><h3>{title}</h3><p>{description}</p></article>
+        ))}
+      </div>
+    </section>
+    <section aria-labelledby="references">
+      <h2 id="references" class="section-heading">References</h2>
+      <figure class="about-quote about-quote--featured">
+        <blockquote>“David is a steady hand that launches features thoughtfully, with a solid bar for customer value.”</blockquote>
+        <figcaption>Fernanda Chouza, Group Product Marketing Manager, Webflow</figcaption>
+      </figure>
+      <div class="about-references">
+        {references.map(([quote, attribution]) => (
+          <figure class="about-quote"><blockquote>“{quote}”</blockquote><figcaption>{attribution}</figcaption></figure>
+        ))}
+      </div>
+    </section>
+    <section aria-labelledby="podcasts">
+      <h2 id="podcasts" class="section-heading">Podcasts</h2>
+      <div class="about-podcasts">
+        {podcasts.map((episode) => (
+          <a href={episode.href} class="about-podcast">
+            <time class="about-meta" datetime={episode.iso}>{episode.date}</time>
+            <Image src={episode.image} alt="" width={84} height={84} fit="contain" loading="lazy" />
+            <div>
+              <p class="about-meta">{episode.show}</p>
+              <h3>{episode.title}</h3>
+              <p>{episode.description}</p>
+            </div>
+            <span class="arrow" aria-hidden="true"></span>
+          </a>
+        ))}
+      </div>
+    </section>
+    <section aria-labelledby="book">
+      <h2 id="book" class="section-heading">Book</h2>
+      <div class="about-book">
+        <Image src={book} alt="Git for Humans book cover" width={299} loading="lazy" />
+        <div>
+          <h3>Git for Humans</h3>
+          <p>A friendly guide to version control for designers, writers, and everyone else who makes things with files. Published by A Book Apart.</p>
+          <div class="about-book__links">
+            <a href="https://gitforhumans.us/" class="arrow-link">Get the book<span class="arrow" aria-hidden="true"></span></a>
+            <a href="https://alistapart.com/article/the-art-of-the-commit/" class="arrow-link">Read a sample chapter<span class="arrow" aria-hidden="true"></span></a>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 </BaseLayout>

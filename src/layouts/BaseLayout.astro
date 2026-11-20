@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import '../styles/redesign.css';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import ThemeScript from '../components/ThemeScript.astro';
@@ -35,7 +36,6 @@ const {
 const description = suppliedDescription?.trim() || 'Writing by David Demaree.';
 const canonicalPath = `${Astro.url.pathname.replace(/\/+$/, '')}/`;
 const canonicalUrl = new URL(canonical ?? canonicalPath, Astro.site ?? Astro.url.origin);
-canonicalUrl.search = '';
 canonicalUrl.hash = '';
 const imageUrl = image ? new URL(image.src, Astro.site ?? Astro.url.origin) : undefined;
 const indexable = isProductionSite(Astro.url) && !noindex && (Astro.response.status ?? 200) < 400;
@@ -103,10 +103,12 @@ if (!indexable) Astro.response.headers.set('X-Robots-Tag', 'noindex');
     <script is:inline>
       document.body.dataset.theme = document.documentElement.dataset.theme;
     </script>
-    <SiteHeader />
-    <slot />
-    <slot name="footer">
-      <SiteFooter />
-    </slot>
+    <div class:list={['site-shell', { 'site-shell--article': type === 'article' }]}>
+      <SiteHeader />
+      <slot />
+      <slot name="footer">
+        <SiteFooter />
+      </slot>
+    </div>
   </body>
 </html>

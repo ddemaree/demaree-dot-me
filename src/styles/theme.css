@@ -3,7 +3,7 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @theme static {
-  --font-sans: "Die Grotesk", "Helvetica Neue", sans-serif;
+  --font-sans: "Polymath Variable", "Die Grotesk", "Helvetica Neue", sans-serif;
   --font-mono: "Berkeley Mono", ui-monospace, monospace;
   --font-serif: 'family-vf', 'Comic Sans MS';
   --font-display: "Gorton Perfected", var(--font-sans);

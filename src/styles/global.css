@@ -124,7 +124,6 @@
       @apply text-pretty;
       color: var(--description);
       max-width: 58ch;
-      font-variation-settings: 'opsz' 8;
       letter-spacing: 0.01em;
     }
 
@@ -354,7 +353,6 @@
   @apply font-display;
   font-size: 2.375rem;
   font-weight: 500;
-  letter-spacing: -0.02em;
   line-height: 1;
   text-wrap: balance;
   overflow-wrap: anywhere;

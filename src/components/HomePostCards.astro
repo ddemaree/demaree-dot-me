@@ -1,0 +1,24 @@
+---
+import { formatDate } from '../lib/taxonomy';
+
+interface Props {
+  posts: Array<{ title: string; description: string; href: string; date: Date; image?: string; imageAlt?: string }>;
+}
+const { posts } = Astro.props;
+---
+<div class="home-post-card-list">
+  {posts.map((post) => (
+    <article class="home-post-card">
+      {post.image ? (
+        <img class="home-post-card__media" src={post.image} alt={post.imageAlt ?? ''} decoding="async" loading="lazy" />
+      ) : (
+        <span class="home-post-card__media home-post-card__media--placeholder" aria-hidden="true"></span>
+      )}
+      <div>
+        <h3><a href={post.href}>{post.title}</a></h3>
+        <p>{post.description}</p>
+        <time datetime={post.date.toISOString()}>{formatDate(post.date)}</time>
+      </div>
+    </article>
+  ))}
+</div>

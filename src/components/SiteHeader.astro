@@ -1,335 +1,56 @@
 ---
-import DdMark from '@/assets/svg/dd-mark.svg';
+import { withBitsAndLettersUtm } from '../lib/bits-and-letters-utm.mjs';
 import { getNavTopics } from '../lib/taxonomy';
 
-const path = Astro.url.pathname;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 let navTopics: Awaited<ReturnType<typeof getNavTopics>> = [];
 try {
   navTopics = await getNavTopics();
 } catch (error) {
   console.error('Unable to load navigation topics from EmDash.', error);
-  Astro.response.status = 503;
+  if ((Astro.response.status ?? 200) < 400) Astro.response.status = 503;
   Astro.response.headers.set('Cache-Control', 'no-store');
   Astro.response.headers.set('X-Robots-Tag', 'noindex');
 }
-const isBlog =
-  path === '/blog/' ||
-  path === '/blog' ||
-  path.startsWith('/p/') ||
-  path.startsWith('/labels/');
-
 const links = [
-  { href: '/about/', label: 'About Me', current: path === '/about/' || path === '/about' },
+  { href: '/about/', label: 'About David', current: path === '/about' },
   ...navTopics.map((topic) => ({
     href: `/topics/${topic.id}/`,
     label: topic.data.title,
-    current: path === `/topics/${topic.id}/` || path === `/topics/${topic.id}`,
+    current: path === `/topics/${topic.id}`,
   })),
-  { href: '/blog/', label: 'All posts', current: isBlog },
+  {
+    href: '/blog/',
+    label: 'All Posts',
+    current: path === '/blog' || path.startsWith('/p/') || path.startsWith('/labels') || path === '/topics',
+  },
+  { href: withBitsAndLettersUtm('https://www.bitsandletters.com/', 'header-consulting'), label: 'Consulting', current: false },
+  { href: 'mailto:david@demaree.me', label: 'Contact', current: false },
 ];
 ---
 
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
-  <div class="site-header__inner">
-    <a class="brand" href="/" aria-label="David Demaree">
-      <DdMark />
-    </a>
-
-    <nav class="desktop-navigation" aria-label="Main menu">
-      {links.map((link) => (
-        <a class:list={{ current: link.current }} href={link.href} aria-current={link.current ? (path.replace(/\/$/, '') === link.href.replace(/\/$/, '') ? 'page' : 'location') : undefined}>{link.label}</a>
+  <a class="site-header__brand" href="/" aria-label="David Demaree, home">
+    <img src="/images/redesign/site-mark.svg" width="48" height="48" alt="" />
+  </a>
+  <nav class="desktop-navigation" aria-label="Main menu">
+    {links.map(({ href, label, current }) => (
+      <a href={href} aria-current={current ? (path === href.slice(0, -1) ? 'page' : 'location') : undefined}>{label}</a>
+    ))}
+  </nav>
+  <button class="theme-toggle" type="button" role="switch" data-theme-toggle hidden aria-label="Dark mode" aria-checked="false">
+    <span aria-hidden="true" class="theme-toggle__light">☼</span>
+    <span aria-hidden="true" class="theme-toggle__dark">☾</span>
+  </button>
+  <button class="site-header__menu" type="button" popovertarget="mobile-menu">
+    Menu <img src="/images/redesign/menu.svg" alt="" width="25" height="20" />
+  </button>
+  <div id="mobile-menu" popover>
+    <nav aria-label="Mobile menu">
+      {links.map(({ href, label, current }) => (
+        <a href={href} aria-current={current ? (path === href.slice(0, -1) ? 'page' : 'location') : undefined}>{label}</a>
       ))}
     </nav>
-
-    <div class="site-header__actions gap-3 flex items-center">
-      <button class="theme-toggle" type="button" role="switch" data-theme-toggle hidden aria-label="Dark mode" aria-checked="false">
-        <span class="theme-toggle__icon theme-toggle__icon--light" aria-hidden="true">
-          <i class="fa-sharp fa-regular fa-sun"></i>
-        </span>
-        <span class="theme-toggle__icon theme-toggle__icon--dark" aria-hidden="true">
-          <i class="fa-sharp fa-regular fa-moon"></i>
-        </span>
-      </button>
-      <button class="size-10 border-transparent text-xl" popovertarget="mobile-menu">
-        <i class="fa-sharp fa-regular fa-bars-staggered"></i>
-      </button>
-    </div>
-
-  </div>
-  <div popover class="border-0 [&:popover-open]:flex flex-col inset-0 m-0 p-0 w-auto h-dvh bg-(--header)/58 backdrop-blur-lg" id="mobile-menu">
-    <div class="bg-black text-white flex shrink-0 justify-between items-start h-14 pl-6 pr-2">
-      <a class="brand" href="/" aria-label="David Demaree">
-        <DdMark />
-      </a>
-      <button class="size-10 border-transparent text-xl translate-y-2" popovertarget="mobile-menu" popovertargetaction="hide">
-        <i class="fa-sharp fa-regular fa-xmark"></i>
-      </button>
-    </div>
-    <div class="grow min-h-0 overflow-y-auto flex flex-col items-end text-right justify-start gap-4 px-6 pt-12 pb-16">
-      <nav aria-label="Mobile menu">
-        <ul class="space-y-4">
-          {links.map((link) => (
-            <li>
-              <a class:list={['text-2xl font-display-alt', { current: link.current }]} href={link.href} aria-current={link.current ? (path.replace(/\/$/, '') === link.href.replace(/\/$/, '') ? 'page' : 'location') : undefined}>{link.label}</a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </div>
   </div>
 </header>
-
-<style is:global>
-  @reference '@/styles/theme.css';
-
-  @layer base {
-    :root {
-      --header-height: 3.5rem;
-      --header: #e4e4e7;
-      --nav-text: #52525b;
-      --header-border: #d4d4d8;
-    }
-
-    :root[data-theme="dark"] {
-      --header: #2c2730;
-      --nav-text: #d6cdd9;
-      --header-border: #49414e;
-    }
-  }
-
-  @layer components {
-    .skip-link {
-      position: fixed;
-      top: 0.5rem;
-      left: 0.5rem;
-      z-index: 20;
-      transform: translateY(-200%);
-      padding: 0.5rem 0.75rem;
-      background: var(--surface);
-    }
-
-    .skip-link:focus {
-      transform: none;
-    }
-
-    .site-header {
-      @apply pl-4 pr-2;
-      position: relative;
-      z-index: 5;
-      height: var(--header-height);
-      background: var(--header);
-    }
-
-    .site-header__inner {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      height: var(--header-height);
-
-      @variant md {
-        @apply grid;
-        grid-template-columns: 10px 1fr 10px;
-        grid-template-rows: auto;
-
-        & > * {
-          grid-row: 1 / span 1;
-        }
-      }
-    }
-
-    .site-header__brand {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      height: 3.5rem;
-    }
-
-    .site-header__actions {
-      @apply flex items-center shrink-0 w-max self-start justify-self-end;
-      height: var(--header-height);
-    }
-
-    .brand {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      width: 4.5rem;
-      height: 4.5rem;
-      align-items: center;
-      justify-content: center;
-      background: var(--color-brand-red);
-      transition: background-color 160ms ease;
-    }
-
-    .brand:hover {
-      background: color-mix(in oklab, var(--color-brand-red) 90%, black 10%);
-    }
-
-    .brand img, .brand svg {
-      width: 75.5%;
-      filter: invert(1);
-      transition: transform 160ms ease;
-    }
-
-    .brand:hover img {
-      transform: scale(1.08);
-    }
-
-    .desktop-navigation {
-      @apply hidden md:flex justify-center w-full;
-      align-items: center;
-      gap: 1rem;
-      height: 3.5rem;
-      margin-left: auto;
-    }
-
-    .desktop-navigation a,
-    .mobile-navigation a {
-      padding: 0.25rem 0.5rem;
-      color: var(--nav-text);
-      @apply font-mono;
-      font-size: 0.875rem;
-      font-weight: 650;
-      text-transform: uppercase;
-    }
-
-    .desktop-navigation a.current,
-    .mobile-navigation a.current {
-      background: var(--surface);
-      color: var(--text);
-    }
-
-    .mobile-navigation {
-      display: none;
-    }
-
-    .theme-toggle {
-      position: relative;
-      isolation: isolate;
-      display: inline-grid;
-      grid-template-columns: repeat(2, 1fr);
-      align-items: center;
-      flex-shrink: 0;
-      width: 5.25rem;
-      height: 2.75rem;
-      padding: 3px;
-      border-radius: 8px;
-      color: var(--nav-text);
-      background: color-mix(in oklab, var(--text) 6%, var(--header));
-      cursor: pointer;
-    }
-
-    .theme-toggle::before {
-      content: '';
-      position: absolute;
-      z-index: -1;
-      inset: 3px auto 3px 3px;
-      width: calc((100% - 6px) / 2);
-      border-radius: 5px;
-      background: var(--surface);
-      box-shadow: 0 1px 3px #0002;
-      transition: transform 160ms ease;
-    }
-
-    .theme-toggle[aria-checked="true"]::before {
-      transform: translateX(100%);
-    }
-
-    .theme-toggle__icon {
-      display: grid;
-      place-items: center;
-      min-width: 0;
-      font-size: 16px;
-      line-height: 1;
-      opacity: 0.55;
-      transition: opacity 160ms ease, color 160ms ease;
-    }
-
-    .theme-toggle[aria-checked="false"] .theme-toggle__icon--light,
-    .theme-toggle[aria-checked="true"] .theme-toggle__icon--dark {
-      color: var(--text);
-      opacity: 1;
-    }
-
-    .theme-toggle[hidden] { display: none; }
-    .theme-toggle:hover { border-color: var(--nav-text); }
-    .theme-toggle:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
-
-    @media (prefers-reduced-motion: reduce) {
-      .theme-toggle::before, .theme-toggle__icon { transition: none; }
-    }
-
-    @media (max-width: 40rem) {
-      /*.theme-toggle { margin-left: auto; align-self: flex-start; }*/
-      .mobile-navigation summary img { @apply dark:invert; }
-    }
-  }
-
-  /* Keep these overrides unlayered to preserve their existing cascade priority. */
-  @media (max-width: 40rem) {
-    /*.site-header {
-      height: 3.5rem;
-      padding-inline: 1.5rem 0.75rem;
-    }
-
-    .brand {
-      width: 4rem;
-      height: 4rem;
-    }
-
-    .desktop-navigation {
-      display: none;
-    }
-
-    .mobile-navigation {
-      display: block;
-    }
-
-    .mobile-navigation summary {
-      display: flex;
-      width: 3.5rem;
-      height: 3rem;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      list-style: none;
-    }
-
-    .mobile-navigation summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .mobile-navigation summary img {
-      width: 3.5rem;
-      height: 3rem;
-    }
-
-    .mobile-navigation nav {
-      position: absolute;
-      top: 3rem;
-      right: 0;
-      left: 0;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--header-border);
-      background: var(--header);
-    }
-
-    .mobile-navigation a {
-      display: block;
-      padding: 0.5rem;
-    }*/
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .brand,
-    .brand img {
-      transition: none;
-    }
-  }
-
-</style>

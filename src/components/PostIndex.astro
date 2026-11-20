@@ -30,7 +30,7 @@ function categoryLabel(post: PostEntry) {
           <h2><a href={emdashPostUrl(post)}>{post.data.title}</a></h2>
           <p>{post.data.description}</p>
         </div>
-        <a class="index-entry__arrow" href={emdashPostUrl(post)} aria-label={`Read ${post.data.title}`}>→</a>
+        <span class="index-entry__arrow arrow" aria-hidden="true"></span>
       </article>
     ))
   )}

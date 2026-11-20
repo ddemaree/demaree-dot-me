@@ -1,5 +1,6 @@
 ---
 import { sanitizeHref } from 'emdash';
+import { withBitsAndLettersUtm } from '../lib/bits-and-letters-utm.mjs';
 
 interface Props {
   node: {
@@ -14,7 +15,7 @@ interface Props {
 }
 
 const { node } = Astro.props;
-const href = sanitizeHref(node?.markDef?.href);
+const href = withBitsAndLettersUtm(sanitizeHref(node?.markDef?.href), 'post-body');
 const blank = !href.startsWith('#') && node?.markDef?.blank;
 ---
 

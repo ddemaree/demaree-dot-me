@@ -16,7 +16,7 @@ const content = editable ? post.data.content ?? [] : structuredClone(post.data.c
 ---
 
 {post.data.featured_image && (
-  <figure {...(editable ? post.edit.featured_image : {})}>
+  <figure class="featured-media" {...(editable ? post.edit.featured_image : {})}>
     <Image
       image={post.data.featured_image}
       alt={post.data.featured_image_alt ?? post.data.featured_image.alt}

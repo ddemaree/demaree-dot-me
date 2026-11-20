@@ -1,4 +1,85 @@
 @font-face {
+  font-family: "Polymath Variable";
+  src: url("https://fonts.demaree.me/demaree-dot-me/PolymathVar.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Polymath Variable";
+  src: url("https://fonts.demaree.me/demaree-dot-me/PolymathVar.ttf") format("truetype");
+  font-style: italic;
+  font-variation-settings: "ital" 1;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Tiempos Text";
+  src: url("https://fonts.demaree.me/demaree-dot-me/tiempos-text-regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Tiempos Text";
+  src: url("https://fonts.demaree.me/demaree-dot-me/tiempos-text-regular-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Tiempos Text";
+  src: url("https://fonts.demaree.me/demaree-dot-me/tiempos-text-medium.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Tiempos Text";
+  src: url("https://fonts.demaree.me/demaree-dot-me/tiempos-text-medium-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Tiempos Text";
+  src: url("https://fonts.demaree.me/demaree-dot-me/tiempos-text-semibold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Tiempos Text";
+  src: url("https://fonts.demaree.me/demaree-dot-me/tiempos-text-semibold-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Tiempos Text";
+  src: url("https://fonts.demaree.me/demaree-dot-me/tiempos-text-bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Tiempos Text";
+  src: url("https://fonts.demaree.me/demaree-dot-me/tiempos-text-bold-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Die Grotesk";
   src: url("https://fonts.demaree.me/demaree-dot-me/die-grotesk-vf-roman.woff2") format("woff2");
   font-style: normal;
