@@ -1,5 +1,4 @@
 ---
-import { decodeSlug } from 'emdash';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EmDashContent from '../../components/EmDashContent.astro';
 import { documentUri } from '../../lib/standard-site';
@@ -12,19 +11,15 @@ import {
   type PostPageEntry,
   type TopicEntry,
 } from '../../lib/taxonomy';
-import { emdashPostUrl, emdashSocialImage } from '../../lib/emdash-post';
 import { withBitsAndLettersUtm } from '../../lib/bits-and-letters-utm.mjs';
 import NewsletterSignup from '../../components/NewsletterSignup.astro';
+import { emdashPostSlug, emdashPostUrl } from '../../lib/emdash-post';
+import { postSocialImage } from '../../lib/social-images';
 
 export const prerender = false;
 
-let slug: string | undefined;
-try {
-  slug = decodeSlug(Astro.params.slug);
-} catch {
-  // Malformed URL encoding is a missing route, not a CMS outage.
-}
-if (!slug || slug.includes('/')) {
+const slug = emdashPostSlug(Astro.params.slug);
+if (!slug) {
   Astro.response.status = 404;
   return Astro.rewrite('/404');
 }
@@ -50,11 +45,6 @@ if (!post) {
   Astro.response.status = 404;
   return Astro.rewrite('/404');
 }
-if (isPreview) {
-  Astro.response.headers.set('Cache-Control', 'private, no-store');
-  Astro.response.headers.set('X-Robots-Tag', 'noindex');
-}
-
 const position = posts.findIndex((entry) => entry.id === post.id);
 const newerPost = position > 0 ? posts[position - 1] : undefined;
 const olderPost = position >= 0 ? posts[position + 1] : undefined;
@@ -64,15 +54,14 @@ const standardDid = import.meta.env.STANDARD_SITE_DID;
 const standardDocumentUri = standardDid ? documentUri(standardDid, post.id) : undefined;
 const publishedAt = post.data.publishedAt ? formatDate(post.data.publishedAt) : undefined;
 const tags = postTagSlugs(post);
-const image = emdashSocialImage(post.data.featured_image, Astro.locals.emdash?.getPublicMediaUrl, Astro.url.origin);
 ---
 
 <BaseLayout
   title={`${post.data.title} — David Demaree`}
   description={post.data.description}
   type="article"
-  image={image}
-  imageAlt={post.data.featured_image_alt ?? post.data.featured_image?.alt}
+  image={isPreview ? undefined : postSocialImage(post.id)}
+  imageAlt={isPreview ? undefined : `${post.data.title} — David Demaree`}
   publishedAt={isPreview ? undefined : post.data.publishedAt}
   updatedAt={post.data.updatedAt}
   standardDocumentUri={standardDocumentUri}
