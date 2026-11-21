@@ -1,3 +1,4 @@
+import { decodeSlug } from 'emdash';
 import type { ContentEntry, ImageValue, PortableTextBlock, TaxonomyTerm } from 'emdash';
 
 /** CMS fields used by the public blog. */
@@ -27,6 +28,11 @@ export type EmDashPostEntry = ContentEntry<EmDashPostData>;
 
 export function emdashPostUrl(post: Pick<EmDashPostEntry, 'id'>) {
   return `/p/${encodeURIComponent(post.id)}/`;
+}
+
+export function emdashPostSlug(param: string | undefined) {
+  const slug = decodeSlug(param);
+  return slug && !slug.includes('/') ? slug : undefined;
 }
 
 export function emdashDate(value: Date | string | null | undefined) {

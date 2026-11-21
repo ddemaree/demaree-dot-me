@@ -29,9 +29,11 @@
     "@astrojs/vercel": "^11.0.5",
     "@atproto/api": "^0.20.44",
     "@emdash-cms/cloudflare": "1.5.0",
+    "@fontsource/inter": "^5.3.0",
     "@js-temporal/polyfill": "^0.5.1",
     "@keystatic/astro": "^5.2.0",
     "@keystatic/core": "^0.6.4",
+    "@resvg/resvg-wasm": "^2.6.2",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.3",
     "class-variance-authority": "^0.7.1",
@@ -41,10 +43,12 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "sanitize-html": "2.17.1",
+    "satori": "^0.15.2",
     "sharp": "^0.35.3",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.3",
-    "wrangler": "^4.134.0"
+    "wrangler": "^4.134.0",
+    "yoga-wasm-web": "^0.3.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
